@@ -1,36 +1,116 @@
-# API 自动化测试框架
+# 🚀 AI 驱动的 API 自动化测试框架
 
-这是一个以 JSON 用例为中心的 API 回归测试框架。cURL 转换只是用例录入方式之一；实际执行由 `api_project/testcases/test_api.py` 的统一参数化入口完成，并统一产出 pytest、Allure、性能和历史趋势报告。
+> **把 cURL 抓包放进项目，对 AI 说一句话，即可生成可执行的 API 用例、Allure 配置、性能阈值和接口文档。**
 
-## 实际工作流
+基于 `pytest + Allure` 的 API 自动化测试框架。它以 JSON 用例为核心，提供 cURL 转换、变量关联、数据驱动断言、性能阈值、报告归档、通知和定时回归能力。
 
 ```text
-cURL / 手写 JSON
-        ↓
-api_project/case_data_files/*.json
-        ↓  （补全 ALLURE_CONFIGS 映射）
-api_project/testcases/test_api.py
-        ↓
-pytest 请求、变量提取、断言、Allure 附件
-        ↓
-api_project/common/report_manager.py
-        ↓
-报告归档、性能统计、趋势汇总、按配置发送通知
+“帮我转换 curl 文件并生成测试用例”
+                  ↓
+     AI 编排项目内置 curl-to-testcase Skill
+                  ↓
+ cURL → JSON 用例 → Allure 映射 → 性能阈值 → 可选接口文档
+                  ↓
+       python run_testcases.py 执行与生成报告
 ```
 
-`test_api.py` 仅执行能够映射到 `ALLURE_CONFIGS` 的 JSON 文件；新增 JSON 后必须完成 Allure 配置，否则它不会进入统一入口。这是避免未知接口被静默执行的安全门禁。
+## ✨ 为什么优先使用 AI 流程
 
-## 快速开始
+| 传统新增接口 | AI 一句话流程 |
+| --- | --- |
+| 手动解析 cURL、创建 JSON、编写配置 | 自动定位 cURL 并调用无头转换器 |
+| 手动确认报告分组和标题 | 自动补齐候选 Allure 映射，再按业务语义核对 |
+| 容易遗漏性能基线与接口说明 | 自动同步阈值；按需生成 HTML 接口文档 |
+| 多个入口、不清楚如何验收 | 输出变更清单，并执行收集检查 |
 
-需要 Python 3.9+。Allure HTML 报告需要 JDK；只运行 pytest 不强制需要它。
+AI 并不改变框架的执行方式：最终仍由统一的 JSON 测试入口运行。因此生成结果可审查、可维护，也可不依赖 AI 继续使用。
+
+---
+
+## 🪄 30 秒开始：AI 一句话生成用例
+
+### 1. 保存 cURL
+
+从浏览器开发者工具或抓包工具复制 **Copy as cURL**，保存为项目内任意位置的文本文件；推荐文件名包含 `curl`，例如：
+
+```text
+curl_login.txt
+curl_order.txt
+```
+
+一个文件可以包含多条 cURL 命令。
+
+### 2. 对 AI 说一句话
+
+在支持本仓库本地 Skill 的 AI 编程工具中打开项目，直接输入：
+
+```text
+帮我转换 curl 文件并生成测试用例
+```
+
+也可以说：`一键转换 curl`、`把这个 curl 转成测试用例`、`新增抓包接口并完善报告配置`。
+
+### 3. AI 自动编排的内容
+
+```mermaid
+flowchart LR
+    A[定位 cURL 文件] --> B[转换为 JSON 用例]
+    B --> C[脱敏并检查请求数据]
+    C --> D[补齐 Allure 分组与标签]
+    D --> E[同步性能阈值]
+    E --> F[collect-only 验证收集结果]
+    F --> G[按需生成 HTML 接口文档]
+```
+
+生成的主要文件如下：
+
+| 产物 | 用途 |
+| --- | --- |
+| `api_project/case_data_files/*.json` | 唯一的测试用例数据来源 |
+| `api_project/common/allure_decorator.py` | Allure 模块、标签、标题与严重级别映射 |
+| `api_project/config/performance_thresholds.json` | 接口性能阈值；新增接口默认 5 秒，需按 SLA 复核 |
+| `api_document/apis.json` / `api_document/api-doc.html` | 可选的接口说明产物 |
+
+AI 会在涉及安装依赖、下载 JDK、覆盖已有文件、执行真实接口或使用缺失凭据时提示你确认；除此以外，一条指令即可启动完整编排。
+
+---
+
+## 🧭 框架实际执行流程
+
+```text
+JSON 用例
+  ↓
+test_api.py 自动扫描并参数化（仅执行已映射 Allure 配置的 JSON）
+  ↓
+请求发送 → 变量提取 → 断言 → 请求/响应脱敏附件
+  ↓
+pytest + Allure 原始结果
+  ↓
+报告、压缩包、历史趋势、性能统计、通知
+```
+
+**重要：**新增 JSON 后必须有对应的 `ALLURE_CONFIGS` 预设，否则统一入口会跳过该文件。这是框架避免未知接口被静默执行的安全门禁；AI 流程会负责检查它。
+
+---
+
+## ⚡ 本地快速开始
+
+### 环境要求
+
+| 组件 | 说明 |
+| --- | --- |
+| Python 3.9+ | 运行框架和转换工具 |
+| JDK 8+ | 生成 Allure HTML 报告时需要 |
+| cURL 文本 | 使用 AI 转换流程时需要 |
+
+### 初始化
 
 ```powershell
 python -m pip install -r requirements.txt
 Copy-Item api_project/.env.example api_project/.env
-python run_testcases.py
 ```
 
-`.env` 存放 token、Cookie、通知配置等敏感信息，不应提交。常用配置如下：
+在 `api_project/.env` 填写本地敏感配置；该文件已被忽略，不应提交：
 
 ```ini
 API_ITOKEN=your_token
@@ -40,33 +120,49 @@ AUTO_START_ALLURE=false
 SCHEDULER_ENABLED=false
 ```
 
-`SEND_EMAIL` 仅支持 `always`、`only_failed`、`never`。`AUTO_START_ALLURE` 默认关闭，避免每次运行自动启动服务。
+- `SEND_EMAIL`：`always`、`only_failed` 或 `never`
+- `AUTO_START_ALLURE`：是否在测试后自动启动 Allure 服务，默认关闭
+- `SCHEDULER_ENABLED`：定时任务总开关，默认关闭
 
-## 新增接口：推荐流程
+### 执行测试
 
-### 1. 录入用例
+```powershell
+python run_testcases.py
+```
 
-使用 cURL 无头转换器：
+运行入口会执行 pytest，并在测试完成后生成/压缩报告、清理旧报告、保存趋势数据，再依据 `.env` 配置发送通知。
+
+---
+
+## 🧪 手动新增用例（不使用 AI 也完全支持）
+
+### 方式一：无头转换 cURL
 
 ```powershell
 python api_project/all_skills/curl-to-testcase/scripts/run_convert.py .\curl_login.txt
 ```
 
-转换器会写入 `api_project/case_data_files/`，同时可能生成旧式 `test_*.py` 兼容文件。新用例以 JSON 为准；不要把独立 Python 用例当成主入口。
+如果无法从 cURL 自动识别域名，可追加 `--url-prefix https://api.example.com`。
 
-也可以直接在 `api_project/case_data_files/` 新建 JSON：
+### 方式二：直接编写 JSON
+
+在 `api_project/case_data_files/` 创建文件：
 
 ```json
 {
   "test_cases": {
     "test_case_1": {
-      "description": "查询示例",
+      "description": "查询订单",
       "logic": "query",
       "expected_status": 200,
-      "assertions": [{"jsonpath": "$.code", "eq": 0}],
-      "extract": [{"name": "order_id", "jsonpath": "$.data.orderId"}],
+      "assertions": [
+        {"jsonpath": "$.code", "eq": 0}
+      ],
+      "extract": [
+        {"name": "order_id", "jsonpath": "$.data.orderId"}
+      ],
       "data": {
-        "url": "/api/example/${order_id}",
+        "url": "/api/order/${order_id}",
         "method": "GET",
         "headers": {"iToken": "${API_ITOKEN}"},
         "params": {"page": 1}
@@ -76,26 +172,38 @@ python api_project/all_skills/curl-to-testcase/scripts/run_convert.py .\curl_log
 }
 ```
 
-目前已注册的 `logic` 是 `query`。变量提取结果可用 `${变量名}` 被后续用例引用。请求头与报告会对敏感字段脱敏；仍不要在 JSON 中提交真实凭据。
+支持的核心能力：
 
-### 2. 配置 Allure 映射
+- `${变量名}`：引用 `.env` 或前序用例 `extract` 保存的变量
+- `assertions`：响应状态、JSONPath、点路径、包含、长度、类型、非空和响应时间断言
+- `logic: query`：当前标准请求处理器
 
-在 `api_project/common/allure_decorator.py` 的 `ALLURE_CONFIGS` 中新增或更新预设。预设名遵循 `jqb_<json文件名规范化>_api`；文件名比较时忽略大小写、`-`、`.` 与 `_`。例如 `api_mainChart.json` 对应 `jqb_api_mainchart_api`。
+不要把 `Authorization`、iToken、Cookie、密码或 webhook 写入 JSON；一律使用 `.env` 变量引用。
 
-可使用本地 `allure-api-analyzer` Skill 完成候选配置，但提交前要核对模块、标题、严重级别和标签。
+### 补齐 Allure 映射
 
-### 3. 同步性能阈值并验证
+JSON 文件名应对应 `api_project/common/allure_decorator.py` 中的预设键：
+
+```text
+api_mainChart.json  →  jqb_api_mainchart_api
+```
+
+文件名匹配时会忽略大小写、`-`、`.` 和 `_`。编辑后用以下命令验证收集情况：
+
+```powershell
+$env:RUN_MODULE='list'
+python -m pytest api_project/testcases --collect-only -q
+```
+
+同步性能阈值：
 
 ```powershell
 python api_project/all_skills/curl-to-testcase/scripts/sync_performance_thresholds.py
-$env:RUN_MODULE='list'
-python -m pytest api_project/testcases --collect-only -q
-python run_testcases.py
 ```
 
-阈值脚本只补充新增接口，默认阈值为 5 秒；业务 SLA 应在 `api_project/config/performance_thresholds.json` 中复核后调整。
+---
 
-## 执行与报告
+## 🎯 按范围执行
 
 全量运行：
 
@@ -103,41 +211,61 @@ python run_testcases.py
 python run_testcases.py
 ```
 
-按模块或预设筛选（可逗号分隔）：
+按模块或 Allure 预设运行（多个用逗号分隔）：
 
 ```powershell
 $env:RUN_MODULE='查询模块,jqb_api_mchqrcodes_api'
 python run_testcases.py
 ```
 
-入口会依次运行 pytest、生成/压缩 Allure 报告、清理旧报告、记录历史趋势，并按 `.env` 配置通知。pytest-html-plus 结果位于 `api_project/report/`；历史趋势数据位于 `api_project/history/`。报告后置处理失败会让进程以非零状态退出，便于 CI 识别。
+查看可用模块与预设：
 
-## 定时调度
-
-任务定义在 `api_project/config/scheduler_jobs.json`，每个任务必须显式设置 `enabled: true` 才会注册。默认总开关也是关闭的：
-
-```ini
-SCHEDULER_ENABLED=true
+```powershell
+$env:RUN_MODULE='list'
+python -m pytest api_project/testcases --collect-only -q
 ```
 
-先预览再启动：
+---
+
+## 📊 报告、性能与归档
+
+| 内容 | 位置 / 命令 |
+| --- | --- |
+| pytest-html-plus 报告 | `api_project/report/` |
+| Allure 原始结果 | `api_project/data/` |
+| 历史趋势与汇总 | `api_project/history/` |
+| 性能阈值 | `api_project/config/performance_thresholds.json` |
+| 预览报告归档 | `python api_project/config/archive_reports.py --dry-run` |
+| 执行报告归档 | `python api_project/config/archive_reports.py` |
+
+---
+
+## ⏰ 定时回归
+
+编辑 `api_project/config/scheduler_jobs.json`：任务需要同时满足 `enabled: true` 和 `.env` 中 `SCHEDULER_ENABLED=true` 才会执行。
+
+先预览任务：
 
 ```powershell
 python run_scheduler.py --dry-run
+```
+
+再启动：
+
+```powershell
 python run_scheduler.py
 ```
 
-`--force` 只忽略总开关，不会启用 JSON 中已关闭的任务。可在任务的 `env` 中设置 `RUN_MODULE` 和 `TEST_EXECUTOR`。
+可在每个任务的 `env` 中指定 `RUN_MODULE` 和 `TEST_EXECUTOR`，让冒烟与全量回归使用不同范围。
 
-## 维护边界
+---
 
-| 目标 | 修改位置 |
+## 🤖 本仓库内置 Skills
+
+| Skill | 适用场景 |
 | --- | --- |
-| 接口请求和断言 | `api_project/case_data_files/*.json` |
-| Allure 分组与标签 | `api_project/common/allure_decorator.py` |
-| 性能阈值 | `api_project/config/performance_thresholds.json` |
-| 报告与通知 | `api_project/.env`、`api_project/common/report_manager.py` |
-| 定时任务 | `api_project/config/scheduler_jobs.json` |
-| 报告归档 | `python api_project/config/archive_reports.py --dry-run` |
+| [`curl-to-testcase`](api_project/all_skills/curl-to-testcase/SKILL.md) | cURL 一键转 JSON 用例、映射和性能阈值 |
+| [`allure-api-analyzer`](api_project/all_skills/allure-api-analyzer/SKILL.md) | 新 JSON 未被收集、需要整理报告分组时 |
+| [`api-doc-generator`](api_project/all_skills/api-doc-generator/SKILL.md) | 生成或增量维护单页 HTML 接口文档 |
 
-本项目的 AI 操作说明在 [api_project/all_skills/README.md](api_project/all_skills/README.md)，其中的三个 Skill 分别用于 cURL 转用例、Allure 映射和接口文档生成。
+详细的协作边界与维护顺序见 [`api_project/all_skills/README.md`](api_project/all_skills/README.md)。
