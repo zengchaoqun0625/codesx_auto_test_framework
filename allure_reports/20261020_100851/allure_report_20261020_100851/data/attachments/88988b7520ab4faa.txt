@@ -1,5 +1,0 @@
-WARNING  api_project.common.api_request:api_request.py:164 ⚠️ 无可用Token
-INFO     api_project.common.api_request:api_request.py:241 📤 发送请求: GET https://mg.6jqb.com/api/terminal
-INFO     api_project.common.api_request:api_request.py:250 📥 响应状态码: 200，耗时: 0.104s
-INFO     api_project.common.api_assertions:api_assertions.py:28 ✅ 状态码断言通过: 预期200，实际200
-INFO     api_project.testcases.conftest:conftest.py:372 ℹ️ 测试函数结束，关闭API请求Session

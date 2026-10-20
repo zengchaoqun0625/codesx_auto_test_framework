@@ -85,3 +85,23 @@ config.local.yaml
 *.swp
 Thumbs.db
 desktop.ini
+
+# ====================
+# 运行产物：保留目录结构，但不提交其中的数据
+# ====================
+/log/*
+!/log/.gitkeep
+/api_project/log/*
+!/api_project/log/.gitkeep
+/report_output/*
+!/report_output/.gitkeep
+/reports/*
+!/reports/.gitkeep
+/api_document/*
+!/api_document/.gitkeep
+/allure-results/*
+!/allure-results/.gitkeep
+/allure_reports/*
+!/allure_reports/.gitkeep
+/api_project/case_data_files/*
+!/api_project/case_data_files/.gitkeep

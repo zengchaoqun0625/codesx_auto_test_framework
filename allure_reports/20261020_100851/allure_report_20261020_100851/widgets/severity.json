@@ -1,1 +1,0 @@
-[{"uid":"612824d3ba0843ce","name":"#1商户二维码查询接口测试'api_mchQrCodes.json","time":{"start":1792462116975,"stop":1792462117108,"duration":133},"status":"passed","severity":"normal"},{"uid":"eb730be81e394b9b","name":"#1终端查询接口测试'api_terminal.json","time":{"start":1792462117127,"stop":1792462117241,"duration":114},"status":"passed","severity":"normal"}]

@@ -1,7 +1,0 @@
-
-【请求】GET https://mg.6jqb.com/api/terminal
-参数: "mchNo=M1776310846&terDeviceType=decca"
-请求头: {"Accept": "application/json, text/plain, */*", "Accept-Language": "zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7", "Cache-Control": "no-cache", "Connection": "keep-alive", "Pragma": "no-cache", "Referer": "https", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-origin", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36", "iToken": "***", "sec-ch-ua": "\"Google Chrome\";v=\"155\", \"Chromium\";v=\"155\", \"Not(A", "sec-ch-ua-mobile": "?0", "sec-ch-ua-platform": "\"Windows\""}
-【响应】状态码: 200
-响应体: {"msg": "SUCCESS", "fail": false, "code": 0, "data": [{"refundPwd": 0, "entryPage": "聚支付H5", "extString": "{\"mchElectronicFenceConfig\":\"0\",\"defaultFlag\":0,\"tradeUserLimitFlag\":1,\"entryPage\":\"聚支付H5\",\"electronicFencesState\":0,\"qrcType\":\"\"}", "isActive": 1, "terNo": "106762001", "mchElectronicFenceConfig": "0", "appId": "69e05b7de4b0c0d474e5886b", "machineNo": "", "storeName": "[总店]东莞铁锅炖饺子馆99", "electronicFencesState": 0, "terName": "11112345", "mchNo": "M1776310846", "machineType
-✅ test_case_1 - api_terminal接口测试 执行成功
