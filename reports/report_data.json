@@ -1,0 +1,40 @@
+{
+  "title": "Test Report",
+  "timestamp": "2026-10-20 10:08:37",
+  "duration": 0.37092089653015137,
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26100-SP0"
+  },
+  "results": [
+    {
+      "name": "test_api[api_mchQrCodes/test_case_1]",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_mchQrCodes/test_case_1]",
+      "suite": "test_api",
+      "outcome": "passed",
+      "duration": 0.1327105000091251,
+      "start_time": 1792462116.8951828,
+      "description": "统一参数化测试入口\n\n    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。\n    默认 logic=\"query\"，执行标准请求 + 断言 200。",
+      "markers": [],
+      "error_message": "",
+      "error_traceback": "",
+      "stdout": "",
+      "properties": {}
+    },
+    {
+      "name": "test_api[api_terminal/test_case_1]",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_terminal/test_case_1]",
+      "suite": "test_api",
+      "outcome": "passed",
+      "duration": 0.11387939998530783,
+      "start_time": 1792462116.8951828,
+      "description": "统一参数化测试入口\n\n    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。\n    默认 logic=\"query\"，执行标准请求 + 断言 200。",
+      "markers": [],
+      "error_message": "",
+      "error_traceback": "",
+      "stdout": "",
+      "properties": {}
+    }
+  ],
+  "extra": {}
+}

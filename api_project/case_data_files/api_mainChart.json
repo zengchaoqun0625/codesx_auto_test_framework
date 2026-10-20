@@ -1,0 +1,30 @@
+{
+    "test_cases": {
+        "test_case_1": {
+            "description": "api_mainChart接口测试",
+            "request_type": "default",
+            "logic": "query",
+            "data": {
+                "url": "/api/mainChart",
+                "method": "GET",
+                "headers": {
+                    "Host": "mc.6jqb.com",
+                    "Connection": "keep-alive",
+                    "sec-ch-ua-platform": "\"Windows\"",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+                    "Accept": "application/json, text/plain, */*",
+                    "iToken": "${API_ITOKEN}",
+                    "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Dest": "empty",
+                    "Referer": "https",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                    "Accept-Language": "zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7",
+                    "Cookie": "${API_COOKIE}"
+                }
+            }
+        }
+    }
+}

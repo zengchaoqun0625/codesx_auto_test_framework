@@ -1,0 +1,112 @@
+# ============================================================
+# GitHub Actions — API 自动化测试 CI 模板
+#
+# 使用方式：
+#   1. 将本文件放到 .github/workflows/ 目录
+#   2. 在仓库 Settings → Secrets and variables → Actions 中配置敏感环境变量
+#      （与 api_project/.env 中的键一一对应，如 SMTP_PASSWORD、FEISHU_TOKEN 等）
+#   3. 推送触发：默认在 push 到 main/master 及手动触发时运行
+#
+# 产物：Allure 报告（html 报告目录）会上传到 Actions Artifact，可下载查看
+# ============================================================
+name: API Auto Test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:        # 支持手动触发
+  schedule:
+    - cron: '0 2 * * *'     # 每天凌晨 2 点（UTC）定时跑
+
+jobs:
+  api-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          # CI 环境无需 GUI，可选择性安装 headless 相关包
+          pip install pytest-rerunfailures pytest-xdist
+
+      # 敏感配置通过 GitHub Secrets 注入（比硬编码进代码更安全）
+      - name: Prepare environment
+        env:
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          FEISHU_TOKEN: ${{ secrets.FEISHU_TOKEN }}
+          DINGDING_TOKEN: ${{ secrets.DINGDING_TOKEN }}
+          DINGDING_SECRET: ${{ secrets.DINGDING_SECRET }}
+          WEIXIN_TOKEN: ${{ secrets.WEIXIN_TOKEN }}
+          EMERGENCY_CONTACT: ${{ secrets.EMERGENCY_CONTACT }}
+          EMERGENCY_PHONE: ${{ secrets.EMERGENCY_PHONE }}
+          PHONE_CALL_WEBHOOK: ${{ secrets.PHONE_CALL_WEBHOOK }}
+        run: |
+          # 将 Secrets 写入 api_project/.env（框架通过 ENV.load() 读取）
+          cat > api_project/.env <<EOF
+          SEND_EMAIL=only_failed
+          SMTP_USERNAME=${SMTP_USERNAME}
+          SMTP_PASSWORD=${SMTP_PASSWORD}
+          FEISHU_TOKEN=${FEISHU_TOKEN}
+          DINGDING_TOKEN=${DINGDING_TOKEN}
+          DINGDING_SECRET=${DINGDING_SECRET}
+          WEIXIN_TOKEN=${WEIXIN_TOKEN}
+          EMERGENCY_CONTACT=${EMERGENCY_CONTACT}
+          EMERGENCY_PHONE=${EMERGENCY_PHONE}
+          PHONE_CALL_WEBHOOK=${PHONE_CALL_WEBHOOK}
+          EOF
+
+      - name: Run tests
+        run: |
+          python run_testcases.py
+        env:
+          TEST_EXECUTOR: CI-${{ github.run_number }}
+          # 失败重试 2 次（网络抖动容错）
+          PYTEST_ADDOPTS: "--reruns 2 --reruns-delay 1"
+
+      - name: Upload Allure report (Artifact)
+        if: always()          # 即使失败也上传报告
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ github.run_number }}
+          path: |
+            api_project/data/
+            api_project/history/
+          retention-days: 7
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report-${{ github.run_number }}
+          path: |
+            api_project/report/report.html
+          retention-days: 7
+
+  # 可选：GitHub Pages 发布 Allure 报告（打开仓库 Settings → Pages 开启后可用）
+  # publish-report:
+  #   needs: api-test
+  #   if: always() && github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download reports
+  #       uses: actions/download-artifact@v4
+  #       with: { name: allure-report, path: reports }
+  #     - name: Deploy to Pages
+  #       uses: peaceiris/actions-gh-pages@v4
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         publish_dir: reports
+  #         publish_branch: gh-pages

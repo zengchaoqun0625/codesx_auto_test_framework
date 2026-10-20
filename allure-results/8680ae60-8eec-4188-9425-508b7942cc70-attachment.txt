@@ -1,0 +1,7 @@
+INFO     api_project.common.api_request:api_request.py:92 ✅ 已从环境变量 API_ITOKEN 加载默认鉴权 token
+INFO     api_project.common.host_config:host_config.py:110 ✅ 从host_config.py加载主机地址（CURRENT_HOST）: https://mg.6jqb.com
+INFO     api_project.common.api_request:api_request.py:230 ℹ️ 已剥离用例数据中的 token 请求头，改用 user_variable.py 配置的 token
+INFO     api_project.common.api_request:api_request.py:167 ℹ️ 请求头已添加 iToken
+INFO     api_project.common.api_request:api_request.py:246 📤 发送请求: GET https://mg.6jqb.com/api/mchQrCodes
+INFO     api_project.common.api_request:api_request.py:255 📥 响应状态码: 200，耗时: 0.119s
+INFO     api_project.common.api_assertions:api_assertions.py:28 ✅ 状态码断言通过: 预期200，实际200

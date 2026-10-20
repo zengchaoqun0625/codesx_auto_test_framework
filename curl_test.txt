@@ -1,0 +1,34 @@
+curl --url 'https://mg.6jqb.com/api/mchQrCodes?pageNumber=1&pageSize=10&queryType=&qrcId=260921010001&queryDateRange=today' \
+  -H 'Accept: application/json, text/plain, */*' \
+  -H 'Accept-Language: zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Connection: keep-alive' \
+  -b '__51vcke__LBewJUPzRPz2qIBS=0f7100c7-066f-59b8-9d58-33d48ee44756; __51vuft__LBewJUPzRPz2qIBS=1785295297403; __vtins__LBewJUPzRPz2qIBS=%7B%22sid%22%3A%20%22567e87be-988e-5818-86d8-9ebc644d82a9%22%2C%20%22vd%22%3A%201%2C%20%22stt%22%3A%200%2C%20%22dr%22%3A%200%2C%20%22expires%22%3A%201792418300093%2C%20%22ct%22%3A%201792416500093%7D; __51uvsct__LBewJUPzRPz2qIBS=830' \
+  -H 'Pragma: no-cache' \
+  -H 'Referer: https://mg.6jqb.com/qrc' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36' \
+  -H 'iToken: eyJhbGciOiJIUzUxMiJ9.eyJjYWNoZUtleSI6IlRPS0VOXzEwMDkxNV9mNjRiNzFhNi0yMmUyLTQ3ZDctOTAwYy1mMTBhZDgxNmQ3NzAiLCJhcHBMb2dpbiI6ZmFsc2UsImxvZ2luVHlwZSI6bnVsbCwiY3JlYXRlZCI6MTc5MjQ1NjQyODc3MCwic3lzVXNlcklkIjoxMDA5MTV9.pcw7xB8eVxijkbzKX4qsFGXRLcEULAJGy_R9JO-vLZGC-AZSildq9FxCTNATvBf_s4YPlIqO4NLwKC2iN4zFew' \
+  -H 'sec-ch-ua: "Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"'
+
+
+curl --url 'https://mg.6jqb.com/api/terminal?mchNo=M1776310846&terDeviceType=decca' \
+  -H 'Accept: application/json, text/plain, */*' \
+  -H 'Accept-Language: zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Connection: keep-alive' \
+  -b '__51vcke__LBewJUPzRPz2qIBS=0f7100c7-066f-59b8-9d58-33d48ee44756; __51vuft__LBewJUPzRPz2qIBS=1785295297403; __vtins__LBewJUPzRPz2qIBS=%7B%22sid%22%3A%20%22567e87be-988e-5818-86d8-9ebc644d82a9%22%2C%20%22vd%22%3A%201%2C%20%22stt%22%3A%200%2C%20%22dr%22%3A%200%2C%20%22expires%22%3A%201792418300093%2C%20%22ct%22%3A%201792416500093%7D; __51uvsct__LBewJUPzRPz2qIBS=830' \
+  -H 'Pragma: no-cache' \
+  -H 'Referer: https://mg.6jqb.com/getAllMerchant' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36' \
+  -H 'iToken: eyJhbGciOiJIUzUxMiJ9.eyJjYWNoZUtleSI6IlRPS0VOXzEwMDkxNV9mNjRiNzFhNi0yMmUyLTQ3ZDctOTAwYy1mMTBhZDgxNmQ3NzAiLCJhcHBMb2dpbiI6ZmFsc2UsImxvZ2luVHlwZSI6bnVsbCwiY3JlYXRlZCI6MTc5MjQ1NjQyODc3MCwic3lzVXNlcklkIjoxMDA5MTV9.pcw7xB8eVxijkbzKX4qsFGXRLcEULAJGy_R9JO-vLZGC-AZSildq9FxCTNATvBf_s4YPlIqO4NLwKC2iN4zFew' \
+  -H 'sec-ch-ua: "Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"'

@@ -1,0 +1,87 @@
+# ====================
+# Python 缓存文件
+# ====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+*.pyo
+*.pyd
+
+
+# ====================
+# 虚拟环境
+# ====================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+pythonenv*
+
+#本地缓存
+.workbuddy
+
+# ====================
+# IDE 和编辑器
+# ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+
+# ====================
+# 测试和覆盖率
+# ====================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+*.cover
+coverage.xml
+
+
+# ====================
+# Jupyter Notebook
+# ====================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ====================
+# 日志和数据库
+# ====================
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+# ====================
+# 敏感信息
+# ====================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+secrets.yaml
+config.local.yaml
+
+# ====================
+# 其他常见文件
+# ====================
+*.tmp
+*.temp
+*.bak
+*.swp
+Thumbs.db
+desktop.ini

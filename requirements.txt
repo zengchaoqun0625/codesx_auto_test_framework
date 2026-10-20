@@ -1,0 +1,51 @@
+# ================= 核心框架 =================
+# 版本已锁定（==），保证环境可复现；升级时手动改版本号并验证
+pytest==9.1.1
+pytest-html-plus==1.2.0
+pytest-metadata==3.1.1
+pytest-xdist==3.8.0
+pytest-rerunfailures==16.5
+pytest-ordering==0.6
+pytest-sugar==1.1.1
+
+# ================= 报告与 Allure =================
+allure-pytest==2.16.0
+allure-python-commons==2.16.0
+
+# ================= 网络与工具 =================
+requests==2.34.2
+urllib3==2.7.0
+python-dotenv==1.2.2
+# jsonpath（老包）：代码使用 `from jsonpath import jsonpath` 函数式 API；
+# 注意不要换成 jsonpath-python，其 API 不同（jsonpath.extract），会导致 ImportError/TypeError
+jsonpath==0.82.2
+lxml==6.1.1
+openpyxl==3.1.5
+xlrd==2.0.2
+pymysql==1.2.0
+requests_toolbelt==1.0.0
+jira==3.10.5
+prance==26.7.19.0
+
+# ================= cURL 转换工具 =================
+# convert_json.py 必需：pip 包名 xiaobaisaf，代码里 import 名是 saf
+# 安装方式二选一：
+#   pip install -U xiaobaisaf            （基础）
+#   pip install xiaobaisaf[xiaobaiauto2] （含 xiaobaiauto2Api 命令行工具）
+xiaobaisaf==3.3.2
+
+# ================= 报告上传（可选） =================
+# conftest.py 的 TmpFileUploadService 用，把报告上传到 tmpfile.link 获取公网临时链接
+# 不装不影响主流程，用到上传功能时会提示 "请先安装 tflink"
+tflink==0.2.1
+
+# ================= 漂亮报告 =================
+# 注意：安装后需额外执行 pip install "litereport[pytest]" 以启用 pytest 插件
+litereport==1.0.3
+flask==3.1.3
+flask-socketio==5.6.1
+eventlet==0.41.1
+
+# ================= 定时调度 =================
+# run_scheduler.py 定时执行测试用（APScheduler 3.x，4.x 为重构版 API 不同，故锁定 <4）
+apscheduler==3.11.3

@@ -1,0 +1,66 @@
+{
+  "filters": {
+    "untracked": 2,
+    "total": 2,
+    "passed": 2,
+    "marker_counts": {}
+  },
+  "results": [
+    {
+      "test": "test_request_metadata_does_not_keep_sensitive_headers",
+      "nodeid": "api_project/testcases/test_framework_core.py::test_request_metadata_does_not_keep_sensitive_headers",
+      "status": "passed",
+      "duration": 0.09995899998466484,
+      "trace": null,
+      "error": null,
+      "markers": [],
+      "file": "api_project\\testcases\\test_framework_core.py",
+      "line": 44,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T01:48:13.285200Z",
+      "screenshot": "screenshots",
+      "logs": "\u2705 \u4eceuser_variable.py\u52a0\u8f7d\u9759\u6001Token\u6210\u529f\uff08\u53d8\u91cf\u540d: iToken\uff09\n\u26a0\ufe0f \u65e0\u53ef\u7528Token\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://example.test/health\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.001s",
+      "worker": "gw1",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.09995899998466484,
+          "timestamp": "2026-10-20T01:48:13.285200Z"
+        }
+      ],
+      "attempt_count": 0
+    },
+    {
+      "test": "test_report_upload_is_opt_in",
+      "nodeid": "api_project/testcases/test_framework_core.py::test_report_upload_is_opt_in",
+      "status": "passed",
+      "duration": 0.00027820002287626266,
+      "trace": null,
+      "error": null,
+      "markers": [],
+      "file": "api_project\\testcases\\test_framework_core.py",
+      "line": 72,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T01:48:13.289698Z",
+      "screenshot": "screenshots",
+      "logs": [],
+      "worker": "gw1",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.00027820002287626266,
+          "timestamp": "2026-10-20T01:48:13.289698Z"
+        }
+      ],
+      "attempt_count": 0
+    }
+  ]
+}

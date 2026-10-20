@@ -1,0 +1,1 @@
+如果本地未安装 allure 或打开失败，把allure压缩文件解压到当前文件夹并双击allure_open.bat即可正常查看

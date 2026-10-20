@@ -1,0 +1,84 @@
+{
+  "filters": {
+    "untracked": 2,
+    "total": 2,
+    "passed": 2,
+    "marker_counts": {
+      "parametrize": 2
+    }
+  },
+  "results": [
+    {
+      "test": "test_api_api_mchQrCodes_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_mchQrCodes/test_case_1]",
+      "status": "passed",
+      "duration": 0.1327105000091251,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 404,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T02:08:37.107952Z",
+      "screenshot": "screenshots",
+      "logs": "\u26a0\ufe0f \u65e0\u53ef\u7528Token\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/mchQrCodes\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.122s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.1327105000091251,
+          "timestamp": "2026-10-20T02:08:37.107952Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_terminal_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_terminal/test_case_1]",
+      "status": "passed",
+      "duration": 0.11387939998530783,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 404,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T02:08:37.240860Z",
+      "screenshot": "screenshots",
+      "logs": "\u26a0\ufe0f \u65e0\u53ef\u7528Token\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/terminal\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.104s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.11387939998530783,
+          "timestamp": "2026-10-20T02:08:37.240860Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    }
+  ]
+}

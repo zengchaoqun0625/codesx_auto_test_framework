@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自动化测试趋势报告</title>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1524;
+    --grad-1: rgba(99,102,241,.18);
+    --grad-2: rgba(56,189,248,.14);
+    --card-bg: #1a2234;
+    --card-border: rgba(255,255,255,.06);
+    --text: #e6eaf3;
+    --text-sub: #8b95ab;
+    --panel-shadow: 0 8px 28px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.25);
+    --th-bg: #222c44;
+    --td-border: #26304a;
+    --row-hover: #222c44;
+    --ok: #34d399;
+    --fail: #f87171;
+    --radius: 16px;
+    --chart-tick: #8b95ab;
+    --chart-grid: rgba(128,140,170,.14);
+    --chart-tooltip-bg: rgba(15,21,36,.94);
+    --chart-tooltip-title: #e6eaf3;
+    --chart-tooltip-body: #c3cbe0;
+  }
+  [data-theme="light"] {
+    --bg: #f4f6fb;
+    --grad-1: rgba(99,102,241,.10);
+    --grad-2: rgba(56,189,248,.10);
+    --card-bg: #ffffff;
+    --card-border: rgba(255,255,255,.8);
+    --text: #1f2430;
+    --text-sub: #7c8497;
+    --panel-shadow: 0 8px 28px rgba(30,41,82,.08), 0 2px 8px rgba(30,41,82,.04);
+    --th-bg: #f6f8fd;
+    --td-border: #eef1f8;
+    --row-hover: #f6f8fd;
+    --ok: #16a34a;
+    --fail: #dc2626;
+    --chart-tick: #6b7490;
+    --chart-grid: rgba(107,116,144,.16);
+    --chart-tooltip-bg: rgba(255,255,255,.97);
+    --chart-tooltip-title: #1f2430;
+    --chart-tooltip-body: #4a5270;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Microsoft YaHei', -apple-system, sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(620px 300px at 6% -6%, var(--grad-1), transparent 70%),
+      radial-gradient(720px 340px at 96% 2%, var(--grad-2), transparent 70%);
+    background-attachment: fixed;
+    color: var(--text);
+    margin: 0; padding: 28px 20px 40px;
+    -webkit-font-smoothing: antialiased;
+    position: relative; overflow-x: hidden;
+    transition: background-color .4s ease, color .4s ease;
+  }
+  #bgParticles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .container { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+  h1 { margin: 0; font-size: 24px; letter-spacing: .5px; }
+  .subtitle { margin: 8px 0 0; color: var(--text-sub); font-size: 13px; }
+  .badge {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff;
+    font-size: 12px; padding: 6px 14px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(99,102,241,.35);
+  }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 860px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  /* 手机端：仅压缩展示密度，保留图表、数据字段和桌面端布局逻辑。 */
+  @media (max-width: 640px) {
+    body { padding: 18px 12px 30px; }
+    header { align-items: flex-start; margin-bottom: 18px; }
+    h1 { font-size: 21px; line-height: 1.35; }
+    .subtitle { font-size: 12px; line-height: 1.65; }
+    .badge { padding: 5px 11px; }
+    .cards { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .card { padding: 14px 15px; }
+    .card .num { font-size: 25px; margin-top: 7px; }
+    .card .label, .delta { font-size: 11px; }
+    .panel { padding: 16px 14px; margin-bottom: 14px; }
+    .panel-head { align-items: flex-start; margin-bottom: 12px; }
+    .panel-head h3 { font-size: 14px; line-height: 1.5; }
+    .legend-hint { line-height: 1.6; }
+    #trendChart { min-height: 190px; }
+    .table-wrap { margin: 0 -2px; -webkit-overflow-scrolling: touch; }
+    table { min-width: 720px; font-size: 12px; }
+    th, td { padding: 9px 10px; }
+    .theme-toggle { top: 12px; right: 12px; width: 38px; height: 38px; }
+  }
+  @media (max-width: 420px) { .cards { grid-template-columns: 1fr; } .badge { font-size: 11px; } }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: var(--radius); padding: 18px 20px;
+    box-shadow: var(--panel-shadow);
+    position: relative; overflow: hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(30,41,82,.12); }
+  .card::after { content: ''; position: absolute; right: -32px; top: -32px; width: 96px; height: 96px; border-radius: 50%; opacity: .6; }
+  .card.c1::after { background: radial-gradient(circle, rgba(79,156,247,.22), transparent 70%); }
+  .card.c2::after { background: radial-gradient(circle, rgba(22,163,74,.20), transparent 70%); }
+  .card.c3::after { background: radial-gradient(circle, rgba(245,158,11,.22), transparent 70%); }
+  .card.c4::after { background: radial-gradient(circle, rgba(239,68,68,.20), transparent 70%); }
+  .card .icon { font-size: 20px; }
+  .card .num { font-size: 30px; font-weight: 800; line-height: 1.15; margin-top: 10px; letter-spacing: .5px; font-variant-numeric: tabular-nums; }
+  .card.c1 .num { color: #3b82f6; }
+  .card.c2 .num { color: #16a34a; }
+  .card.c3 .num { color: #d97706; }
+  .card.c4 .num { color: #dc2626; }
+  .card .label { color: var(--text-sub); font-size: 13px; margin-top: 6px; }
+  .delta { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin-top: 10px; padding: 2px 9px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+  .delta.up { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+  .delta.down { color: var(--fail); background: color-mix(in srgb, var(--fail) 12%, transparent); }
+  .delta.flat { color: var(--text-sub); background: color-mix(in srgb, var(--text-sub) 12%, transparent); }
+  .panel {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: var(--radius); padding: 22px 24px;
+    box-shadow: var(--panel-shadow); margin-bottom: 20px;
+  }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .panel-head h3 { margin: 0; font-size: 16px; }
+  .legend-hint { color: var(--text-sub); font-size: 12px; }
+  .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: middle; }
+  .table-wrap { overflow-x: auto; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    background: var(--th-bg); color: var(--text-sub); font-weight: 600;
+    padding: 11px 12px; white-space: nowrap;
+  }
+  th, td { padding: 10px 12px; text-align: center; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--td-border); transition: background .15s; }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr:last-child { border-bottom: none; }
+  .pass-badge { display: inline-flex; align-items: center; gap: 7px; min-width: 92px; }
+  .pass-bar { flex: 1; height: 6px; border-radius: 999px; background: var(--td-border); overflow: hidden; }
+  .pass-bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #22c55e, #4ade80); }
+  .rate-txt { font-variant-numeric: tabular-nums; }
+  .badge-fail, .badge-ok { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; min-width: 30px; }
+  .badge-fail { color: var(--fail); background: color-mix(in srgb, var(--fail) 12%, transparent); }
+  .badge-ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+  footer { text-align: center; color: var(--text-sub); font-size: 12px; margin-top: 6px; }
+  .theme-toggle {
+    position: fixed; top: 18px; right: 18px; z-index: 60; width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text);
+    font-size: 18px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--panel-shadow); backdrop-filter: blur(8px); transition: transform .2s, box-shadow .2s;
+  }
+  .theme-toggle:hover { transform: scale(1.1); }
+  [data-theme="light"] .card:hover { box-shadow: 0 12px 30px rgba(30,41,82,.12); }
+</style>
+</head>
+<body>
+<canvas id="bgParticles"></canvas>
+<button class="theme-toggle" id="themeToggle" title="切换浅色/深色">🌙</button>
+<div class="container">
+  <header>
+    <div>
+      <h1>📈 自动化测试趋势报告</h1>
+      <p class="subtitle">基于历史执行记录自动生成 · 生成时间 <span id="genTime">—</span></p>
+    </div>
+    <span class="badge">最近 19 次执行</span>
+  </header>
+
+  <div class="cards">
+    <div class="card c1">
+      <div class="icon">🗓️</div>
+      <div class="num">19</div>
+      <div class="label">统计次数</div>
+      <span class="delta flat" id="dRuns">持续积累中</span>
+    </div>
+    <div class="card c2">
+      <div class="icon">📊</div>
+      <div class="num">24.91%</div>
+      <div class="label">平均通过率</div>
+      <span class="delta flat" id="dAvg">—</span>
+    </div>
+    <div class="card c3">
+      <div class="icon">🏆</div>
+      <div class="num">100.0%</div>
+      <div class="label">历史最高通过率</div>
+      <span class="delta flat" id="dBest">—</span>
+    </div>
+    <div class="card c4">
+      <div class="icon">🧯</div>
+      <div class="num">52</div>
+      <div class="label">累计失败用例</div>
+      <span class="delta flat" id="dFail">—</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>📉 通过率 &amp; 失败数趋势</h3>
+      <span class="legend-hint"><span class="legend-dot" style="background:#4f9cf7"></span>通过率(%)　<span class="legend-dot" style="background:rgba(239,68,68,.6)"></span>失败数</span>
+    </div>
+    <canvas id="trendChart" height="150"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>📋 历史明细（最近 19 次）</h3>
+      <span class="legend-hint">最新在前 · 共 19 条</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>时间</th><th>执行人</th><th>总数</th><th>通过</th><th>失败</th><th>跳过</th><th>通过率</th><th>耗时</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2026-10-20 10:08:52</td><td>曾超群</td><td>2</td><td>2</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.25s</td></tr><tr><td>2026-10-20 10:08:15</td><td>曾超群</td><td>15</td><td>11</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:73.33%'></i></span><span class='rate-txt'>73.33%</span></span></td><td>0.5s</td></tr><tr><td>2026-08-14 22:10:57</td><td>曾超群</td><td>4</td><td>4</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.23s</td></tr><tr><td>2026-08-14 22:10:25</td><td>曾超群</td><td>4</td><td>4</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.19s</td></tr><tr><td>2026-08-14 22:09:43</td><td>曾超群</td><td>4</td><td>4</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.28s</td></tr><tr><td>2026-08-14 22:09:12</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.19s</td></tr><tr><td>2026-08-14 22:01:36</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>29.66s</td></tr><tr><td>2026-08-14 21:59:49</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>30.02s</td></tr><tr><td>2026-08-14 21:55:52</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>30.3s</td></tr><tr><td>2026-08-12 20:48:16</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>30.11s</td></tr><tr><td>2026-08-12 20:45:49</td><td>曾超群</td><td>1</td><td>0</td><td><span class='badge-ok'>0</span></td><td>1</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.0s</td></tr><tr><td>2026-08-12 20:33:44</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.23s</td></tr><tr><td>2026-08-12 20:32:44</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>29.62s</td></tr><tr><td>2026-08-12 20:30:17</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>29.67s</td></tr><tr><td>2026-08-12 18:11:09</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.24s</td></tr><tr><td>2026-08-12 18:00:48</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.31s</td></tr><tr><td>2026-08-12 17:23:09</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.25s</td></tr><tr><td>2026-08-12 17:15:22</td><td>曾超群</td><td>4</td><td>0</td><td><span class='badge-fail'>4</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.42s</td></tr><tr><td>2026-08-12 17:13:35</td><td>曾超群</td><td>1</td><td>0</td><td><span class='badge-ok'>0</span></td><td>1</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>0.0s</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>Generated by api_project/common/report_manager.py · Three.js + Chart.js v4</footer>
+</div>
+<script>
+
+function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function curTheme(){ return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'; }
+let savedTheme = localStorage.getItem('trend_theme');
+if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) savedTheme = 'light';
+if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+const themeBtn = document.getElementById('themeToggle');
+function syncThemeBtn(){
+  themeBtn.textContent = curTheme() === 'light' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+  themeBtn.title = curTheme() === 'light' ? '切换到深色模式' : '切换到浅色模式';
+}
+function applyChartTheme(){
+  const ch = window.__trendChart;
+  if (!ch) return;
+  const tick = cssVar('--chart-tick'), grid = cssVar('--chart-grid');
+  ch.options.plugins.tooltip.backgroundColor = cssVar('--chart-tooltip-bg');
+  ch.options.plugins.tooltip.titleColor = cssVar('--chart-tooltip-title');
+  ch.options.plugins.tooltip.bodyColor = cssVar('--chart-tooltip-body');
+  ch.options.plugins.legend.labels.color = tick;
+  ch.options.scales.y.ticks.color = tick;
+  ch.options.scales.y.title.color = tick;
+  ch.options.scales.y1.ticks.color = tick;
+  ch.options.scales.y1.title.color = tick;
+  ch.options.scales.x.ticks.color = tick;
+  ch.options.scales.y.grid.color = grid;
+  ch.update();
+}
+themeBtn.addEventListener('click', function(){
+  const next = curTheme() === 'light' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('trend_theme', next);
+  syncThemeBtn();
+  applyChartTheme();
+  if (window.__applyBgTheme) window.__applyBgTheme();
+});
+syncThemeBtn();
+
+
+(function(){
+  const canvas = document.getElementById('bgParticles');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 100);
+  camera.position.z = 30;
+  const renderer = new THREE.WebGLRenderer({canvas:canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  function resize(){ renderer.setSize(innerWidth, innerHeight, false); }
+  resize();
+  const COUNT = 520, boxW = 48, boxH = 30, boxD = 20;
+  const pos = new Float32Array(COUNT*3), seed = new Float32Array(COUNT);
+  for (let i=0;i<COUNT;i++){
+    pos[i*3]   = (Math.random()-0.5)*boxW;
+    pos[i*3+1] = (Math.random()-0.5)*boxH;
+    pos[i*3+2] = (Math.random()-0.5)*boxD;
+    seed[i] = 0.002 + Math.random()*0.004;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const mat = new THREE.PointsMaterial({
+    size:0.12, transparent:true, opacity:0.55, depthWrite:false,
+    color:0x7da2ff, blending:THREE.AdditiveBlending
+  });
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+  function applyBgTheme(){
+    const light = curTheme() === 'light';
+    if (light){ mat.color.set(0x6b7fc0); mat.opacity = 0.30; mat.blending = THREE.NormalBlending; }
+    else { mat.color.set(0x7da2ff); mat.opacity = 0.55; mat.blending = THREE.AdditiveBlending; }
+    mat.needsUpdate = true;
+  }
+  window.__applyBgTheme = applyBgTheme;
+  let mx=0, my=0, cmx=0, cmy=0;
+  window.addEventListener('mousemove', function(e){
+    mx = (e.clientX/innerWidth - 0.5)*2;
+    my = (e.clientY/innerHeight - 0.5)*2;
+  });
+  function animate(){
+    requestAnimationFrame(animate);
+    cmx += (mx-cmx)*0.04; cmy += (my-cmy)*0.04;
+    camera.position.x = cmx*1.4;
+    camera.position.y = -cmy*0.9;
+    camera.lookAt(0,0,0);
+    const p = geo.attributes.position.array;
+    for (let i=0;i<COUNT;i++){
+      p[i*3+1] += seed[i];
+      if (p[i*3+1] > boxH/2) p[i*3+1] = -boxH/2;
+    }
+    geo.attributes.position.needsUpdate = true;
+    points.rotation.y = performance.now()*0.00005;
+    renderer.render(scene, camera);
+  }
+  applyBgTheme();
+  animate();
+  window.addEventListener('resize', resize);
+})();
+
+const labels = ["2026-08-12 17:13:35", "2026-08-12 17:15:22", "2026-08-12 17:23:09", "2026-08-12 18:00:48", "2026-08-12 18:11:09", "2026-08-12 20:30:17", "2026-08-12 20:32:44", "2026-08-12 20:33:44", "2026-08-12 20:45:49", "2026-08-12 20:48:16", "2026-08-14 21:55:52", "2026-08-14 21:59:49", "2026-08-14 22:01:36", "2026-08-14 22:09:12", "2026-08-14 22:09:43", "2026-08-14 22:10:25", "2026-08-14 22:10:57", "2026-10-20 10:08:15", "2026-10-20 10:08:52"];
+const passRates = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 100.0, 100.0, 73.33, 100.0];
+const failedList = [0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 0, 0, 4, 0];
+const totals = [1, 4, 4, 4, 4, 4, 4, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 15, 2];
+const passedList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 11, 2];
+const skippedList = [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const durations = [0.0, 0.42, 0.25, 0.31, 0.24, 29.67, 29.62, 0.23, 0.0, 30.11, 30.3, 30.02, 29.66, 0.19, 0.28, 0.19, 0.23, 0.5, 0.25];
+const avgRate = 24.91;
+const bestRate = 100.0;
+const latestRate = 100.0;
+const prevRate = 73.33;
+const latestFail = 0;
+const prevFail = 4;
+
+document.getElementById('genTime').textContent = new Date().toLocaleString('zh-CN', { hour12: false });
+
+function fmtDelta(cur, prev, suffix, invert) {
+  if (prev === null || prev === undefined) return '<span class="delta flat">—</span>';
+  const diff = cur - prev;
+  const arrow = diff > 0 ? '▲' : (diff < 0 ? '▼' : '―');
+  const cls = invert
+    ? (diff > 0 ? 'down' : diff < 0 ? 'up' : 'flat')
+    : (diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat');
+  const txt = diff > 0 ? '+' + diff.toFixed(1) : diff.toFixed(1);
+  return '<span class="delta ' + cls + '">' + arrow + ' ' + txt + (suffix || '') + ' 较上次</span>';
+}
+
+document.getElementById('dAvg').outerHTML = fmtDelta(latestRate, avgRate, '%', false);
+document.getElementById('dBest').outerHTML = (Math.abs(bestRate - latestRate) < 1e-9)
+  ? '<span class="delta up">🏅 已达到历史最佳</span>'
+  : fmtDelta(latestRate, bestRate, '%', false);
+document.getElementById('dFail').outerHTML = fmtDelta(latestFail, prevFail, '', true);
+
+const ctx = document.getElementById('trendChart').getContext('2d');
+const grad = ctx.createLinearGradient(0, 0, 0, 340);
+grad.addColorStop(0, 'rgba(79,156,247,.28)');
+grad.addColorStop(1, 'rgba(79,156,247,.02)');
+
+window.__trendChart = new Chart(ctx, {
+  data: {
+    labels,
+    datasets: [
+      {
+        type: 'line', label: '通过率(%)', data: passRates,
+        borderColor: '#4f9cf7', backgroundColor: grad, fill: true,
+        yAxisID: 'y', tension: .4, borderWidth: 3,
+        pointRadius: 4, pointHoverRadius: 6,
+        pointBackgroundColor: '#fff', pointBorderColor: '#4f9cf7', pointBorderWidth: 2
+      },
+      {
+        type: 'bar', label: '失败数', data: failedList,
+        backgroundColor: 'rgba(239,68,68,.45)', yAxisID: 'y1',
+        borderRadius: 6, borderSkipped: false, maxBarThickness: 34
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      tooltip: {
+        backgroundColor: cssVar('--chart-tooltip-bg'), titleColor: cssVar('--chart-tooltip-title'), bodyColor: cssVar('--chart-tooltip-body'),
+        padding: 12, cornerRadius: 10, displayColors: true,
+        callbacks: {
+          afterBody: function(items) {
+            const i = items[0].dataIndex;
+            return '总数: ' + totals[i] + '  通过: ' + passedList[i] + '  跳过: ' + skippedList[i] + '\n耗时: ' + durations[i] + 's';
+          }
+        }
+      },
+      legend: { labels: { usePointStyle: true, boxWidth: 8, padding: 18, color: cssVar('--chart-tick') } }
+    },
+    scales: {
+      y: {
+        position: 'left', min: 0, max: 100,
+        grid: { color: cssVar('--chart-grid'), drawTicks: false },
+        border: { display: false },
+        ticks: { callback: function(v) { return v + '%'; }, color: cssVar('--chart-tick') },
+        title: { display: true, text: '通过率 %', color: cssVar('--chart-tick') }
+      },
+      y1: {
+        position: 'right', min: 0,
+        grid: { display: false },
+        border: { display: false },
+        ticks: { stepSize: 1, color: cssVar('--chart-tick') },
+        title: { display: true, text: '失败数', color: cssVar('--chart-tick') }
+      },
+      x: { grid: { display: false }, ticks: { maxRotation: 30, color: cssVar('--chart-tick') } }
+    }
+  }
+});
+</script>
+</body>
+</html>

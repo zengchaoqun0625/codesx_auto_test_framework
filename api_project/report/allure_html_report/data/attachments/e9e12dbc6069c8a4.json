@@ -1,0 +1,18 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "current": 1,
+    "total": 0,
+    "hitCount": false,
+    "pages": 0,
+    "optimizeCountSql": true,
+    "size": 10,
+    "records": [],
+    "searchCount": true,
+    "orders": []
+  },
+  "apiResId": "2112365341612679170",
+  "ok": true
+}

@@ -1,0 +1,216 @@
+/* 全局重置与基础样式 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+    margin: 0;
+    padding: 30px 20px;
+    color: #1e2a3a;
+    line-height: 1.5;
+}
+
+/* 报告主容器 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* 头部区域 */
+h1 {
+    background: linear-gradient(120deg, #2c3e50, #1a2632);
+    margin: 0;
+    padding: 30px 30px 25px;
+    color: white;
+    font-weight: 600;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+h1 small {
+    font-size: 0.8rem;
+    font-weight: normal;
+    opacity: 0.8;
+    margin-left: 15px;
+}
+
+h2 {
+    background: #f8fafc;
+    margin: 0;
+    padding: 20px 30px;
+    font-size: 1.6rem;
+    border-bottom: 2px solid #e2e8f0;
+    color: #0f172a;
+}
+
+/* 表格样式 */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.results-table th,
+.results-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+.results-table th {
+    background-color: #1e293b;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.results-table tr {
+    transition: background-color 0.2s;
+}
+
+.results-table tr:hover {
+    background-color: #fef9e3;
+}
+
+/* 通过 / 失败 / 跳过 行标识（第一列带颜色条） */
+.results-table tr.pass > td:first-child {
+    background-color: #dcfce7;
+    border-left: 5px solid #22c55e;
+    font-weight: 600;
+}
+
+.results-table tr.fail > td:first-child {
+    background-color: #fee2e2;
+    border-left: 5px solid #ef4444;
+    font-weight: 600;
+}
+
+.results-table tr.skipped > td:first-child {
+    background-color: #fff3cd;
+    border-left: 5px solid #f59e0b;
+    font-weight: 600;
+}
+
+/* 错误详情区域（pytest-html 生成的 .log 或 .extra） */
+.log-details,
+.extra,
+pre {
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    margin: 10px 0 0;
+    border: 1px solid #e2e8f0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* 报告末尾的 环境 表格（pytest-html 自动生成） */
+.environment-table {
+    width: 100%;
+    background: #f8fafc;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.environment-table th,
+.environment-table td {
+    padding: 10px 18px;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.environment-table th {
+    background: #334155;
+    color: white;
+    width: 30%;
+}
+
+/* 汇总统计区域（pytest-html 的统计卡片） */
+.stats {
+    display: flex;
+    gap: 20px;
+    padding: 20px 30px;
+    background: #f1f5f9;
+    flex-wrap: wrap;
+}
+
+.stats .stat {
+    background: white;
+    border-radius: 16px;
+    padding: 12px 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    flex: 1;
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+    color: #0f172a;
+}
+
+.stat .stat-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #475569;
+}
+
+/* 筛选按钮（如果有） */
+.filter-buttons {
+    padding: 15px 30px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.filter-btn {
+    background: #e2e8f0;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 30px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+/* 响应式：小屏幕时表格横向滚动 */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    .results-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    h1 {
+        font-size: 1.5rem;
+        padding: 20px;
+    }
+    .stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

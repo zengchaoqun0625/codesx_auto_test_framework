@@ -1,0 +1,7 @@
+INFO - ℹ️ 已剥离用例数据中的 token 请求头，改用 user_variable.py 配置的 token
+INFO - ℹ️ 请求头已添加 iToken
+INFO - 📤 发送请求: GET https://mg.6jqb.com/api/terminal
+INFO - 📥 响应状态码: 200，耗时: 0.049s
+INFO - ✅ 状态码断言通过: 预期200，实际200
+2026-10-20 10:16:11 - api_project.testcases.conftest - INFO - ℹ️ 测试函数结束，关闭API请求Session
+INFO - ℹ️ 测试函数结束，关闭API请求Session

@@ -1,0 +1,150 @@
+{
+  "filters": {
+    "untracked": 5,
+    "total": 5,
+    "passed": 5,
+    "marker_counts": {}
+  },
+  "results": [
+    {
+      "test": "test_sanitize_headers_masks_common_credentials_without_mutating_source",
+      "nodeid": "api_project/testcases/test_framework_core.py::test_sanitize_headers_masks_common_credentials_without_mutating_source",
+      "status": "passed",
+      "duration": 0.0006009000062476844,
+      "trace": null,
+      "error": null,
+      "markers": [],
+      "file": "api_project\\testcases\\test_framework_core.py",
+      "line": 17,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T01:48:13.185948Z",
+      "screenshot": "screenshots",
+      "logs": [],
+      "worker": "gw0",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.0006009000062476844,
+          "timestamp": "2026-10-20T01:48:13.185948Z"
+        }
+      ],
+      "attempt_count": 0
+    },
+    {
+      "test": "test_sanitize_headers_handles_missing_or_non_mapping_values",
+      "nodeid": "api_project/testcases/test_framework_core.py::test_sanitize_headers_handles_missing_or_non_mapping_values",
+      "status": "passed",
+      "duration": 0.0004989999870304018,
+      "trace": null,
+      "error": null,
+      "markers": [],
+      "file": "api_project\\testcases\\test_framework_core.py",
+      "line": 36,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T01:48:13.190487Z",
+      "screenshot": "screenshots",
+      "logs": [],
+      "worker": "gw0",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.0004989999870304018,
+          "timestamp": "2026-10-20T01:48:13.190487Z"
+        }
+      ],
+      "attempt_count": 0
+    },
+    {
+      "test": "test_worker_result_round_trip",
+      "nodeid": "api_project/testcases/test_framework_core.py::test_worker_result_round_trip",
+      "status": "passed",
+      "duration": 0.000746000005165115,
+      "trace": null,
+      "error": null,
+      "markers": [],
+      "file": "api_project\\testcases\\test_framework_core.py",
+      "line": 78,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T01:48:13.195689Z",
+      "screenshot": "screenshots",
+      "logs": [],
+      "worker": "gw0",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.000746000005165115,
+          "timestamp": "2026-10-20T01:48:13.195689Z"
+        }
+      ],
+      "attempt_count": 0
+    },
+    {
+      "test": "test_controller_is_not_considered_a_worker_and_ignores_bad_payloads",
+      "nodeid": "api_project/testcases/test_framework_core.py::test_controller_is_not_considered_a_worker_and_ignores_bad_payloads",
+      "status": "passed",
+      "duration": 0.0002589000214356929,
+      "trace": null,
+      "error": null,
+      "markers": [],
+      "file": "api_project\\testcases\\test_framework_core.py",
+      "line": 89,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T01:48:13.199896Z",
+      "screenshot": "screenshots",
+      "logs": [],
+      "worker": "gw0",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.0002589000214356929,
+          "timestamp": "2026-10-20T01:48:13.199896Z"
+        }
+      ],
+      "attempt_count": 0
+    },
+    {
+      "test": "test_environment_settings_use_safe_defaults_for_invalid_values",
+      "nodeid": "api_project/testcases/test_framework_core.py::test_environment_settings_use_safe_defaults_for_invalid_values",
+      "status": "passed",
+      "duration": 0.0010522000084165484,
+      "trace": null,
+      "error": null,
+      "markers": [],
+      "file": "api_project\\testcases\\test_framework_core.py",
+      "line": 94,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-20T01:48:13.204995Z",
+      "screenshot": "screenshots",
+      "logs": "\u73af\u5883\u53d8\u91cf FLAG='unexpected' \u4e0d\u662f\u6709\u6548\u5e03\u5c14\u503c\uff0c\u4f7f\u7528\u9ed8\u8ba4\u503c True\n\u73af\u5883\u53d8\u91cf TIMEOUT='-1' \u5fc5\u987b\u662f\u6b63\u6570\uff0c\u4f7f\u7528\u9ed8\u8ba4\u503c 10",
+      "worker": "gw0",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.0010522000084165484,
+          "timestamp": "2026-10-20T01:48:13.204995Z"
+        }
+      ],
+      "attempt_count": 0
+    }
+  ]
+}
