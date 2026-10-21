@@ -4,7 +4,7 @@ let activeDraft = null;
 let casePage = 1;
 let caseQuery = '';
 let allurePresets = [];
-const tabMeta = {dashboard:['OVERVIEW','测试概览'], run:['TEST RUNNER','执行测试'], curl:['CURL → CASE','CURL 转用例'], library:['CASE LIBRARY','用例库'], reports:['REPORTS','结果中心'], allure:['ALLURE PRESETS','Allure 预设'], schedule:['SCHEDULER','定时执行'], settings:['CONFIGURATION','配置中心']};
+const tabMeta = {dashboard:['OVERVIEW','测试概览'], run:['TEST RUNNER','执行测试'], curl:['CURL → CASE','CURL 转用例'], library:['CASE LIBRARY','用例库'], reports:['REPORTS','结果中心'], allure:['ALLURE PRESETS','Allure 预设'], schedule:['SCHEDULER','定时执行'], settings:['CONFIGURATION','配置中心'], help:['OPERATION GUIDE','操作说明']};
 
 function escapeHtml(value) { const node = document.createElement('div'); node.textContent = value; return node.innerHTML; }
 function setRunState(status) { const state = $('#runState'); state.className = `state ${status}`; state.textContent = ({idle:'就绪', running:'执行中', passed:'已通过', failed:'执行失败'})[status] || status; }
@@ -188,6 +188,27 @@ if (schedulePanel) {
   $('#runScheduler').addEventListener('click', runScheduler);
   $('#stopScheduler').addEventListener('click', () => stopScheduler());
 }
+const helpTab = document.createElement('section');
+helpTab.className = 'tab-panel help-tab';
+helpTab.dataset.panel = 'help';
+helpTab.innerHTML = `
+  <div class="settings-intro help-intro"><p class="eyebrow">OPERATION GUIDE</p><h2>从配置到回归</h2><p>按实际使用流程整理的控制台操作要点。详细版本可打开 PDF 手册查看，其中包含完整配置字段、JSON 结构与断言示例。</p><a class="secondary manual-link" href="/manual" target="_blank" rel="noopener">打开完整 PDF 手册 ↗</a></div>
+  <div class="help-grid">
+    <article class="panel help-card"><span class="help-step">01</span><h3>首次配置</h3><ol><li>复制 <code>api_project/.env.example</code> 为 <code>api_project/.env</code>。</li><li>在“配置中心”填写 API Host、Token 或 iToken、Cookie 与请求超时。</li><li>生产环境保持 TLS 证书校验开启；真实凭据只保存在本地 .env 或 CI 密钥中。</li></ol></article>
+    <article class="panel help-card"><span class="help-step">02</span><h3>新增接口用例</h3><ol><li>进入“CURL 转用例”，粘贴浏览器 Copy as cURL 或上传文本文件。</li><li>点击“解析并预览”，确认 Token、Cookie、密码已被占位符替换。</li><li>确认保存后，系统会写入 JSON、同步性能阈值并执行收集校验。</li></ol></article>
+    <article class="panel help-card"><span class="help-step">03</span><h3>配置业务断言</h3><p>在 JSON 用例的 <code>assertions</code> 中配置关键业务校验；不能只依赖 HTTP 200。</p><pre class="guide-code">"expected_status": 200,
+"assertions": [
+  {"key": "code", "eq": 0},
+  {"jsonpath": "$.data", "not_empty": true},
+  {"response_time": 1.0}
+]</pre><p>支持相等、包含、JSONPath、长度、类型、非空与响应时间断言。</p></article>
+    <article class="panel help-card"><span class="help-step">04</span><h3>运行接口</h3><ol><li>在“用例库”勾选一个或多个 JSON 文件后执行，适合单接口验证。</li><li>在“执行测试”选择模块或全部用例，查看实时日志。</li><li>运行将请求真实接口；执行前确认目标环境、认证与通知策略。</li></ol><p class="help-note">终端精确运行示例：<code>python run_testcases.py "api_project/testcases/test_api.py::test_api[api_codeItem/test_case_1]"</code></p></article>
+    <article class="panel help-card"><span class="help-step">05</span><h3>查看报告与性能</h3><ol><li>执行完成后在“结果中心”打开 Allure、汇总、趋势和性能报告。</li><li>性能阈值由 <code>api_project/config/performance_thresholds.json</code> 管理。</li><li>报告会按 <code>ALLURE_REPORT_KEEP</code> 自动保留最近的归档。</li></ol></article>
+    <article class="panel help-card"><span class="help-step">06</span><h3>通知与定时回归</h3><ol><li>在“配置中心”设置邮件、飞书、钉钉、企业微信或电话通知开关与凭据。</li><li>本地调试使用 <code>never</code>；默认推荐 <code>only_failed</code>。</li><li>在“定时执行”设置 Cron 和用例范围，先确认总开关与任务开关，再启动调度器。</li></ol></article>
+  </div>
+  <article class="panel help-checklist"><h3>执行前检查</h3><div><span>✓ 已确认 API Host 与环境一致</span><span>✓ JSON 内没有真实凭据</span><span>✓ 关键接口已配置业务断言</span><span>✓ 通知策略不会误发</span><span>✓ 定时任务已先进行 dry-run 审核</span></div></article>`;
+document.querySelector('[data-panel="settings"]').before(helpTab);
+document.querySelector('.nav-item[data-tab="settings"]').insertAdjacentHTML('afterend', '<button class="nav-item" data-tab="help"><span aria-hidden="true">?</span>操作说明</button>');
 document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => activateTab(item.dataset.tab))); document.querySelectorAll('[data-open-tab]').forEach(item => item.addEventListener('click', () => activateTab(item.dataset.openTab)));
 document.querySelector('.metrics').insertAdjacentHTML('afterend', '<article class="panel overview-card conversion-card"><div><p class="eyebrow">CURL CONVERTER</p><h3>推荐使用 AI 全流程操作：一句话即可完成 cURL 转测试用例。</h3><p>大致步骤：把抓取的接口放到项目内任意 txt 文件内，告诉 AI “帮我转换 curl 文件并生成测试用例”。</p></div></article>');
 // Keep the save action next to the preview action so it remains reachable

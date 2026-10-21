@@ -29,6 +29,21 @@ def test_dashboard_uses_the_svg_browser_icon():
     assert icon.mimetype == "image/svg+xml"
 
 
+def test_operation_manual_opens_inline_from_the_local_console():
+    response = app.test_client().get("/manual")
+    assert response.status_code == 200
+    assert response.mimetype == "application/pdf"
+    assert response.headers["Content-Disposition"].startswith("inline;")
+    assert response.headers["Cache-Control"] == "no-store, max-age=0"
+
+
+def test_web_console_includes_operation_guide_tab_and_manual_link():
+    with open(os.path.join(os.path.dirname(__file__), "..", "static", "app.js"), encoding="utf-8") as file:
+        source = file.read()
+    assert "data-tab=\"help\"" in source
+    assert 'href="/manual"' in source
+
+
 def test_unknown_module_is_rejected_without_running_tests():
     response = app.test_client().post("/api/runs", json={"module": "not-a-real-module"})
     assert response.status_code == 400

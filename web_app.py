@@ -20,7 +20,7 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
-from flask import Flask, abort, jsonify, render_template, request, send_from_directory
+from flask import Flask, abort, jsonify, render_template, request, send_file, send_from_directory
 from apscheduler.triggers.cron import CronTrigger
 
 
@@ -34,6 +34,7 @@ SCHEDULER_RUNNER = ROOT / "run_scheduler.py"
 MAX_LOG_CHARS = 120_000
 ALLURE_PRESETS_FILE = CONFIG_DIR / "allure_presets.json"
 SCHEDULER_JOBS_FILE = CONFIG_DIR / "scheduler_jobs.json"
+MANUAL_FILE = ROOT / "api_project" / "接口自动化测试使用手册.pdf"
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -501,6 +502,16 @@ def index():
 @app.get("/favicon.ico")
 def favicon():
     return send_from_directory(ROOT / "api_project" / "resources", "favicon.ico", mimetype="image/vnd.microsoft.icon")
+
+
+@app.get("/manual")
+def manual():
+    """Serve the project operation manual from the local-only console."""
+    if not MANUAL_FILE.is_file():
+        abort(404)
+    response = send_file(MANUAL_FILE, mimetype="application/pdf", as_attachment=False, conditional=True)
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    return response
 
 
 @app.get("/api/dashboard")
