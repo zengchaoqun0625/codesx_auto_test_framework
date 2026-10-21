@@ -58,7 +58,7 @@ class SessionReporter:
             return str(value)
 
     def capture_report(self, item, report):
-        """Collect one test result and attach sanitized request/response details."""
+        """Collect one final result per test item and attach request/response details."""
         req_info = getattr(item, "_request_info", None)
         res_info = getattr(item, "_response_info", None)
         if not req_info or not res_info:
@@ -67,7 +67,7 @@ class SessionReporter:
                 req_info = req_info or getattr(api_req, "last_request_info", None)
                 res_info = res_info or getattr(api_req, "last_response_info", None)
 
-        self.results.append({
+        result = {
             "name": item.name, "nodeid": item.nodeid, "outcome": report.outcome,
             "duration": report.duration,
             "longrepr": str(report.longrepr) if report.longrepr else None,
@@ -76,9 +76,23 @@ class SessionReporter:
             "request_url": req_info.get("url", "") if req_info else None,
             "request_method": req_info.get("method", "") if req_info else None,
             "response_elapsed": res_info.get("elapsed") if res_info else None,
-        })
+        }
+
+        # A test can produce reports for setup/call/teardown.  Keep a single
+        # final record so totals match collected test items, while allowing a
+        # setup or teardown failure to override an earlier successful call.
+        existing = next((entry for entry in self.results if entry["nodeid"] == item.nodeid), None)
+        was_failed = bool(existing and existing["outcome"] == "failed")
+        if existing is None:
+            self.results.append(result)
+        else:
+            total_duration = existing["duration"] + result["duration"]
+            priority = {"passed": 0, "skipped": 1, "failed": 2}
+            if priority.get(report.outcome, 0) >= priority.get(existing["outcome"], 0):
+                existing.update(result)
+            existing["duration"] = total_duration
         self._add_html_details(item, report, req_info, res_info)
-        if report.outcome == "failed":
+        if report.outcome == "failed" and not was_failed:
             try:
                 _submit_bug(item, report)
             except Exception as exc:

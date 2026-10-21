@@ -57,12 +57,23 @@ class RequestProcessor:
         request_body = {}
 
         if request_type == "formdata":
-            # 处理formdata（multipart/form-data）
-            request_body["data"] = request_data.get("formdata", {})
-            # 补全默认Content-Type（requests会自动处理boundary）
-            if "Content-Type" not in headers:
-                headers["Content-Type"] = "multipart/form-data"
-            logger.debug(f"ℹ️ 处理formdata请求体: {list(request_body['data'].keys())}")
+            # ``data=...`` 会编码为 application/x-www-form-urlencoded；要生成合法的
+            # multipart 请求，必须通过 ``files`` 交给 requests 生成 boundary。
+            # (None, value) 表示普通表单字段而非上传文件。
+            form_data = request_data.get("formdata", {})
+            if not isinstance(form_data, dict):
+                raise ValueError("formdata 必须是对象，键为字段名、值为字段内容")
+            request_body["files"] = {
+                str(key): (None, str(value))
+                for key, value in form_data.items()
+            }
+            # 手写 multipart/form-data 没有 boundary 会生成畸形请求；交由
+            # requests 根据 files 自动设置带 boundary 的 Content-Type。
+            for header_name in list(headers):
+                if header_name.lower() == "content-type" and "multipart/form-data" in str(headers[header_name]).lower():
+                    headers.pop(header_name)
+                    break
+            logger.debug(f"ℹ️ 处理 formdata 请求体: {list(form_data.keys())}")
 
         elif request_type == "json":
             # 处理json请求体（application/json）

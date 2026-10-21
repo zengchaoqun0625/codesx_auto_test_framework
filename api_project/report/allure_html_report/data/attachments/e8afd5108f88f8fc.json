@@ -1,0 +1,14 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "timestamp": "2026-10-21 12:08:36",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "",
+    "path": "/api/cashouts"
+  },
+  "apiResId": "2112757920690835457",
+  "ok": true
+}

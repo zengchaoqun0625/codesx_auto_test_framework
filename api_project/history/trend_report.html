@@ -166,19 +166,19 @@
       <h1>📈 自动化测试趋势报告</h1>
       <p class="subtitle">基于历史执行记录自动生成 · 生成时间 <span id="genTime">—</span></p>
     </div>
-    <span class="badge">最近 2 次执行</span>
+    <span class="badge">最近 3 次执行</span>
   </header>
 
   <div class="cards">
     <div class="card c1">
       <div class="icon">🗓️</div>
-      <div class="num">2</div>
+      <div class="num">3</div>
       <div class="label">统计次数</div>
       <span class="delta flat" id="dRuns">持续积累中</span>
     </div>
     <div class="card c2">
       <div class="icon">📊</div>
-      <div class="num">100.0%</div>
+      <div class="num">66.67%</div>
       <div class="label">平均通过率</div>
       <span class="delta flat" id="dAvg">—</span>
     </div>
@@ -190,7 +190,7 @@
     </div>
     <div class="card c4">
       <div class="icon">🧯</div>
-      <div class="num">0</div>
+      <div class="num">3</div>
       <div class="label">累计失败用例</div>
       <span class="delta flat" id="dFail">—</span>
     </div>
@@ -206,8 +206,8 @@
 
   <div class="panel">
     <div class="panel-head">
-      <h3>📋 历史明细（最近 2 次）</h3>
-      <span class="legend-hint">最新在前 · 共 2 条</span>
+      <h3>📋 历史明细（最近 3 次）</h3>
+      <span class="legend-hint">最新在前 · 共 3 条</span>
     </div>
     <div class="table-wrap">
       <table>
@@ -215,7 +215,7 @@
           <tr><th>时间</th><th>执行人</th><th>总数</th><th>通过</th><th>失败</th><th>跳过</th><th>通过率</th><th>耗时</th></tr>
         </thead>
         <tbody>
-          <tr><td>2026-10-21 10:44:22</td><td>曾超群</td><td>3</td><td>3</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.43s</td></tr><tr><td>2026-10-21 10:34:03</td><td>曾超群</td><td>3</td><td>3</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.75s</td></tr>
+          <tr><td>2026-10-21 12:08:54</td><td>曾超群</td><td>3</td><td>0</td><td><span class='badge-fail'>3</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:0.0%'></i></span><span class='rate-txt'>0.0%</span></span></td><td>1.64s</td></tr><tr><td>2026-10-21 10:44:22</td><td>曾超群</td><td>3</td><td>3</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.43s</td></tr><tr><td>2026-10-21 10:34:03</td><td>曾超群</td><td>3</td><td>3</td><td><span class='badge-ok'>0</span></td><td>0</td><td><span class='pass-badge'><span class='pass-bar'><i style='width:100.0%'></i></span><span class='rate-txt'>100.0%</span></span></td><td>0.75s</td></tr>
         </tbody>
       </table>
     </div>
@@ -319,18 +319,18 @@ syncThemeBtn();
   window.addEventListener('resize', resize);
 })();
 
-const labels = ["2026-10-21 10:34:03", "2026-10-21 10:44:22"];
-const passRates = [100.0, 100.0];
-const failedList = [0, 0];
-const totals = [3, 3];
-const passedList = [3, 3];
-const skippedList = [0, 0];
-const durations = [0.75, 0.43];
-const avgRate = 100.0;
+const labels = ["2026-10-21 10:34:03", "2026-10-21 10:44:22", "2026-10-21 12:08:54"];
+const passRates = [100.0, 100.0, 0.0];
+const failedList = [0, 0, 3];
+const totals = [3, 3, 3];
+const passedList = [3, 3, 0];
+const skippedList = [0, 0, 0];
+const durations = [0.75, 0.43, 1.64];
+const avgRate = 66.67;
 const bestRate = 100.0;
-const latestRate = 100.0;
+const latestRate = 0.0;
 const prevRate = 100.0;
-const latestFail = 0;
+const latestFail = 3;
 const prevFail = 0;
 
 document.getElementById('genTime').textContent = new Date().toLocaleString('zh-CN', { hour12: false });

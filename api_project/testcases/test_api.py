@@ -328,7 +328,12 @@ def _handle_query(case_data, ctx) -> 'requests.Response':
     # base URL.  Manually-authored JSON normally keeps a relative path.
     full_url = request_url if request_url.startswith(("http://", "https://")) else f"{ctx['base_url']}{request_url}"
     method = request_data.get("method", "GET")
-    request_type = case_data.get("request_type", "default")
+    configured_request_type = str(case_data.get("request_type", "default")).strip().lower()
+    request_type = (
+        ctx['request_processor'].get_request_type(request_data)
+        if configured_request_type in ("", "default", "auto")
+        else configured_request_type
+    )
     request_params = request_data.get("params", {})
     request_body, headers = ctx['request_processor'].process_request_params(
         request_type, request_data
@@ -430,44 +435,16 @@ def _handle_precondition(case_data, ctx):
     ctx["api_request"].set_login_handler(login_handler)
     return _handle_query(case_data, ctx)
 
-#
-# def _handle_expect_error(case_data, ctx):
-#     """预期失败的请求 — 不验证状态码，只验证错误信息"""
-#     request_data = case_data["data"]
-#     full_url = f"{ctx['base_url']}{request_data.get('url', '')}"
-#     method = request_data.get("method", "GET")
-#     request_type = case_data.get("request_type", "default")
-#     request_params = request_data.get("params", {})
-#     request_body, headers = ctx['request_processor'].process_request_params(
-#         request_type, request_data
-#     )
-#
-#     # 预期失败场景：去掉 token header
-#     headers.pop("iToken", None)
-#     headers.pop("Authorization", None)
-#
-#     response = ctx['api_request'].send_request(
-#         url=full_url, method=method, verify=False,
-#         params=request_params, headers=headers, **request_body
-#     )
-#
-#     allure.attach(str(response.status_code), "响应状态码", allure.attachment_type.TEXT)
-#     try:
-#         allure.attach(
-#             json.dumps(response.json(), indent=2, ensure_ascii=False),
-#             "响应体", allure.attachment_type.JSON
-#         )
-#     except Exception:
-#         allure.attach(response.text, "响应体", allure.attachment_type.TEXT)
-#
-#     return response
+def _handle_expect_error(case_data, ctx):
+    """执行负向请求；默认不限制状态码，由 assertions 验证错误响应。"""
+    return _handle_query(case_data, ctx)
 
 
 # ---- 注册表: logic 字段值 → (handler_func, 默认期望状态码) ----
 HANDLERS = {
     "query": (_handle_query, 200),
     "precondition": (_handle_precondition, 200),
-    # "expect_error": (_handle_expect_error, None),  # None 表示不固定
+    "expect_error": (_handle_expect_error, None),
 }
 
 
@@ -484,8 +461,11 @@ def build_case_context(api_request, assert_code, base_url, allure_reporter, requ
 
 def execute_case(case_data, ctx, case_name: str = ""):
     """Execute one JSON case through the framework's single supported request pipeline."""
-    logic = case_data.get('logic', 'query')
-    handler, default_expected_code = HANDLERS.get(logic, (_handle_query, 200))
+    logic = str(case_data.get('logic', 'query')).strip().lower() or 'query'
+    if logic not in HANDLERS:
+        supported = ", ".join(sorted(HANDLERS))
+        raise ValueError(f"不支持的 logic: {logic!r}；可选值: {supported}")
+    handler, default_expected_code = HANDLERS[logic]
     label = case_name or case_data.get('description', '未命名用例')
 
     try:

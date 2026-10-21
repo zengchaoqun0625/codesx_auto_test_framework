@@ -439,7 +439,7 @@
     <div class="report-metadata" style="background: #f2f4f7;">
     <h2 onclick="this.nextElementSibling.classList.toggle('hidden')" style="cursor: pointer; font-size: 12px; ">
         Execution Metadata (click to toggle)
-         <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('eydyZXBvcnRfdGl0bGUnOiAncmVwb3J0JywgJ2Vudmlyb25tZW50JzogJ1Bhc3MgLS1ycC1lbnYgdG8gcG9wdWxhdGUgZW52aXJvbm1lbnQnLCAnYnJhbmNoJzogJ1Bhc3MgLS1naXQtYnJhbmNoIHRvIHBvcHVsYXRlIGdpdCBtZXRhZGF0YScsICdjb21taXQnOiAnUGFzcyAtLWdpdC1jb21taXQgdG8gcG9wdWxhdGUgZ2l0IG1ldGFkYXRhJywgJ3B5dGhvbl92ZXJzaW9uJzogJzMuMTIuMTQnLCAnZ2VuZXJhdGVkX2F0JzogJzIwMjYtMTAtMjFUMTA6NDQ6MDguMjM3MTg1J30=', this)" title="Copy metadata">
+         <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('eydyZXBvcnRfdGl0bGUnOiAncmVwb3J0JywgJ2Vudmlyb25tZW50JzogJ1Bhc3MgLS1ycC1lbnYgdG8gcG9wdWxhdGUgZW52aXJvbm1lbnQnLCAnYnJhbmNoJzogJ1Bhc3MgLS1naXQtYnJhbmNoIHRvIHBvcHVsYXRlIGdpdCBtZXRhZGF0YScsICdjb21taXQnOiAnUGFzcyAtLWdpdC1jb21taXQgdG8gcG9wdWxhdGUgZ2l0IG1ldGFkYXRhJywgJ3B5dGhvbl92ZXJzaW9uJzogJzMuMTIuMTQnLCAnZ2VuZXJhdGVkX2F0JzogJzIwMjYtMTAtMjFUMTI6MDg6MzMuNTIzNjc3J30=', this)" title="Copy metadata">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -452,7 +452,7 @@
         <tr><th>Environment</th><td>Pass --rp-env to populate environment</td></tr>
         <tr><th>Branch</th><td>Pass --git-branch to populate git metadata</td></tr>
         <tr><th>Commit</th><td>Pass --git-commit to populate git metadata</td></tr>
-        <tr><th>Generated At</th><td>2026-10-21T10:44:08.237185</td></tr>
+        <tr><th>Generated At</th><td>2026-10-21T12:08:33.523677</td></tr>
         <tr><th>Python version</th><td>3.12.14</td></tr>
     </table>
 </div>
@@ -460,7 +460,7 @@
     <div class="checkbox-container">
       <label>
         <input type="checkbox" id="failedOnlyCheckbox" />
-        Show only failed tests (<span>0</span>)
+        Show only failed tests (<span>3</span>)
       </label>
       <label>
         <input type="checkbox" id="errorOnlyCheckbox" />
@@ -534,24 +534,164 @@
     <div id="markersFilter" class="marker-filter" style="margin-bottom: 1rem;">
       <strong>Filter by Markers:</strong><br/>
     <label><input type="checkbox" value="parametrize" /> parametrize (3)</label> 
-            <div style="padding: 1rem; background: #e6f4ea; 
-            border: 1px solid #2f7a33; 
+            <div style="padding: 1rem; background: #fdecea; 
+            border: 1px solid #a83232; 
             border-radius: 5px; margin-bottom: 1rem;">
-              <strong>Bingo!</strong> All your tests passed!
-              The slowest test was <strong>test_api_api_cashouts_test_case_1_</strong> at 0.22s.
+              Total tests: 3, Failures: 3, Errors: 0.
+              The slowest test was <strong>test_api_api_cashouts_test_case_1_</strong> at 1.36s.
             </div>
             <div id="tests-container">    
-<div class="test test-card" data-name="test_api_api_cashouts_test_case_1_" data-link="" data-markers="parametrize" data-error="">
-  <div class="header passed" onclick="toggleDetails(this)">
+<div class="test test-card" data-name="test_api_api_cashouts_test_case_1_" data-link="" data-markers="parametrize" data-error="E       AssertionError: ❌ 状态码断言失败 E       预期: 200 | 实际: 401 E       请求URL: https://mg.6jqb.com/api/cashouts?pageNumber=1&amp;pageSize=10&amp;queryDateType=day&amp;queryDateRange=prevMonth">
+  <div class="header failed" onclick="toggleDetails(this)">
     <div class="header-section test-info">
       <span class="toggle"></span>
       <strong>test_api_api_cashouts_test_case_1_</strong>
-      <span>— PASSED</span>
+      <span>— FAILED</span>
     </div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">api_project/testcases/test_api.py::test_api[api_cashouts/test_case_1]</code>
           <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('YXBpX3Byb2plY3QvdGVzdGNhc2VzL3Rlc3RfYXBpLnB5Ojp0ZXN0X2FwaVthcGlfY2FzaG91dHMvdGVzdF9jYXNlXzFd', this)" title="Copy nodeid">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            
+      </span>
+      <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
+    </div>
+
+    <div class="header-section badges-and-timing">
+      <span style="display:inline-block; min-width:40px;"></span>
+      <span style="display:inline-block; min-width:45px;"></span>
+      <span class="timestamp">⏱ 1.36s</span>
+    </div>
+  </div>
+
+  <div class="details">
+    <div class="details-content">
+      <div class="details-text">
+    
+                    <div class="error-content"><strong>Error:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('RSAgICAgICBBc3NlcnRpb25FcnJvcjog4p2MIOeKtuaAgeeggeaWreiogOWksei0pQpFICAgICAgIOmihOacnzogMjAwIHwg5a6e6ZmFOiA0MDEKRSAgICAgICDor7fmsYJVUkw6IGh0dHBzOi8vbWcuNmpxYi5jb20vYXBpL2Nhc2hvdXRzP3BhZ2VOdW1iZXI9MSZwYWdlU2l6ZT0xMCZxdWVyeURhdGVUeXBlPWRheSZxdWVyeURhdGVSYW5nZT1wcmV2TW9udGg=', this)" title="Copy error">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            
+                    <pre>E       AssertionError: ❌ 状态码断言失败
+E       预期: 200 | 实际: 401
+E       请求URL: https://mg.6jqb.com/api/cashouts?pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth</pre></div>
+                    
+    
+                    <div class="trace-content"><strong>Trace:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('anNvbl9maWxlID0gJ2FwaV9jYXNob3V0cy5qc29uJywgcHJlc2V0X25hbWUgPSAnZ2VuZXJhdGVkX2FwaV9jYXNob3V0c19hcGknCmNhc2VfbmFtZSA9ICd0ZXN0X2Nhc2VfMScKY2FzZV9kYXRhID0geydkZXNjcmlwdGlvbic6ICdhcGlfY2FzaG91dHPmjqXlj6PmtYvor5UnLCAncmVxdWVzdF90eXBlJzogJ2RlZmF1bHQnLCAnbG9naWMnOiAncXVlcnknLCAnZGF0YSc6IHsndXJsJzogJ2h0dHBzOi8vbWcuNmpxYi5jb20vLi4uaHJvbWUvMTU1LjAuMC4wIFNhZmFyaS81MzcuMzYnLCAuLi59LCAncGFyYW1zJzogJ3BhZ2VOdW1iZXI9MSZwYWdlU2l6ZT0xMCZxdWVyeURhdGVUeXBlPWRheSZxdWVyeURhdGVSYW5nZT1wcmV2TW9udGgnfX0KbG9naWMgPSAncXVlcnknCmFwaV9yZXF1ZXN0ID0gPGFwaV9wcm9qZWN0LmNvbW1vbi5hcGlfcmVxdWVzdC5BcGlSZXF1ZXN0IG9iamVjdCBhdCAweDAwMDAwMjJFMzZEMzhCMzA+CmFzc2VydF9jb2RlID0gPGNsYXNzICdhcGlfcHJvamVjdC5jb21tb24uYXBpX2Fzc2VydGlvbnMuQXBpQXNzZXJ0Jz4KYmFzZV91cmwgPSAnaHR0cHM6Ly9tZy42anFiLmNvbScKYWxsdXJlX3JlcG9ydGVyID0gPGFwaV9wcm9qZWN0LnRlc3RjYXNlcy5jb25mdGVzdC5hbGx1cmVfcmVwb3J0ZXIuPGxvY2Fscz4uQWxsdXJlUmVwb3J0ZXIgb2JqZWN0IGF0IDB4MDAwMDAyMkUzNkQzOUE5MD4KcmVxdWVzdF9wcm9jZXNzb3IgPSA8Y2xhc3MgJ2FwaV9wcm9qZWN0LmNvbW1vbi5wYXJhbV9wcm9jZXNzb3IuUmVxdWVzdFByb2Nlc3Nvcic+CgogICAgQHB5dGVzdC5tYXJrLnBhcmFtZXRyaXplKAogICAgICAgICJqc29uX2ZpbGUsIHByZXNldF9uYW1lLCBjYXNlX25hbWUsIGNhc2VfZGF0YSwgbG9naWMiLAogICAgICAgIF9idWlsZF9hbGxfY2FzZV9wYXJhbXMoKQogICAgKQogICAgZGVmIHRlc3RfYXBpKAogICAgICAgIGpzb25fZmlsZSwgcHJlc2V0X25hbWUsIGNhc2VfbmFtZSwgY2FzZV9kYXRhLCBsb2dpYywKICAgICAgICBhcGlfcmVxdWVzdCwgYXNzZXJ0X2NvZGUsIGJhc2VfdXJsLCBhbGx1cmVfcmVwb3J0ZXIsIHJlcXVlc3RfcHJvY2Vzc29yCiAgICApOgogICAgICAgICIiIgogICAgICAgIOe7n+S4gOWPguaVsOWMlua1i+ivleWFpeWPowogICAgCiAgICAgICAg5qC55o2uIEpTT04gdGVzdF9jYXNlIOS4reeahCBsb2dpYyDlrZfmrrXvvIzoh6rliqjliIblj5HliLDlr7nlupQgaGFuZGxlcuOAggogICAgICAgIOm7mOiupCBsb2dpYz0icXVlcnki77yM5omn6KGM5qCH5YeG6K+35rGCICsg5pat6KiAIDIwMOOAggogICAgICAgICIiIgogICAgICAgICMgMS4g5Yqo5oCB6K6+572uIEFsbHVyZSDmoIfnrb4KICAgICAgICBjb25maWcgPSBfZ2V0X2FsbHVyZV9jb25maWcocHJlc2V0X25hbWUsIGpzb25fZmlsZSkKICAgICAgICBpZiBjb25maWc6CiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ3N1aXRlJyk6CiAgICAgICAgICAgICAgICBhbGx1cmUuZHluYW1pYy5zdWl0ZShjb25maWdbJ3N1aXRlJ10pCiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ2VwaWMnKToKICAgICAgICAgICAgICAgIGFsbHVyZS5keW5hbWljLmVwaWMoY29uZmlnWydlcGljJ10pCiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ3N1Yl9zdWl0ZScpOgogICAgICAgICAgICAgICAgYWxsdXJlLmR5bmFtaWMuc3ViX3N1aXRlKGNvbmZpZ1snc3ViX3N1aXRlJ10pCiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ3NldmVyaXR5Jyk6CiAgICAgICAgICAgICAgICBhbGx1cmUuZHluYW1pYy5zZXZlcml0eShjb25maWdbJ3NldmVyaXR5J10pCiAgICAgICAgICAgIGZvciB0YWcgaW4gY29uZmlnLmdldCgndGFncycsIFtdKToKICAgICAgICAgICAgICAgIGFsbHVyZS5keW5hbWljLnRhZyh0YWcpCiAgICAKICAgICAgICAgICAgYmFzZV90aXRsZSA9IGNvbmZpZy5nZXQoJ3RpdGxlJywgJycpCiAgICAgICAgICAgICMg5o+Q5Y+W55So5L6L57yW5Y+3OiAidGVzdF9jYXNlXzEiIOKGkiAxCiAgICAgICAgICAgIGNhc2VfbnVtID0gY2FzZV9uYW1lLnJlcGxhY2UoJ3Rlc3RfY2FzZV8nLCAnJykgaWYgY2FzZV9uYW1lLnN0YXJ0c3dpdGgoJ3Rlc3RfY2FzZV8nKSBlbHNlIGNhc2VfbmFtZQogICAgICAgICAgICAjIOagvOW8jzogIzHllYbmiLfnlLPor7fliJvlu7rkurrmn6Xor6LmjqXlj6PmtYvor5UnbWNoQXBwbHlfYXBwbHlDcmVhdGVkQnkuanNvbgogICAgICAgICAgICBhbGx1cmUuZHluYW1pYy50aXRsZShmIiN7Y2FzZV9udW19e2Jhc2VfdGl0bGV9J3tqc29uX2ZpbGV9IikKICAgIAogICAgICAgIGN0eCA9IGJ1aWxkX2Nhc2VfY29udGV4dChhcGlfcmVxdWVzdCwgYXNzZXJ0X2NvZGUsIGJhc2VfdXJsLCBhbGx1cmVfcmVwb3J0ZXIsIHJlcXVlc3RfcHJvY2Vzc29yKQo+ICAgICAgIGV4ZWN1dGVfY2FzZShjYXNlX2RhdGEsIGN0eCwgY2FzZV9uYW1lKQoKYXBpX3Byb2plY3RcdGVzdGNhc2VzXHRlc3RfYXBpLnB5OjU1NzogCl8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8KYXBpX3Byb2plY3RcdGVzdGNhc2VzXHRlc3RfYXBpLnB5OjQ4MTogaW4gZXhlY3V0ZV9jYXNlCiAgICBjdHhbJ2Fzc2VydF9jb2RlJ10uc3RhdHVzX2NvZGUocmVzcG9uc2UsIGV4cGVjdGVkX2NvZGUpCl8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8KCnJlc3BvbnNlID0gPFJlc3BvbnNlIFs0MDFdPiwgZXhwZWN0ZWRfY29kZSA9IDIwMAoKICAgIEBzdGF0aWNtZXRob2QKICAgIGRlZiBzdGF0dXNfY29kZShyZXNwb25zZTogUmVzcG9uc2UsIGV4cGVjdGVkX2NvZGU6IGludCkgLT4gIkFwaUFzc2VydCI6CiAgICAgICAgIiIi5pat6KiA5ZON5bqU54q25oCB56CBIiIiCiAgICAgICAgYWN0dWFsX2NvZGUgPSByZXNwb25zZS5zdGF0dXNfY29kZQo+ICAgICAgIGFzc2VydCBhY3R1YWxfY29kZSA9PSBleHBlY3RlZF9jb2RlLCAoCiAgICAgICAgICAgICAgIF5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl4KICAgICAgICAgICAgZiLinYwg54q25oCB56CB5pat6KiA5aSx6LSlXG4iCiAgICAgICAgICAgIGYi6aKE5pyfOiB7ZXhwZWN0ZWRfY29kZX0gfCDlrp7pmYU6IHthY3R1YWxfY29kZX1cbiIKICAgICAgICAgICAgZiLor7fmsYJVUkw6IHtyZXNwb25zZS5yZXF1ZXN0LnVybH0iCiAgICAgICAgKQ==', this)" title="Copy trace">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            
+                    <pre>json_file = 'api_cashouts.json', preset_name = 'generated_api_cashouts_api'
+case_name = 'test_case_1'
+case_data = {'description': 'api_cashouts接口测试', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...hrome/155.0.0.0 Safari/537.36', ...}, 'params': 'pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth'}}
+logic = 'query'
+api_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>
+assert_code = <class 'api_project.common.api_assertions.ApiAssert'>
+base_url = 'https://mg.6jqb.com'
+allure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D39A90>
+request_processor = <class 'api_project.common.param_processor.RequestProcessor'>
+
+    @pytest.mark.parametrize(
+        "json_file, preset_name, case_name, case_data, logic",
+        _build_all_case_params()
+    )
+    def test_api(
+        json_file, preset_name, case_name, case_data, logic,
+        api_request, assert_code, base_url, allure_reporter, request_processor
+    ):
+        """
+        统一参数化测试入口
+    
+        根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+        默认 logic="query"，执行标准请求 + 断言 200。
+        """
+        # 1. 动态设置 Allure 标签
+        config = _get_allure_config(preset_name, json_file)
+        if config:
+            if config.get('suite'):
+                allure.dynamic.suite(config['suite'])
+            if config.get('epic'):
+                allure.dynamic.epic(config['epic'])
+            if config.get('sub_suite'):
+                allure.dynamic.sub_suite(config['sub_suite'])
+            if config.get('severity'):
+                allure.dynamic.severity(config['severity'])
+            for tag in config.get('tags', []):
+                allure.dynamic.tag(tag)
+    
+            base_title = config.get('title', '')
+            # 提取用例编号: "test_case_1" → 1
+            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name
+            # 格式: #1商户申请创建人查询接口测试'mchApply_applyCreatedBy.json
+            allure.dynamic.title(f"#{case_num}{base_title}'{json_file}")
+    
+        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)
+>       execute_case(case_data, ctx, case_name)
+
+api_project\testcases\test_api.py:557: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+api_project\testcases\test_api.py:481: in execute_case
+    ctx['assert_code'].status_code(response, expected_code)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [401]>, expected_code = 200
+
+    @staticmethod
+    def status_code(response: Response, expected_code: int) -> "ApiAssert":
+        """断言响应状态码"""
+        actual_code = response.status_code
+>       assert actual_code == expected_code, (
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            f"❌ 状态码断言失败\n"
+            f"预期: {expected_code} | 实际: {actual_code}\n"
+            f"请求URL: {response.request.url}"
+        )</pre></div>
+                    
+    
+    
+    
+                    <div><strong>Logs:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4oS577iPIOW3suWJpeemu+eUqOS+i+aVsOaNruS4reeahCB0b2tlbiDor7fmsYLlpLTvvIzmlLnnlKjnjq/looPlj5jph48v55So5oi36YWN572u5Lit55qE6buY6K6kIHRva2VuCuKEue+4jyDor7fmsYLlpLTlt7Lmt7vliqAgaVRva2VuCvCfk6Qg5Y+R6YCB6K+35rGCOiBHRVQgaHR0cHM6Ly9tZy42anFiLmNvbS9hcGkvY2FzaG91dHMK8J+TpSDlk43lupTnirbmgIHnoIE6IDQwMe+8jOiAl+aXtjogMS4zNDNz', this)" title="Copy logs">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            
+                    <pre>ℹ️ 已剥离用例数据中的 token 请求头，改用环境变量/用户配置中的默认 token
+ℹ️ 请求头已添加 iToken
+📤 发送请求: GET https://mg.6jqb.com/api/cashouts
+📥 响应状态码: 401，耗时: 1.343s</pre></div>
+                    
+    
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+        
+<div class="test test-card" data-name="test_api_api_codeItem_test_case_1_" data-link="" data-markers="parametrize" data-error="E       AssertionError: ❌ 状态码断言失败 E       预期: 200 | 实际: 401 E       请求URL: https://mg.6jqb.com/api/codeItem?parentItemCode=jqb_sj&amp;adjustmentAccount=undefined">
+  <div class="header failed" onclick="toggleDetails(this)">
+    <div class="header-section test-info">
+      <span class="toggle"></span>
+      <strong>test_api_api_codeItem_test_case_1_</strong>
+      <span>— FAILED</span>
+    </div>
+    <div class="header-section meta">
+      <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
+        <code style="font-size: 0.6em; color: #555;">api_project/testcases/test_api.py::test_api[api_codeItem/test_case_1]</code>
+          <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('YXBpX3Byb2plY3QvdGVzdGNhc2VzL3Rlc3RfYXBpLnB5Ojp0ZXN0X2FwaVthcGlfY29kZUl0ZW0vdGVzdF9jYXNlXzFd', this)" title="Copy nodeid">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -573,68 +713,95 @@
     <div class="details-content">
       <div class="details-text">
     
-    
-    
-    
-    
-                    <div><strong>Logs:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4oS577iPIOW3suWJpeemu+eUqOS+i+aVsOaNruS4reeahCB0b2tlbiDor7fmsYLlpLTvvIzmlLnnlKjnjq/looPlj5jph48v55So5oi36YWN572u5Lit55qE6buY6K6kIHRva2VuCuKEue+4jyDor7fmsYLlpLTlt7Lmt7vliqAgaVRva2VuCvCfk6Qg5Y+R6YCB6K+35rGCOiBHRVQgaHR0cHM6Ly9tZy42anFiLmNvbS9hcGkvY2FzaG91dHMK8J+TpSDlk43lupTnirbmgIHnoIE6IDIwMO+8jOiAl+aXtjogMC4yMDJzCuKchSDnirbmgIHnoIHmlq3oqIDpgJrov4c6IOmihOacnzIwMO+8jOWunumZhTIwMA==', this)" title="Copy logs">
+                    <div class="error-content"><strong>Error:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('RSAgICAgICBBc3NlcnRpb25FcnJvcjog4p2MIOeKtuaAgeeggeaWreiogOWksei0pQpFICAgICAgIOmihOacnzogMjAwIHwg5a6e6ZmFOiA0MDEKRSAgICAgICDor7fmsYJVUkw6IGh0dHBzOi8vbWcuNmpxYi5jb20vYXBpL2NvZGVJdGVtP3BhcmVudEl0ZW1Db2RlPWpxYl9zaiZhZGp1c3RtZW50QWNjb3VudD11bmRlZmluZWQ=', this)" title="Copy error">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
                 </button>
             
-                    <pre>ℹ️ 已剥离用例数据中的 token 请求头，改用环境变量/用户配置中的默认 token
-ℹ️ 请求头已添加 iToken
-📤 发送请求: GET https://mg.6jqb.com/api/cashouts
-📥 响应状态码: 200，耗时: 0.202s
-✅ 状态码断言通过: 预期200，实际200</pre></div>
+                    <pre>E       AssertionError: ❌ 状态码断言失败
+E       预期: 200 | 实际: 401
+E       请求URL: https://mg.6jqb.com/api/codeItem?parentItemCode=jqb_sj&adjustmentAccount=undefined</pre></div>
                     
     
-      </div>
-      
-    </div>
-  </div>
-</div>
-
-        
-<div class="test test-card" data-name="test_api_api_codeItem_test_case_1_" data-link="" data-markers="parametrize" data-error="">
-  <div class="header passed" onclick="toggleDetails(this)">
-    <div class="header-section test-info">
-      <span class="toggle"></span>
-      <strong>test_api_api_codeItem_test_case_1_</strong>
-      <span>— PASSED</span>
-    </div>
-    <div class="header-section meta">
-      <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
-        <code style="font-size: 0.6em; color: #555;">api_project/testcases/test_api.py::test_api[api_codeItem/test_case_1]</code>
-          <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('YXBpX3Byb2plY3QvdGVzdGNhc2VzL3Rlc3RfYXBpLnB5Ojp0ZXN0X2FwaVthcGlfY29kZUl0ZW0vdGVzdF9jYXNlXzFd', this)" title="Copy nodeid">
+                    <div class="trace-content"><strong>Trace:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('anNvbl9maWxlID0gJ2FwaV9jb2RlSXRlbS5qc29uJywgcHJlc2V0X25hbWUgPSAnZ2VuZXJhdGVkX2FwaV9jb2RlaXRlbV9hcGknCmNhc2VfbmFtZSA9ICd0ZXN0X2Nhc2VfMScKY2FzZV9kYXRhID0geydkZXNjcmlwdGlvbic6ICdhcGlfY29kZUl0ZW3mjqXlj6PmtYvor5UnLCAncmVxdWVzdF90eXBlJzogJ2RlZmF1bHQnLCAnbG9naWMnOiAncXVlcnknLCAnZGF0YSc6IHsndXJsJzogJ2h0dHBzOi8vbWcuNmpxYi5jb20vLi4uVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvMTU1LjAuMC4wIFNhZmFyaS81MzcuMzYnLCAuLi59LCAncGFyYW1zJzogJ3BhcmVudEl0ZW1Db2RlPWpxYl9zaiZhZGp1c3RtZW50QWNjb3VudD11bmRlZmluZWQnfX0KbG9naWMgPSAncXVlcnknCmFwaV9yZXF1ZXN0ID0gPGFwaV9wcm9qZWN0LmNvbW1vbi5hcGlfcmVxdWVzdC5BcGlSZXF1ZXN0IG9iamVjdCBhdCAweDAwMDAwMjJFMzZEMzhCMzA+CmFzc2VydF9jb2RlID0gPGNsYXNzICdhcGlfcHJvamVjdC5jb21tb24uYXBpX2Fzc2VydGlvbnMuQXBpQXNzZXJ0Jz4KYmFzZV91cmwgPSAnaHR0cHM6Ly9tZy42anFiLmNvbScKYWxsdXJlX3JlcG9ydGVyID0gPGFwaV9wcm9qZWN0LnRlc3RjYXNlcy5jb25mdGVzdC5hbGx1cmVfcmVwb3J0ZXIuPGxvY2Fscz4uQWxsdXJlUmVwb3J0ZXIgb2JqZWN0IGF0IDB4MDAwMDAyMkUzNkRCMjI0MD4KcmVxdWVzdF9wcm9jZXNzb3IgPSA8Y2xhc3MgJ2FwaV9wcm9qZWN0LmNvbW1vbi5wYXJhbV9wcm9jZXNzb3IuUmVxdWVzdFByb2Nlc3Nvcic+CgogICAgQHB5dGVzdC5tYXJrLnBhcmFtZXRyaXplKAogICAgICAgICJqc29uX2ZpbGUsIHByZXNldF9uYW1lLCBjYXNlX25hbWUsIGNhc2VfZGF0YSwgbG9naWMiLAogICAgICAgIF9idWlsZF9hbGxfY2FzZV9wYXJhbXMoKQogICAgKQogICAgZGVmIHRlc3RfYXBpKAogICAgICAgIGpzb25fZmlsZSwgcHJlc2V0X25hbWUsIGNhc2VfbmFtZSwgY2FzZV9kYXRhLCBsb2dpYywKICAgICAgICBhcGlfcmVxdWVzdCwgYXNzZXJ0X2NvZGUsIGJhc2VfdXJsLCBhbGx1cmVfcmVwb3J0ZXIsIHJlcXVlc3RfcHJvY2Vzc29yCiAgICApOgogICAgICAgICIiIgogICAgICAgIOe7n+S4gOWPguaVsOWMlua1i+ivleWFpeWPowogICAgCiAgICAgICAg5qC55o2uIEpTT04gdGVzdF9jYXNlIOS4reeahCBsb2dpYyDlrZfmrrXvvIzoh6rliqjliIblj5HliLDlr7nlupQgaGFuZGxlcuOAggogICAgICAgIOm7mOiupCBsb2dpYz0icXVlcnki77yM5omn6KGM5qCH5YeG6K+35rGCICsg5pat6KiAIDIwMOOAggogICAgICAgICIiIgogICAgICAgICMgMS4g5Yqo5oCB6K6+572uIEFsbHVyZSDmoIfnrb4KICAgICAgICBjb25maWcgPSBfZ2V0X2FsbHVyZV9jb25maWcocHJlc2V0X25hbWUsIGpzb25fZmlsZSkKICAgICAgICBpZiBjb25maWc6CiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ3N1aXRlJyk6CiAgICAgICAgICAgICAgICBhbGx1cmUuZHluYW1pYy5zdWl0ZShjb25maWdbJ3N1aXRlJ10pCiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ2VwaWMnKToKICAgICAgICAgICAgICAgIGFsbHVyZS5keW5hbWljLmVwaWMoY29uZmlnWydlcGljJ10pCiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ3N1Yl9zdWl0ZScpOgogICAgICAgICAgICAgICAgYWxsdXJlLmR5bmFtaWMuc3ViX3N1aXRlKGNvbmZpZ1snc3ViX3N1aXRlJ10pCiAgICAgICAgICAgIGlmIGNvbmZpZy5nZXQoJ3NldmVyaXR5Jyk6CiAgICAgICAgICAgICAgICBhbGx1cmUuZHluYW1pYy5zZXZlcml0eShjb25maWdbJ3NldmVyaXR5J10pCiAgICAgICAgICAgIGZvciB0YWcgaW4gY29uZmlnLmdldCgndGFncycsIFtdKToKICAgICAgICAgICAgICAgIGFsbHVyZS5keW5hbWljLnRhZyh0YWcpCiAgICAKICAgICAgICAgICAgYmFzZV90aXRsZSA9IGNvbmZpZy5nZXQoJ3RpdGxlJywgJycpCiAgICAgICAgICAgICMg5o+Q5Y+W55So5L6L57yW5Y+3OiAidGVzdF9jYXNlXzEiIOKGkiAxCiAgICAgICAgICAgIGNhc2VfbnVtID0gY2FzZV9uYW1lLnJlcGxhY2UoJ3Rlc3RfY2FzZV8nLCAnJykgaWYgY2FzZV9uYW1lLnN0YXJ0c3dpdGgoJ3Rlc3RfY2FzZV8nKSBlbHNlIGNhc2VfbmFtZQogICAgICAgICAgICAjIOagvOW8jzogIzHllYbmiLfnlLPor7fliJvlu7rkurrmn6Xor6LmjqXlj6PmtYvor5UnbWNoQXBwbHlfYXBwbHlDcmVhdGVkQnkuanNvbgogICAgICAgICAgICBhbGx1cmUuZHluYW1pYy50aXRsZShmIiN7Y2FzZV9udW19e2Jhc2VfdGl0bGV9J3tqc29uX2ZpbGV9IikKICAgIAogICAgICAgIGN0eCA9IGJ1aWxkX2Nhc2VfY29udGV4dChhcGlfcmVxdWVzdCwgYXNzZXJ0X2NvZGUsIGJhc2VfdXJsLCBhbGx1cmVfcmVwb3J0ZXIsIHJlcXVlc3RfcHJvY2Vzc29yKQo+ICAgICAgIGV4ZWN1dGVfY2FzZShjYXNlX2RhdGEsIGN0eCwgY2FzZV9uYW1lKQoKYXBpX3Byb2plY3RcdGVzdGNhc2VzXHRlc3RfYXBpLnB5OjU1NzogCl8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8KYXBpX3Byb2plY3RcdGVzdGNhc2VzXHRlc3RfYXBpLnB5OjQ4MTogaW4gZXhlY3V0ZV9jYXNlCiAgICBjdHhbJ2Fzc2VydF9jb2RlJ10uc3RhdHVzX2NvZGUocmVzcG9uc2UsIGV4cGVjdGVkX2NvZGUpCl8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8KCnJlc3BvbnNlID0gPFJlc3BvbnNlIFs0MDFdPiwgZXhwZWN0ZWRfY29kZSA9IDIwMAoKICAgIEBzdGF0aWNtZXRob2QKICAgIGRlZiBzdGF0dXNfY29kZShyZXNwb25zZTogUmVzcG9uc2UsIGV4cGVjdGVkX2NvZGU6IGludCkgLT4gIkFwaUFzc2VydCI6CiAgICAgICAgIiIi5pat6KiA5ZON5bqU54q25oCB56CBIiIiCiAgICAgICAgYWN0dWFsX2NvZGUgPSByZXNwb25zZS5zdGF0dXNfY29kZQo+ICAgICAgIGFzc2VydCBhY3R1YWxfY29kZSA9PSBleHBlY3RlZF9jb2RlLCAoCiAgICAgICAgICAgICAgIF5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl4KICAgICAgICAgICAgZiLinYwg54q25oCB56CB5pat6KiA5aSx6LSlXG4iCiAgICAgICAgICAgIGYi6aKE5pyfOiB7ZXhwZWN0ZWRfY29kZX0gfCDlrp7pmYU6IHthY3R1YWxfY29kZX1cbiIKICAgICAgICAgICAgZiLor7fmsYJVUkw6IHtyZXNwb25zZS5yZXF1ZXN0LnVybH0iCiAgICAgICAgKQ==', this)" title="Copy trace">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
                 </button>
             
-      </span>
-      <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
-    </div>
+                    <pre>json_file = 'api_codeItem.json', preset_name = 'generated_api_codeitem_api'
+case_name = 'test_case_1'
+case_data = {'description': 'api_codeItem接口测试', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...TML, like Gecko) Chrome/155.0.0.0 Safari/537.36', ...}, 'params': 'parentItemCode=jqb_sj&adjustmentAccount=undefined'}}
+logic = 'query'
+api_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>
+assert_code = <class 'api_project.common.api_assertions.ApiAssert'>
+base_url = 'https://mg.6jqb.com'
+allure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36DB2240>
+request_processor = <class 'api_project.common.param_processor.RequestProcessor'>
 
-    <div class="header-section badges-and-timing">
-      <span style="display:inline-block; min-width:40px;"></span>
-      <span style="display:inline-block; min-width:45px;"></span>
-      <span class="timestamp">⏱ 0.05s</span>
-    </div>
-  </div>
+    @pytest.mark.parametrize(
+        "json_file, preset_name, case_name, case_data, logic",
+        _build_all_case_params()
+    )
+    def test_api(
+        json_file, preset_name, case_name, case_data, logic,
+        api_request, assert_code, base_url, allure_reporter, request_processor
+    ):
+        """
+        统一参数化测试入口
+    
+        根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+        默认 logic="query"，执行标准请求 + 断言 200。
+        """
+        # 1. 动态设置 Allure 标签
+        config = _get_allure_config(preset_name, json_file)
+        if config:
+            if config.get('suite'):
+                allure.dynamic.suite(config['suite'])
+            if config.get('epic'):
+                allure.dynamic.epic(config['epic'])
+            if config.get('sub_suite'):
+                allure.dynamic.sub_suite(config['sub_suite'])
+            if config.get('severity'):
+                allure.dynamic.severity(config['severity'])
+            for tag in config.get('tags', []):
+                allure.dynamic.tag(tag)
+    
+            base_title = config.get('title', '')
+            # 提取用例编号: "test_case_1" → 1
+            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name
+            # 格式: #1商户申请创建人查询接口测试'mchApply_applyCreatedBy.json
+            allure.dynamic.title(f"#{case_num}{base_title}'{json_file}")
+    
+        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)
+>       execute_case(case_data, ctx, case_name)
 
-  <div class="details">
-    <div class="details-content">
-      <div class="details-text">
+api_project\testcases\test_api.py:557: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+api_project\testcases\test_api.py:481: in execute_case
+    ctx['assert_code'].status_code(response, expected_code)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [401]>, expected_code = 200
+
+    @staticmethod
+    def status_code(response: Response, expected_code: int) -> "ApiAssert":
+        """断言响应状态码"""
+        actual_code = response.status_code
+>       assert actual_code == expected_code, (
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            f"❌ 状态码断言失败\n"
+            f"预期: {expected_code} | 实际: {actual_code}\n"
+            f"请求URL: {response.request.url}"
+        )</pre></div>
+                    
     
     
     
-    
-    
-                    <div><strong>Logs:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4oS577iPIOW3suWJpeemu+eUqOS+i+aVsOaNruS4reeahCB0b2tlbiDor7fmsYLlpLTvvIzmlLnnlKjnjq/looPlj5jph48v55So5oi36YWN572u5Lit55qE6buY6K6kIHRva2VuCuKEue+4jyDor7fmsYLlpLTlt7Lmt7vliqAgaVRva2VuCvCfk6Qg5Y+R6YCB6K+35rGCOiBHRVQgaHR0cHM6Ly9tZy42anFiLmNvbS9hcGkvY29kZUl0ZW0K8J+TpSDlk43lupTnirbmgIHnoIE6IDIwMO+8jOiAl+aXtjogMC4wMjVzCuKchSDnirbmgIHnoIHmlq3oqIDpgJrov4c6IOmihOacnzIwMO+8jOWunumZhTIwMA==', this)" title="Copy logs">
+                    <div><strong>Logs:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4oS577iPIOW3suWJpeemu+eUqOS+i+aVsOaNruS4reeahCB0b2tlbiDor7fmsYLlpLTvvIzmlLnnlKjnjq/looPlj5jph48v55So5oi36YWN572u5Lit55qE6buY6K6kIHRva2VuCuKEue+4jyDor7fmsYLlpLTlt7Lmt7vliqAgaVRva2VuCvCfk6Qg5Y+R6YCB6K+35rGCOiBHRVQgaHR0cHM6Ly9tZy42anFiLmNvbS9hcGkvY29kZUl0ZW0K8J+TpSDlk43lupTnirbmgIHnoIE6IDQwMe+8jOiAl+aXtjogMC4xOTlz', this)" title="Copy logs">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -644,8 +811,7 @@
                     <pre>ℹ️ 已剥离用例数据中的 token 请求头，改用环境变量/用户配置中的默认 token
 ℹ️ 请求头已添加 iToken
 📤 发送请求: GET https://mg.6jqb.com/api/codeItem
-📥 响应状态码: 200，耗时: 0.025s
-✅ 状态码断言通过: 预期200，实际200</pre></div>
+📥 响应状态码: 401，耗时: 0.199s</pre></div>
                     
     
       </div>
@@ -655,12 +821,12 @@
 </div>
 
         
-<div class="test test-card" data-name="test_api_mchApply_mchList_test_case_1_" data-link="" data-markers="parametrize" data-error="">
-  <div class="header passed" onclick="toggleDetails(this)">
+<div class="test test-card" data-name="test_api_mchApply_mchList_test_case_1_" data-link="" data-markers="parametrize" data-error="E       AssertionError: ❌ 状态码断言失败 E       预期: 200 | 实际: 401 E       请求URL: https://mg.6jqb.com/api/mchApply/mchList?pageNumber=1&amp;pageSize=10&amp;applyDefault=1&amp;mchShortName=99">
+  <div class="header failed" onclick="toggleDetails(this)">
     <div class="header-section test-info">
       <span class="toggle"></span>
       <strong>test_api_mchApply_mchList_test_case_1_</strong>
-      <span>— PASSED</span>
+      <span>— FAILED</span>
     </div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
@@ -679,7 +845,7 @@
     <div class="header-section badges-and-timing">
       <span style="display:inline-block; min-width:40px;"></span>
       <span style="display:inline-block; min-width:45px;"></span>
-      <span class="timestamp">⏱ 0.17s</span>
+      <span class="timestamp">⏱ 0.07s</span>
     </div>
   </div>
 
@@ -687,11 +853,95 @@
     <div class="details-content">
       <div class="details-text">
     
+                    <div class="error-content"><strong>Error:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('RSAgICAgICBBc3NlcnRpb25FcnJvcjog4p2MIOeKtuaAgeeggeaWreiogOWksei0pQpFICAgICAgIOmihOacnzogMjAwIHwg5a6e6ZmFOiA0MDEKRSAgICAgICDor7fmsYJVUkw6IGh0dHBzOi8vbWcuNmpxYi5jb20vYXBpL21jaEFwcGx5L21jaExpc3Q/cGFnZU51bWJlcj0xJnBhZ2VTaXplPTEwJmFwcGx5RGVmYXVsdD0xJm1jaFNob3J0TmFtZT05OQ==', this)" title="Copy error">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            
+                    <pre>E       AssertionError: ❌ 状态码断言失败
+E       预期: 200 | 实际: 401
+E       请求URL: https://mg.6jqb.com/api/mchApply/mchList?pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99</pre></div>
+                    
+    
+                    <div class="trace-content"><strong>Trace:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('anNvbl9maWxlID0gJ21jaEFwcGx5X21jaExpc3QuanNvbicsIHByZXNldF9uYW1lID0gJ2pxYl9tY2hhcHBseV9tY2hsaXN0X2FwaScKY2FzZV9uYW1lID0gJ3Rlc3RfY2FzZV8xJwpjYXNlX2RhdGEgPSB7J2Rlc2NyaXB0aW9uJzogJ21jaEFwcGx5X21jaExpc3TmjqXlj6PmtYvor5UnLCAncmVxdWVzdF90eXBlJzogJ2RlZmF1bHQnLCAnbG9naWMnOiAncXVlcnknLCAnZGF0YSc6IHsndXJsJzogJ2h0dHBzOi8vbWcuNmpxYi4uLi5oJzogJzAnLCAnc2VjLWNoLXVhLXBsYXRmb3JtJzogJyJXaW5kb3dzIicsIC4uLn0sICdwYXJhbXMnOiAncGFnZU51bWJlcj0xJnBhZ2VTaXplPTEwJmFwcGx5RGVmYXVsdD0xJm1jaFNob3J0TmFtZT05OSd9fQpsb2dpYyA9ICdxdWVyeScKYXBpX3JlcXVlc3QgPSA8YXBpX3Byb2plY3QuY29tbW9uLmFwaV9yZXF1ZXN0LkFwaVJlcXVlc3Qgb2JqZWN0IGF0IDB4MDAwMDAyMkUzNkQzOEIzMD4KYXNzZXJ0X2NvZGUgPSA8Y2xhc3MgJ2FwaV9wcm9qZWN0LmNvbW1vbi5hcGlfYXNzZXJ0aW9ucy5BcGlBc3NlcnQnPgpiYXNlX3VybCA9ICdodHRwczovL21nLjZqcWIuY29tJwphbGx1cmVfcmVwb3J0ZXIgPSA8YXBpX3Byb2plY3QudGVzdGNhc2VzLmNvbmZ0ZXN0LmFsbHVyZV9yZXBvcnRlci48bG9jYWxzPi5BbGx1cmVSZXBvcnRlciBvYmplY3QgYXQgMHgwMDAwMDIyRTM2RDM5OUQwPgpyZXF1ZXN0X3Byb2Nlc3NvciA9IDxjbGFzcyAnYXBpX3Byb2plY3QuY29tbW9uLnBhcmFtX3Byb2Nlc3Nvci5SZXF1ZXN0UHJvY2Vzc29yJz4KCiAgICBAcHl0ZXN0Lm1hcmsucGFyYW1ldHJpemUoCiAgICAgICAgImpzb25fZmlsZSwgcHJlc2V0X25hbWUsIGNhc2VfbmFtZSwgY2FzZV9kYXRhLCBsb2dpYyIsCiAgICAgICAgX2J1aWxkX2FsbF9jYXNlX3BhcmFtcygpCiAgICApCiAgICBkZWYgdGVzdF9hcGkoCiAgICAgICAganNvbl9maWxlLCBwcmVzZXRfbmFtZSwgY2FzZV9uYW1lLCBjYXNlX2RhdGEsIGxvZ2ljLAogICAgICAgIGFwaV9yZXF1ZXN0LCBhc3NlcnRfY29kZSwgYmFzZV91cmwsIGFsbHVyZV9yZXBvcnRlciwgcmVxdWVzdF9wcm9jZXNzb3IKICAgICk6CiAgICAgICAgIiIiCiAgICAgICAg57uf5LiA5Y+C5pWw5YyW5rWL6K+V5YWl5Y+jCiAgICAKICAgICAgICDmoLnmja4gSlNPTiB0ZXN0X2Nhc2Ug5Lit55qEIGxvZ2ljIOWtl+aute+8jOiHquWKqOWIhuWPkeWIsOWvueW6lCBoYW5kbGVy44CCCiAgICAgICAg6buY6K6kIGxvZ2ljPSJxdWVyeSLvvIzmiafooYzmoIflh4bor7fmsYIgKyDmlq3oqIAgMjAw44CCCiAgICAgICAgIiIiCiAgICAgICAgIyAxLiDliqjmgIHorr7nva4gQWxsdXJlIOagh+etvgogICAgICAgIGNvbmZpZyA9IF9nZXRfYWxsdXJlX2NvbmZpZyhwcmVzZXRfbmFtZSwganNvbl9maWxlKQogICAgICAgIGlmIGNvbmZpZzoKICAgICAgICAgICAgaWYgY29uZmlnLmdldCgnc3VpdGUnKToKICAgICAgICAgICAgICAgIGFsbHVyZS5keW5hbWljLnN1aXRlKGNvbmZpZ1snc3VpdGUnXSkKICAgICAgICAgICAgaWYgY29uZmlnLmdldCgnZXBpYycpOgogICAgICAgICAgICAgICAgYWxsdXJlLmR5bmFtaWMuZXBpYyhjb25maWdbJ2VwaWMnXSkKICAgICAgICAgICAgaWYgY29uZmlnLmdldCgnc3ViX3N1aXRlJyk6CiAgICAgICAgICAgICAgICBhbGx1cmUuZHluYW1pYy5zdWJfc3VpdGUoY29uZmlnWydzdWJfc3VpdGUnXSkKICAgICAgICAgICAgaWYgY29uZmlnLmdldCgnc2V2ZXJpdHknKToKICAgICAgICAgICAgICAgIGFsbHVyZS5keW5hbWljLnNldmVyaXR5KGNvbmZpZ1snc2V2ZXJpdHknXSkKICAgICAgICAgICAgZm9yIHRhZyBpbiBjb25maWcuZ2V0KCd0YWdzJywgW10pOgogICAgICAgICAgICAgICAgYWxsdXJlLmR5bmFtaWMudGFnKHRhZykKICAgIAogICAgICAgICAgICBiYXNlX3RpdGxlID0gY29uZmlnLmdldCgndGl0bGUnLCAnJykKICAgICAgICAgICAgIyDmj5Dlj5bnlKjkvovnvJblj7c6ICJ0ZXN0X2Nhc2VfMSIg4oaSIDEKICAgICAgICAgICAgY2FzZV9udW0gPSBjYXNlX25hbWUucmVwbGFjZSgndGVzdF9jYXNlXycsICcnKSBpZiBjYXNlX25hbWUuc3RhcnRzd2l0aCgndGVzdF9jYXNlXycpIGVsc2UgY2FzZV9uYW1lCiAgICAgICAgICAgICMg5qC85byPOiAjMeWVhuaIt+eUs+ivt+WIm+W7uuS6uuafpeivouaOpeWPo+a1i+ivlSdtY2hBcHBseV9hcHBseUNyZWF0ZWRCeS5qc29uCiAgICAgICAgICAgIGFsbHVyZS5keW5hbWljLnRpdGxlKGYiI3tjYXNlX251bX17YmFzZV90aXRsZX0ne2pzb25fZmlsZX0iKQogICAgCiAgICAgICAgY3R4ID0gYnVpbGRfY2FzZV9jb250ZXh0KGFwaV9yZXF1ZXN0LCBhc3NlcnRfY29kZSwgYmFzZV91cmwsIGFsbHVyZV9yZXBvcnRlciwgcmVxdWVzdF9wcm9jZXNzb3IpCj4gICAgICAgZXhlY3V0ZV9jYXNlKGNhc2VfZGF0YSwgY3R4LCBjYXNlX25hbWUpCgphcGlfcHJvamVjdFx0ZXN0Y2FzZXNcdGVzdF9hcGkucHk6NTU3OiAKXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXwphcGlfcHJvamVjdFx0ZXN0Y2FzZXNcdGVzdF9hcGkucHk6NDgxOiBpbiBleGVjdXRlX2Nhc2UKICAgIGN0eFsnYXNzZXJ0X2NvZGUnXS5zdGF0dXNfY29kZShyZXNwb25zZSwgZXhwZWN0ZWRfY29kZSkKXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXwoKcmVzcG9uc2UgPSA8UmVzcG9uc2UgWzQwMV0+LCBleHBlY3RlZF9jb2RlID0gMjAwCgogICAgQHN0YXRpY21ldGhvZAogICAgZGVmIHN0YXR1c19jb2RlKHJlc3BvbnNlOiBSZXNwb25zZSwgZXhwZWN0ZWRfY29kZTogaW50KSAtPiAiQXBpQXNzZXJ0IjoKICAgICAgICAiIiLmlq3oqIDlk43lupTnirbmgIHnoIEiIiIKICAgICAgICBhY3R1YWxfY29kZSA9IHJlc3BvbnNlLnN0YXR1c19jb2RlCj4gICAgICAgYXNzZXJ0IGFjdHVhbF9jb2RlID09IGV4cGVjdGVkX2NvZGUsICgKICAgICAgICAgICAgICAgXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXgogICAgICAgICAgICBmIuKdjCDnirbmgIHnoIHmlq3oqIDlpLHotKVcbiIKICAgICAgICAgICAgZiLpooTmnJ86IHtleHBlY3RlZF9jb2RlfSB8IOWunumZhToge2FjdHVhbF9jb2RlfVxuIgogICAgICAgICAgICBmIuivt+axglVSTDoge3Jlc3BvbnNlLnJlcXVlc3QudXJsfSIKICAgICAgICAp', this)" title="Copy trace">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+            
+                    <pre>json_file = 'mchApply_mchList.json', preset_name = 'jqb_mchapply_mchlist_api'
+case_name = 'test_case_1'
+case_data = {'description': 'mchApply_mchList接口测试', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb....h': '0', 'sec-ch-ua-platform': '"Windows"', ...}, 'params': 'pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99'}}
+logic = 'query'
+api_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>
+assert_code = <class 'api_project.common.api_assertions.ApiAssert'>
+base_url = 'https://mg.6jqb.com'
+allure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D399D0>
+request_processor = <class 'api_project.common.param_processor.RequestProcessor'>
+
+    @pytest.mark.parametrize(
+        "json_file, preset_name, case_name, case_data, logic",
+        _build_all_case_params()
+    )
+    def test_api(
+        json_file, preset_name, case_name, case_data, logic,
+        api_request, assert_code, base_url, allure_reporter, request_processor
+    ):
+        """
+        统一参数化测试入口
+    
+        根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+        默认 logic="query"，执行标准请求 + 断言 200。
+        """
+        # 1. 动态设置 Allure 标签
+        config = _get_allure_config(preset_name, json_file)
+        if config:
+            if config.get('suite'):
+                allure.dynamic.suite(config['suite'])
+            if config.get('epic'):
+                allure.dynamic.epic(config['epic'])
+            if config.get('sub_suite'):
+                allure.dynamic.sub_suite(config['sub_suite'])
+            if config.get('severity'):
+                allure.dynamic.severity(config['severity'])
+            for tag in config.get('tags', []):
+                allure.dynamic.tag(tag)
+    
+            base_title = config.get('title', '')
+            # 提取用例编号: "test_case_1" → 1
+            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name
+            # 格式: #1商户申请创建人查询接口测试'mchApply_applyCreatedBy.json
+            allure.dynamic.title(f"#{case_num}{base_title}'{json_file}")
+    
+        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)
+>       execute_case(case_data, ctx, case_name)
+
+api_project\testcases\test_api.py:557: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+api_project\testcases\test_api.py:481: in execute_case
+    ctx['assert_code'].status_code(response, expected_code)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [401]>, expected_code = 200
+
+    @staticmethod
+    def status_code(response: Response, expected_code: int) -> "ApiAssert":
+        """断言响应状态码"""
+        actual_code = response.status_code
+>       assert actual_code == expected_code, (
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            f"❌ 状态码断言失败\n"
+            f"预期: {expected_code} | 实际: {actual_code}\n"
+            f"请求URL: {response.request.url}"
+        )</pre></div>
+                    
     
     
     
-    
-                    <div><strong>Logs:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4oS577iPIOW3suWJpeemu+eUqOS+i+aVsOaNruS4reeahCB0b2tlbiDor7fmsYLlpLTvvIzmlLnnlKjnjq/looPlj5jph48v55So5oi36YWN572u5Lit55qE6buY6K6kIHRva2VuCuKEue+4jyDor7fmsYLlpLTlt7Lmt7vliqAgaVRva2VuCvCfk6Qg5Y+R6YCB6K+35rGCOiBQT1NUIGh0dHBzOi8vbWcuNmpxYi5jb20vYXBpL21jaEFwcGx5L21jaExpc3QK8J+TpSDlk43lupTnirbmgIHnoIE6IDIwMO+8jOiAl+aXtjogMC4xMTFzCuKchSDnirbmgIHnoIHmlq3oqIDpgJrov4c6IOmihOacnzIwMO+8jOWunumZhTIwMA==', this)" title="Copy logs">
+                    <div><strong>Logs:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4oS577iPIOW3suWJpeemu+eUqOS+i+aVsOaNruS4reeahCB0b2tlbiDor7fmsYLlpLTvvIzmlLnnlKjnjq/looPlj5jph48v55So5oi36YWN572u5Lit55qE6buY6K6kIHRva2VuCuKEue+4jyDor7fmsYLlpLTlt7Lmt7vliqAgaVRva2VuCvCfk6Qg5Y+R6YCB6K+35rGCOiBQT1NUIGh0dHBzOi8vbWcuNmpxYi5jb20vYXBpL21jaEFwcGx5L21jaExpc3QK8J+TpSDlk43lupTnirbmgIHnoIE6IDQwMe+8jOiAl+aXtjogMC4wNTVz', this)" title="Copy logs">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -701,8 +951,7 @@
                     <pre>ℹ️ 已剥离用例数据中的 token 请求头，改用环境变量/用户配置中的默认 token
 ℹ️ 请求头已添加 iToken
 📤 发送请求: POST https://mg.6jqb.com/api/mchApply/mchList
-📥 响应状态码: 200，耗时: 0.111s
-✅ 状态码断言通过: 预期200，实际200</pre></div>
+📥 响应状态码: 401，耗时: 0.055s</pre></div>
                     
     
       </div>

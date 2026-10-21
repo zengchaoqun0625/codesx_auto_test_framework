@@ -756,8 +756,12 @@ def pytest_testnodedown(node, error):
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
     outcome = yield
-    if call.when == "call":
-        _session_reporter.capture_report(item, outcome.get_result())
+    report = outcome.get_result()
+    # ``call`` is the ordinary test result.  setup/teardown are also captured
+    # when they fail or skip, otherwise fixture failures disappear from the
+    # summary and notification flow.
+    if call.when == "call" or report.failed or report.skipped:
+        _session_reporter.capture_report(item, report)
 
 
 def pytest_sessionfinish(session, exitstatus):

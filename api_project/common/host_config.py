@@ -96,8 +96,6 @@ class HostConfig:
                 return validated_host
             logger.warning(f"❌ 环境变量 API_HOST 提供的 URL 无效: {explicit_host}")
 
-        if not os.getenv("API_ENV", "").strip():
-            return None
         environment = get_environment_name()
         profile = get_environment_profile()
         host_var_name = str(profile.get("host_env", "")).strip()
@@ -107,7 +105,7 @@ class HostConfig:
 
         selected_host = os.getenv(host_var_name, "").strip()
         if not selected_host:
-            logger.warning("⚠️ API_ENV=%s，但未配置 %s", environment, host_var_name)
+            logger.warning("⚠️ 环境=%s，但未配置 %s", environment, host_var_name)
             return None
 
         validated_host = HostConfig._validate_url(selected_host)

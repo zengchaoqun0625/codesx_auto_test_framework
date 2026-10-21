@@ -195,6 +195,9 @@ def run_scheduler(jobs_file=None, dry_run=False):
     if not config["jobs"]:
         logger.warning("没有可用的任务配置，调度器退出。请检查 scheduler_jobs.json")
         return 1
+    if not any(job["enabled"] for job in config["jobs"]):
+        logger.warning("没有启用的任务，调度器退出。请将至少一个任务的 enabled 设为 true")
+        return 0
 
     logger.info("=" * 60)
     logger.info("任务清单预览")

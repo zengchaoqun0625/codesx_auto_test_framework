@@ -27,7 +27,14 @@ class Logger(object):
                 end
             ]
             log_content =  ''.join(log)
-            stream.write(log_content)
+            try:
+                stream.write(log_content)
+            except UnicodeEncodeError:
+                # 独立脚本可能在 GBK 控制台中运行；日志不能因 emoji/中文
+                # 编码失败而中断报告、调度等主流程。
+                encoding = getattr(stream, 'encoding', None) or 'utf-8'
+                safe_content = log_content.encode(encoding, errors='backslashreplace').decode(encoding)
+                stream.write(safe_content)
             if not os.path.exists(os.path.dirname(self.logfile)):
                 os.makedirs(os.path.dirname(self.logfile))
             with open(self.logfile, 'a', encoding='utf-8') as f:

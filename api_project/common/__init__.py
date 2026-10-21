@@ -51,7 +51,7 @@ def _clean(path:str = None):
             logger.error(str(e))
 
 def clean():
-    ''' 清除上次执行的数据 '''
+    '''清理本轮工作目录，避免历史测试结果混入当前报告。'''
 
     if PROJECT_CLEAN.data_status:
         _clean(DATA_DIR_PATH)
@@ -112,8 +112,9 @@ def init():
     clean()
     ENV.load()
     ENV.set_env('HOST', HOST.CURRENT_HOST)
+    # 同一端口只保留一个 Allure 服务，避免多轮执行留下多个浏览器窗口/服务进程。
     kill_process(Allure.PORT)
-    logger.info('初始化完毕~')
+    logger.info('初始化完毕：工作目录已清理，上一轮 Allure 服务已关闭~')
 
 
 from .allure_decorator import allure_preset, allure_report, ALLURE_CONFIGS

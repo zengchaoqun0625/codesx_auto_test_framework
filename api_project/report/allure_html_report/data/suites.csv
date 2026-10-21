@@ -1,17 +1,17 @@
 "Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Wed Oct 21 10:44:08 GMT+08:00 2026","Wed Oct 21 10:44:08 GMT+08:00 2026","169","api_project.testcases","进钱吧测试项目","商户申请模块","","","#1商户申请列表查询接口测试'mchApply_mchList.json","
+"failed","Wed Oct 21 12:08:35 GMT+08:00 2026","Wed Oct 21 12:08:35 GMT+08:00 2026","215","api_project.testcases","cURL 转换接口","待归类接口","","","#1api_codeItem'api_codeItem.json","
     统一参数化测试入口
 
     根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
     默认 logic=""query""，执行标准请求 + 断言 200。
     "
-"passed","Wed Oct 21 10:44:08 GMT+08:00 2026","Wed Oct 21 10:44:08 GMT+08:00 2026","220","api_project.testcases","cURL 转换接口","待归类接口","","","#1api_cashouts'api_cashouts.json","
+"failed","Wed Oct 21 12:08:33 GMT+08:00 2026","Wed Oct 21 12:08:34 GMT+08:00 2026","1358","api_project.testcases","cURL 转换接口","待归类接口","","","#1api_cashouts'api_cashouts.json","
     统一参数化测试入口
 
     根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
     默认 logic=""query""，执行标准请求 + 断言 200。
     "
-"passed","Wed Oct 21 10:44:08 GMT+08:00 2026","Wed Oct 21 10:44:08 GMT+08:00 2026","46","api_project.testcases","cURL 转换接口","待归类接口","","","#1api_codeItem'api_codeItem.json","
+"failed","Wed Oct 21 12:08:35 GMT+08:00 2026","Wed Oct 21 12:08:35 GMT+08:00 2026","70","api_project.testcases","进钱吧测试项目","商户申请模块","","","#1商户申请列表查询接口测试'mchApply_mchList.json","
     统一参数化测试入口
 
     根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
