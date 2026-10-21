@@ -8,6 +8,7 @@ Allure 报告装饰器模块
 import time
 import json
 import logging
+from pathlib import Path
 from functools import wraps
 from typing import Dict, Any, Optional, Union, List, Callable
 from requests import Response
@@ -317,6 +318,31 @@ ALLURE_CONFIGS: Dict[str, Dict[str, Any]] = {
         "title": "统计查询日期接口测试"
     },
 }
+
+# 控制台扩展预设保存在独立 JSON 文件中，避免网页操作改写本模块的内置配置。
+def _load_console_presets():
+    path = Path(__file__).resolve().parents[1] / "config" / "allure_presets.json"
+    try:
+        store = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    if not isinstance(store, dict):
+        return
+    for key in store.get("deleted", []):
+        if isinstance(key, str):
+            ALLURE_CONFIGS.pop(key, None)
+    for key, config in store.get("presets", {}).items():
+        if not isinstance(key, str) or not isinstance(config, dict):
+            continue
+        item = dict(config)
+        severity = str(item.get("severity", "normal")).upper()
+        item["severity"] = getattr(allure.severity_level, severity, allure.severity_level.NORMAL)
+        item["tags"] = [str(tag) for tag in item.get("tags", []) if str(tag).strip()]
+        ALLURE_CONFIGS[key] = item
+
+
+_load_console_presets()
+
 
 # ==============================
 # Allure报告装饰器（全局）- 静态版本

@@ -52,7 +52,6 @@ if __name__ == '__main__':
         '--litereport',
         f'--alluredir={DATA_DIR_PATH}',
         '--clean-alluredir',
-        '--cache-clear',
         # pytest-html-plus uses an output directory rather than pytest-html's
         # --html/--self-contained-html/--css options.
         f'--html-output={REPORT_DIR_PATH}',

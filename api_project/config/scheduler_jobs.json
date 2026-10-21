@@ -3,18 +3,19 @@
   "jobs": [
     {
       "name": "每30分钟全量回归",
-      "enabled": false,
+      "enabled": true,
       "cron": "*/30 * * * *",
       "command": "run_testcases.py",
       "timeout_sec": 3600,
       "env": {
         "TEST_EXECUTOR": "定时任务-曾超群"
       },
-      "description": "每天每30分钟全量回归，自动生成报告并推送通知"
+      "description": "每 30 分钟执行全量回归，自动生成报告并按通知开关推送结果",
+      "id": "legacy-0"
     },
     {
-      "name": "每30分钟冒烟回归（示例，默认关闭）",
-      "enabled": false,
+      "name": "每30分钟冒烟回归",
+      "enabled": true,
       "cron": "*/30 * * * *",
       "command": "run_testcases.py",
       "timeout_sec": 1800,
@@ -22,16 +23,18 @@
         "TEST_EXECUTOR": "定时任务-冒烟",
         "RUN_MODULE": "登录认证模块,商户申请模块,支付订单模块"
       },
-      "description": "冒烟分层示例：只跑核心链路（登录/商户申请/支付订单），负担远小于全量；需要时把 enabled 改 true，并可按需调整 RUN_MODULE 名单"
+      "description": "只跑登录、商户申请和支付订单等核心链路；可按需调整 RUN_MODULE 名单或将 enabled 改为 false",
+      "id": "legacy-1"
     },
     {
       "name": "每日存储容量清理",
-      "enabled": false,
+      "enabled": true,
       "cron": "10 3 * * *",
       "command": "api_project/scheduler/cleanup_storage.py",
       "timeout_sec": 600,
       "env": {},
-      "description": "默认关闭；启用后当 data、log 单目录超过 100MiB 时，按最旧文件清至 80MiB，并于每日 03:10 执行"
+      "description": "当 data、log 单目录超过 100MiB 时，按最旧文件清至 80MiB，并于每日 03:10 执行",
+      "id": "legacy-2"
     }
   ]
 }

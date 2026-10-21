@@ -226,6 +226,23 @@ def pytest_collection_modifyitems(config, items):
     _deduplicate_param_test(config, items)
 
     """pytest 收集钩子：根据 RUN_MODULE 筛选测试"""
+    requested_files = {name.strip() for name in os.getenv("RUN_CASE_FILES", "").split(",") if name.strip()}
+    if requested_files:
+        selected, deselected = [], []
+        for item in items:
+            is_parameterized_api_case = (
+                hasattr(item, "fspath")
+                and os.path.basename(str(item.fspath)) == "test_api.py"
+                and any(f"[{filename}/" in item.name for filename in requested_files)
+            )
+            (selected if is_parameterized_api_case else deselected).append(item)
+        if selected:
+            items[:] = selected
+            config.hook.pytest_deselected(items=deselected)
+            logger.info(f"🏷️ 按文件筛选测试: {sorted(requested_files)}")
+            return
+        logger.warning("⚠️ RUN_CASE_FILES 未匹配到参数化用例，执行全量测试")
+
     run_module = _get_run_module()
     if not run_module:
         return

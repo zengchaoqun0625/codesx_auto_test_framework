@@ -1,17 +1,131 @@
 "Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"failed","Wed Oct 21 12:08:35 GMT+08:00 2026","Wed Oct 21 12:08:35 GMT+08:00 2026","215","api_project.testcases","cURL 转换接口","待归类接口","","","#1api_codeItem'api_codeItem.json","
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","144","api_project.testcases","进钱吧测试项目","商户申请模块","","","#1商户申请列表查询接口测试'mchApply_mchList.json","
     统一参数化测试入口
 
     根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
     默认 logic=""query""，执行标准请求 + 断言 200。
     "
-"failed","Wed Oct 21 12:08:33 GMT+08:00 2026","Wed Oct 21 12:08:34 GMT+08:00 2026","1358","api_project.testcases","cURL 转换接口","待归类接口","","","#1api_cashouts'api_cashouts.json","
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","41","api_project.testcases","cURL 转换接口","待归类接口","","","#1api_deductOrder'api_deductOrder.json","
     统一参数化测试入口
 
     根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
     默认 logic=""query""，执行标准请求 + 断言 200。
     "
-"failed","Wed Oct 21 12:08:35 GMT+08:00 2026","Wed Oct 21 12:08:35 GMT+08:00 2026","70","api_project.testcases","进钱吧测试项目","商户申请模块","","","#1商户申请列表查询接口测试'mchApply_mchList.json","
+"passed","Wed Oct 21 17:08:59 GMT+08:00 2026","Wed Oct 21 17:08:59 GMT+08:00 2026","41","api_project.testcases","cURL 转换接口","待归类接口","","","#2payIfDefines_get'payIfDefines_get.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","32","api_project.testcases","进钱吧测试项目","登录认证模块","","","#2站点信息查询接口测试'api_codeItem.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:59 GMT+08:00 2026","Wed Oct 21 17:08:59 GMT+08:00 2026","58","api_project.testcases","进钱吧测试项目","查询模块","","","#1门店设备查询接口测试'store_device.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","91","api_project.testcases","进钱吧测试项目","查询模块","","","#1商户轮询列表查询接口测试'mchPolling_list.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","62","api_project.testcases","进钱吧测试项目","查询模块","","","#2商户轮询列表查询接口测试'mchPolling_list.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:59 GMT+08:00 2026","Wed Oct 21 17:08:59 GMT+08:00 2026","54","api_project.testcases","进钱吧测试项目","订单模块","","","#1支付订单数量查询接口测试'payOrder_count.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","33","api_project.testcases","进钱吧测试项目","登录认证模块","","","#3站点信息查询接口测试'api_codeItem.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","128","api_project.testcases","cURL 转换接口","待归类接口","","","#1mchForm_payment'mchForm_payment.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","71","api_project.testcases","进钱吧测试项目","查询模块","","","#1ISV信息查询接口测试'api_isvInfo.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","103","api_project.testcases","进钱吧测试项目","支付模块","","","#1支付定义查询接口测试'api_payIfDefines.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","45","api_project.testcases","cURL 转换接口","待归类接口","","","#1deductOrder_statistics'deductOrder_statistics.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","42","api_project.testcases","cURL 转换接口","待归类接口","","","#1payIfDefines_get'payIfDefines_get.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:59 GMT+08:00 2026","Wed Oct 21 17:08:59 GMT+08:00 2026","62","api_project.testcases","cURL 转换接口","待归类接口","","","#1polling_transfer'polling_transfer.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","40","api_project.testcases","进钱吧测试项目","查询模块","","","#1退款订单查询接口测试'api_refundOrder.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","74","api_project.testcases","进钱吧测试项目","查询模块","","","#1商户二维码查询接口测试'api_mchQrCodes.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","61","api_project.testcases","进钱吧测试项目","订单模块","","","#1支付订单查询接口测试'api_payOrder.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","234","api_project.testcases","进钱吧测试项目","查询模块","","","#1ISV信息查询接口测试'api_cashouts.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","57","api_project.testcases","进钱吧测试项目","查询模块","","","#1转账订单查询接口测试'api_transferOrders.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:57 GMT+08:00 2026","Wed Oct 21 17:08:57 GMT+08:00 2026","36","api_project.testcases","进钱吧测试项目","登录认证模块","","","#1站点信息查询接口测试'api_codeItem.json","
+    统一参数化测试入口
+
+    根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。
+    默认 logic=""query""，执行标准请求 + 断言 200。
+    "
+"passed","Wed Oct 21 17:08:58 GMT+08:00 2026","Wed Oct 21 17:08:58 GMT+08:00 2026","47","api_project.testcases","进钱吧测试项目","支付模块","","","#1支付方式查询接口测试'api_payWays.json","
     统一参数化测试入口
 
     根据 JSON test_case 中的 logic 字段，自动分发到对应 handler。

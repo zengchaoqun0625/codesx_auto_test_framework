@@ -4,6 +4,16 @@
 
 基于 `pytest + Allure` 的 API 自动化测试框架。它以 JSON 用例为核心，提供 cURL 转换、变量关联、数据驱动断言、性能阈值、报告归档、通知和定时回归能力。
 
+## 先启动本地管理台
+
+在项目根目录执行下面的命令，然后打开 <http://127.0.0.1:5000/>：
+
+```powershell
+.\.venv\Scripts\python.exe web_app.py
+```
+
+管理台可完成 cURL 导入、模块执行、用例浏览、报告查看和本地 `.env` 配置。需要新增接口时，推荐直接对 AI 说：`帮我转换 curl 文件并生成测试用例`，即可走项目内置的完整 Skill 流程。
+
 ```text
 “帮我转换 curl 文件并生成测试用例”
                   ↓
@@ -24,6 +34,66 @@
 | 多个入口、不清楚如何验收 | 输出变更清单，并执行收集检查 |
 
 AI 并不改变框架的执行方式：最终仍由统一的 JSON 测试入口运行。因此生成结果可审查、可维护，也可不依赖 AI 继续使用。
+
+---
+
+## 🖥️ 本地 Web 管理台
+
+启动管理台（默认会自动打开浏览器）：
+
+```powershell
+.\.venv\Scripts\python.exe web_app.py
+```
+
+地址：<http://127.0.0.1:5000/>
+
+管理台覆盖从新增接口到报告查看的完整日常流程：
+
+1. 粘贴浏览器的 **Copy as cURL**，先预览生成的 JSON；抓包中的 Token、Cookie 与密码会替换为环境变量占位符。
+2. 确认后才保存用例；同名文件不会覆盖，保存后自动同步性能阈值，并以 `collect-only` 验证统一入口能够收集。
+3. 选择范围启动真实接口测试，查看实时日志，并进入 Allure、趋势、性能与总报告。
+4. 查看定时调度总开关、已启用任务数量，以及邮件、飞书、钉钉、企业微信和电话告警的配置状态。页面不会显示任何密钥或 webhook。
+
+通知与调度仍通过 `.env` 和 `api_project/config/scheduler_jobs.json` 配置；页面展示的是配置状态，不会主动发送通知。
+
+---
+
+## 📒 日常操作手册
+
+### 1. 首次配置
+
+```powershell
+Copy-Item api_project/.env.example api_project/.env
+```
+
+在 `.env` 至少填入 `API_HOST`，或填入 `API_ENV` 与对应的 `TEST_API_HOST` / `PRO_API_HOST`；受鉴权接口再填写 `API_TOKEN` 或 `API_ITOKEN`。通知渠道在模板中默认关闭，只有在确认收件人、群机器人或电话告警目标后才启用对应的 `*_ENABLED=true`。
+
+### 2. 新增接口（推荐 AI Skill）
+
+1. 把浏览器 **Copy as cURL** 保存为项目内的 `*curl*.txt`，或在管理台的“CURL 转用例”页粘贴。
+2. 对 AI 说：`帮我转换 curl 文件并生成测试用例`。
+3. 审核预览：真实凭据必须是 `${API_TOKEN}`、`${API_ITOKEN}`、`${API_COOKIE}` 等占位符；为每个 `test_case` 补充业务断言。
+4. 运行 `RUN_MODULE=list` 的收集检查，再选择新增模块执行真实接口测试。
+5. 如需对外交付，再更新 `api_document/apis.json` 并生成 `api_document/api-doc.html`。
+
+### 3. 日常执行与查看报告
+
+```powershell
+# 全量执行
+python run_testcases.py
+
+# 仅执行指定模块或 Allure 预设
+$env:RUN_MODULE='查询模块,jqb_api_mchqrcodes_api'
+python run_testcases.py
+```
+
+执行后从管理台“结果中心”进入总报告、Allure、趋势、汇总和性能报告。通知由 `SEND_EMAIL` 与 `PYTEST_NOTIFY_MODE` 决定；本地排查可临时用 `never` 避免对外发送。
+
+Allure 历史备份由 `ALLURE_REPORT_KEEP` 控制，默认保留最近 3 份 `allure_reports/<时间戳>/` 目录和 `api_project/report/` 中对应的 ZIP；例如设为 `1` 只保留最新一份。
+
+### 4. 定时回归
+
+先运行 `python run_scheduler.py --dry-run` 核对计划，再将 `.env` 的 `SCHEDULER_ENABLED=true` 与目标任务的 `enabled: true` 同时打开。当前 `scheduler_jobs.json` 的任务均为启用状态，启动调度器前务必确认频率、通知目标和存储清理策略。
 
 ---
 
@@ -89,7 +159,7 @@ pytest + Allure 原始结果
 报告、压缩包、历史趋势、性能统计、通知
 ```
 
-**重要：**新增 JSON 后必须有对应的 `ALLURE_CONFIGS` 预设，否则统一入口会跳过该文件。这是框架避免未知接口被静默执行的安全门禁；AI 流程会负责检查它。
+**重要：**新增 JSON 会优先匹配对应的 `ALLURE_CONFIGS` 预设；若尚未配置，统一入口会自动使用 `generated_*_api` 兜底分组，仍会执行并出现在收集结果中。为保证报告分组的业务语义，仍应通过 `allure-api-analyzer` 补齐正式预设。
 
 ---
 
@@ -282,6 +352,30 @@ API_TOKEN=your_test_token
 
 用例写入一次 `"assertion_rules": ["business_success"]` 后，后续调整规则只改配置文件；原有内联 `assertions` 会继续执行。
 
+### 单接口与逐接口断言
+
+断言的最小单位是一个 JSON 文件内的单个 `test_case`。统一入口会逐条展开并独立显示为 `文件名/test_case_x`，因此同一接口的不同参数、正反例，或不同接口都可以分别设置断言。
+
+```json
+{
+  "description": "查询订单成功",
+  "expected_status": 200,
+  "assertion_rules": ["business_success"],
+  "assertions": [
+    {"jsonpath": "$.data.items", "type": "list"},
+    {"jsonpath": "$.data.items", "not_empty": true},
+    {"jsonpath": "$.data.total", "eq": 1},
+    {"key": "data.items.0.status", "contains": "PAID"},
+    {"response_time": 2}
+  ]
+}
+```
+
+- `expected_status` 断言 HTTP 状态码；未配置时 `query` 用例默认断言 `200`。
+- `assertions` 按顺序执行，支持 `jsonpath`（或 `expression`）和 `key` 点路径；比较方式为 `eq`、`contains`、`length`、`type`、`not_empty`，也可单独使用 `response_time`（秒）。任一失败即该条用例失败。
+- `assertion_rules` 从 `api_project/config/assertion_rules.json` 引入可复用断言，并且会与该用例的内联 `assertions` 一起执行；适合所有接口共用的业务成功码。接口特有字段、列表长度和性能要求则写在各自的 `test_case` 中。
+- 为同一接口覆盖多个场景时，在同一文件的 `test_cases` 下增加 `test_case_2`、`test_case_3`；它们拥有各自的请求参数和断言，报告中也会分别统计。
+
 ### 请求重试策略
 
 [request_retry.json](api_project/config/request_retry.json) 统一控制重试次数、间隔和状态码。默认只重试 `GET`、`HEAD`、`OPTIONS` 的 429、502、503 和网络超时，最多 3 次；登录与 `POST`/`PUT`/`DELETE` 等写请求不会自动重试。
@@ -333,7 +427,7 @@ python api_project/all_skills/curl-to-testcase/scripts/run_convert.py .\curl_log
 支持的核心能力：
 
 - `${变量名}`：引用 `.env` 或前序用例 `extract` 保存的变量
-- `assertions`：响应状态、JSONPath、点路径、包含、长度、类型、非空和响应时间断言
+- `expected_status`：HTTP 响应状态码断言；`assertions`：JSONPath、点路径、包含、长度、类型、非空和响应时间断言
 - `logic: query`：当前标准请求处理器
 
 不要把 `Authorization`、iToken、Cookie、密码或 webhook 写入 JSON；一律使用 `.env` 变量引用。
@@ -400,7 +494,7 @@ python -m pytest api_project/testcases --collect-only -q
 
 ## ⏰ 定时回归
 
-编辑 `api_project/config/scheduler_jobs.json`：任务需要同时满足 `enabled: true` 和 `.env` 中 `SCHEDULER_ENABLED=true` 才会执行。
+编辑 `api_project/config/scheduler_jobs.json`：任务需要同时满足 `enabled: true` 和 `.env` 中 `SCHEDULER_ENABLED=true` 才会执行。当前仓库中的 3 个任务均为启用状态；首次启动前请按实际环境确认执行频率和清理策略。
 
 先预览任务：
 

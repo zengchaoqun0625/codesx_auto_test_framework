@@ -27,6 +27,11 @@ NOTIFICATION_TIMEOUT = get_positive_float_env("NOTIFICATION_TIMEOUT", 10.0)
 NOTIFICATION_VERIFY_TLS = get_bool_env("NOTIFICATION_VERIFY_TLS", default=True)
 
 
+def _channel_enabled(name: str) -> bool:
+    """Channel switches default to enabled to preserve existing installations."""
+    return get_bool_env(f"{name}_ENABLED", default=True)
+
+
 def _send_feishu_rich(service, report_data: dict) -> bool:
     """发送飞书富文本卡片，成功返回 True，失败返回 False（触发降级）"""
     try:
@@ -245,7 +250,7 @@ def _send_robot_notification(content: str, report_data: dict = None) -> bool:
     sent_count = 0
 
     # 飞书
-    if FeiShu_Config._token_ and FeiShu_Config.webhook:
+    if _channel_enabled("FEISHU") and FeiShu_Config._token_ and FeiShu_Config.webhook:
         try:
             feishu_service = FeiShuService()
             rich_sent = False
@@ -264,7 +269,7 @@ def _send_robot_notification(content: str, report_data: dict = None) -> bool:
         logger.debug("飞书未配置 token，跳过")
 
     # 钉钉
-    if DingDing_Config._token_ and DingDing_Config.webhook:
+    if _channel_enabled("DINGDING") and DingDing_Config._token_ and DingDing_Config.webhook:
         try:
             dingding_service = DingDingService()
             rich_sent = False
@@ -282,7 +287,7 @@ def _send_robot_notification(content: str, report_data: dict = None) -> bool:
         logger.debug("钉钉未配置 token，跳过")
 
     # 企业微信
-    if WeiXin_Config._token_ and WeiXin_Config.webhook:
+    if _channel_enabled("WEIXIN") and WeiXin_Config._token_ and WeiXin_Config.webhook:
         try:
             weixin_service = WeiXinService()
             rich_sent = False
@@ -311,7 +316,7 @@ def _send_phone_call(report_data: dict) -> bool:
     - 跟随 NOTIFICATION_MODE 开关逻辑
     - webhook 未配置时跳过
     """
-    if not PHONE_CALL_WEBHOOK:
+    if not _channel_enabled("PHONE_CALL") or not PHONE_CALL_WEBHOOK:
         logger.debug("📞 电话通知 webhook 未配置，跳过")
         return False
 

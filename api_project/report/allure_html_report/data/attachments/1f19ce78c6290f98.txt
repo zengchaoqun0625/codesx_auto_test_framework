@@ -1,0 +1,5 @@
+INFO     api_project.common.api_request:api_request.py:327 ℹ️ 已剥离用例数据中的 token 请求头，改用环境变量/用户配置中的默认 token
+INFO     api_project.common.api_request:api_request.py:218 ℹ️ 请求头已添加 iToken
+INFO     api_project.common.api_request:api_request.py:343 📤 发送请求: GET https://mg.6jqb.com/api/payIfDefines/get
+INFO     api_project.common.api_request:api_request.py:352 📥 响应状态码: 200，耗时: 0.028s
+INFO     api_project.common.api_assertions:api_assertions.py:28 ✅ 状态码断言通过: 预期200，实际200

@@ -16,6 +16,13 @@ import platform
 import time
 from importlib.metadata import distributions
 
+# Windows 传统控制台可能仍使用 GBK，直接打印 emoji 会触发
+# UnicodeEncodeError，使只读的 ``--check`` 命令异常退出。保留当前
+# 控制台编码，仅将无法表示的字符替换，确保依赖检查始终能返回结果。
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(errors="replace")
+
 # ===================== 镜像源配置（优先级从高到低） =====================
 MIRRORS = [
     {"name": "清华", "url": "https://pypi.tuna.tsinghua.edu.cn/simple"},

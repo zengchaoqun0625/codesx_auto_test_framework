@@ -1,7 +1,0 @@
-INFO     api_project.common.api_request:api_request.py:129 ✅ 已从环境变量 API_TOKEN/API_ITOKEN 加载默认鉴权 token
-WARNING  api_project.common.host_config:host_config.py:108 ⚠️ 环境=test，但未配置 TEST_API_HOST
-INFO     api_project.common.host_config:host_config.py:151 ✅ 从host_config.py加载主机地址（CURRENT_HOST）: https://mg.6jqb.com
-INFO     api_project.common.api_request:api_request.py:327 ℹ️ 已剥离用例数据中的 token 请求头，改用环境变量/用户配置中的默认 token
-INFO     api_project.common.api_request:api_request.py:218 ℹ️ 请求头已添加 iToken
-INFO     api_project.common.api_request:api_request.py:343 📤 发送请求: GET https://mg.6jqb.com/api/cashouts
-INFO     api_project.common.api_request:api_request.py:352 📥 响应状态码: 401，耗时: 1.343s

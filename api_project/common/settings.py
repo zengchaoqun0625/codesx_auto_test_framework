@@ -37,3 +37,19 @@ def get_positive_float_env(name: str, default: float, environ=None) -> float:
         pass
     logger.warning("环境变量 %s=%r 必须是正数，使用默认值 %s", name, raw, default)
     return default
+
+
+def get_positive_int_env(name: str, default: int, environ=None) -> int:
+    """Read a positive integer; invalid values fall back safely with a warning."""
+    environment = os.environ if environ is None else environ
+    raw = environment.get(name)
+    if raw is None:
+        return default
+    try:
+        value = int(str(raw).strip())
+        if value > 0:
+            return value
+    except (TypeError, ValueError):
+        pass
+    logger.warning("环境变量 %s=%r 必须是正整数，使用默认值 %s", name, raw, default)
+    return default

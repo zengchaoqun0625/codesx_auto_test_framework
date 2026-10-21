@@ -1,0 +1,14 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "totalDeductAmount": 53.28,
+    "orderCount": 45,
+    "totalFeeAmount": 17.9,
+    "totalProfitAmount": 4.76,
+    "totalArrivalAmount": 35.38
+  },
+  "apiResId": "2112833516724760578",
+  "ok": true
+}

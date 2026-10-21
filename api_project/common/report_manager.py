@@ -25,7 +25,7 @@ from api_project.common.Network import check_port, get_local_ip
 from api_project.common.Email import EmailService
 from api_project.common.LOG import Logger
 from api_project.config.allure_config import Allure
-from api_project.common.settings import get_bool_env
+from api_project.common.settings import get_bool_env, get_positive_int_env
 
 logger = Logger()
 
@@ -72,6 +72,9 @@ SEND_EMAIL_MODE = _normalize_send_email_mode(SEND_EMAIL_MODE)
 # Allure 服务默认不启动，避免每轮测试结束后自动唤起浏览器。
 # 如需保留本地 Allure 服务，可在 api_project/.env 中设置 AUTO_START_ALLURE=true。
 AUTO_START_ALLURE = get_bool_env("AUTO_START_ALLURE", default=False)
+# Number of timestamped backups in ``allure_reports/`` and matching ZIP files
+# in ``api_project/report/``.  Keep the default conservative but configurable.
+ALLURE_REPORT_KEEP = get_positive_int_env("ALLURE_REPORT_KEEP", default=3)
 
 
 # ====================== 测试结果检查 ======================
@@ -1538,7 +1541,7 @@ def send_email_report(html_report_path, allure_zip):
 
 # ====================== 一键后置任务 ======================
 
-def run_post_test_tasks(max_keep_reports=1):
+def run_post_test_tasks(max_keep_reports=None):
     """
     pytest 执行完毕后的一键后置任务编排：
       1. 按开关启动 Allure 服务（默认关闭）
@@ -1547,6 +1550,17 @@ def run_post_test_tasks(max_keep_reports=1):
       4. 查找 HTML 报告路径
       5. 发送邮件通知
     """
+    # Allow programmatic callers to override retention while normal runs use
+    # the validated ALLURE_REPORT_KEEP environment setting.
+    if max_keep_reports is None:
+        max_keep_reports = ALLURE_REPORT_KEEP
+    else:
+        try:
+            max_keep_reports = max(1, int(max_keep_reports))
+        except (TypeError, ValueError):
+            logger.warning("max_keep_reports=%r 无效，使用 ALLURE_REPORT_KEEP=%s", max_keep_reports, ALLURE_REPORT_KEEP)
+            max_keep_reports = ALLURE_REPORT_KEEP
+
     # 1. 默认不启动 Allure serve，避免测试完成后自动打开浏览器。
     if AUTO_START_ALLURE:
         allure_server()

@@ -218,11 +218,25 @@ def _safe_text(response, limit=300):
 #  JSON 文件名 → ALLURE_CONFIGS 预设 自动映射
 # ============================================================
 
+def _load_console_assignments():
+    path = os.path.join(os.path.dirname(CASE_DATA_DIR_PATH), "config", "allure_presets.json")
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            assignments = json.load(file).get("assignments", {})
+        return assignments if isinstance(assignments, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
 def _build_json_preset_map():
     """扫描 case_data_files 目录，通过命名规则自动匹配预设"""
     mapping = {}
+    assignments = _load_console_assignments()
     for fname in os.listdir(CASE_DATA_DIR_PATH):
         if not fname.endswith('.json'):
+            continue
+        if assignments.get(fname) in ALLURE_CONFIGS:
+            mapping[fname] = assignments[fname]
             continue
 
         # api_mainChart.json → mainchart

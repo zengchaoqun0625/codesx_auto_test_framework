@@ -31,8 +31,128 @@
       "generated_by": "curl-to-testcase"
     },
     {
+      "name": "GET /api/deductOrder",
+      "endpoint_contains": "/api/deductOrder",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/deductOrder/statistics",
+      "endpoint_contains": "/api/deductOrder/statistics",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/isvInfo",
+      "endpoint_contains": "/api/isvInfo",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/mchPolling/list",
+      "endpoint_contains": "/api/mchPolling/list",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/mchQrCodes",
+      "endpoint_contains": "/api/mchQrCodes",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/payIfDefines",
+      "endpoint_contains": "/api/payIfDefines",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/payIfDefines/get",
+      "endpoint_contains": "/api/payIfDefines/get",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/payOrder",
+      "endpoint_contains": "/api/payOrder",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/payOrder/count",
+      "endpoint_contains": "/api/payOrder/count",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/payWays",
+      "endpoint_contains": "/api/payWays",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/polling/transfer",
+      "endpoint_contains": "/api/polling/transfer",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/refundOrder",
+      "endpoint_contains": "/api/refundOrder",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/store/device",
+      "endpoint_contains": "/api/store/device",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "GET /api/transferOrders",
+      "endpoint_contains": "/api/transferOrders",
+      "method": "GET",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
       "name": "POST /api/mchApply/mchList",
       "endpoint_contains": "/api/mchApply/mchList",
+      "method": "POST",
+      "threshold_sec": 5.0,
+      "enabled": true,
+      "generated_by": "curl-to-testcase"
+    },
+    {
+      "name": "POST /api/mgr/mchForm/payment",
+      "endpoint_contains": "/api/mgr/mchForm/payment",
       "method": "POST",
       "threshold_sec": 5.0,
       "enabled": true,

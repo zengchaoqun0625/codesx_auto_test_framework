@@ -1,6 +1,6 @@
 ---
 name: allure-api-analyzer
-description: 分析本项目 JSON 用例并维护 ALLURE_CONFIGS，使统一参数化入口能够收集并以正确的业务分组展示用例。适用于“完善 Allure 配置”“新 JSON 没有执行”“分析接口模块”等请求。
+description: 分析本项目 JSON 用例并维护 ALLURE_CONFIGS，使统一参数化入口以正确的业务分组展示用例。适用于“完善 Allure 配置”“新 JSON 报告分组不正确”“分析接口模块”等请求。
 ---
 
 # Allure API Analyzer
@@ -11,7 +11,7 @@ description: 分析本项目 JSON 用例并维护 ALLURE_CONFIGS，使统一参�
 - 配置：`api_project/common/allure_decorator.py` 中的 `ALLURE_CONFIGS`
 - 执行入口：`api_project/testcases/test_api.py`
 
-`test_api.py` 在导入时扫描 JSON，并以规范化文件名匹配预设键：`jqb_<文件名>_api`。比较时忽略文件名中的大小写、`-`、`.` 和 `_`。无法匹配的 JSON 不会被统一入口参数化。
+`test_api.py` 在导入时扫描 JSON，并以规范化文件名匹配预设键：`jqb_<文件名>_api`。比较时忽略文件名中的大小写、`-`、`.` 和 `_`。无法匹配时会使用 `generated_*_api` 兜底预设，仍会被统一入口参数化；本 Skill 的职责是把该兜底分组升级为经业务确认的正式分组。
 
 ## 执行步骤
 

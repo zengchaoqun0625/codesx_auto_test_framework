@@ -1,0 +1,14 @@
+{
+  "assignments": {
+    "api_cashouts.json": "jqb_api_isvinfo_api",
+    "api_codeItem.json": "jqb_anon_siteinfos_api"
+  },
+  "presets": {},
+  "deleted": [
+    "jqb_payifdefines_get_api",
+    "jqb_payment_api",
+    "jqb_payorder_list_api",
+    "jqb_query_api",
+    "jqb_total_getquerydate_api"
+  ]
+}

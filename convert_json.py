@@ -6,7 +6,7 @@ import traceback
 import subprocess
 import platform
 import json
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, quote_plus, urlparse
 from tkinter import *
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename
@@ -632,6 +632,21 @@ class Controller:
         """标准化请求数据，确保JSON、data、formdata格式正确"""
         normalized = request.copy()
 
+        # Keep copied cURL safe for both the desktop converter and the web
+        # preview.  Credentials and passwords must become environment-variable
+        # references before any JSON case is written or displayed.
+        sensitive_names = {'authorization', 'token', 'itoken', 'cookie', 'password', 'secret', 'api_key', 'apikey', 'x_api_key', 'x-api-key'}
+
+        def sanitize(value, key=''):
+            normalized_key = str(key).lower().replace('-', '_')
+            if normalized_key in {name.replace('-', '_') for name in sensitive_names}:
+                return '${API_PASSWORD}' if 'password' in normalized_key else '${API_TOKEN}'
+            if isinstance(value, dict):
+                return {item_key: sanitize(item_value, item_key) for item_key, item_value in value.items()}
+            if isinstance(value, list):
+                return [sanitize(item, key) for item in value]
+            return value
+
         # 处理JSON数据
         if 'json' in normalized and normalized['json']:
             # 如果是字符串，尝试解析为JSON对象
@@ -649,6 +664,12 @@ class Controller:
                 # 如果不是字符串，转换为JSON字符串
                 normalized['data'] = json.dumps(normalized['data'], ensure_ascii=False)
 
+            if isinstance(normalized['data'], str):
+                try:
+                    normalized['data'] = json.dumps(sanitize(json.loads(normalized['data'])), ensure_ascii=False)
+                except json.JSONDecodeError:
+                    pass
+
         # 处理formdata数据
         if 'formdata' in normalized and normalized['formdata']:
             # 确保formdata是字典格式
@@ -664,6 +685,18 @@ class Controller:
                             key, value = item.split('=', 1)
                             form_data[key] = value
                     normalized['formdata'] = form_data
+            normalized['formdata'] = sanitize(normalized['formdata'])
+
+        if isinstance(normalized.get('json'), (dict, list)):
+            normalized['json'] = sanitize(normalized['json'])
+
+        if isinstance(normalized.get('params'), str):
+            pairs = parse_qsl(normalized['params'], keep_blank_values=True)
+            if pairs:
+                normalized['params'] = '&'.join(
+                    f"{quote_plus(key)}={quote_plus(str(sanitize(value, key)), safe='${}') }"
+                    for key, value in pairs
+                )
 
         # cURL 抓包通常携带真实鉴权凭据。测试资产只能保留环境变量
         # 引用，避免 token、Cookie 或 API key 被写入 JSON / 报告 / Git。
@@ -713,7 +746,9 @@ class Controller:
             # 加载并转换cURL文件
             curl = Curl()
             previous_host = os.environ.get('HOST')
+            previous_api_names = os.environ.get('ALL_API_NAME')
             os.environ['HOST'] = url_prefix
+            os.environ['ALL_API_NAME'] = '[]'
             try:
                 curl.load(curl_file_path=file_path)
             finally:
@@ -721,6 +756,10 @@ class Controller:
                     os.environ.pop('HOST', None)
                 else:
                     os.environ['HOST'] = previous_host
+                if previous_api_names is None:
+                    os.environ.pop('ALL_API_NAME', None)
+                else:
+                    os.environ['ALL_API_NAME'] = previous_api_names
             self.ui.tk_text_log.insert('end', f'已加载文件[{os.path.split(file_path)[1]}]，正在进行转换\n')
             self.logger.info(f'已加载文件[{os.path.split(file_path)[1]}]，正在进行转换')
 

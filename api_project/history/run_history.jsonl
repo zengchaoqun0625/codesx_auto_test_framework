@@ -1,3 +1,12 @@
 {"timestamp": "2026-10-21 10:34:03", "total": 3, "passed": 3, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 0.75, "executor": "曾超群"}
 {"timestamp": "2026-10-21 10:44:22", "total": 3, "passed": 3, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 0.43, "executor": "曾超群"}
 {"timestamp": "2026-10-21 12:08:54", "total": 3, "passed": 0, "failed": 3, "skipped": 0, "pass_rate": 0.0, "duration_sec": 1.64, "executor": "曾超群"}
+{"timestamp": "2026-10-21 12:22:19", "total": 3, "passed": 0, "failed": 3, "skipped": 0, "pass_rate": 0.0, "duration_sec": 0.28, "executor": "曾超群"}
+{"timestamp": "2026-10-21 14:00:44", "total": 3, "passed": 0, "failed": 3, "skipped": 0, "pass_rate": 0.0, "duration_sec": 0.28, "executor": "曾超群"}
+{"timestamp": "2026-10-21 15:46:50", "total": 4, "passed": 0, "failed": 4, "skipped": 0, "pass_rate": 0.0, "duration_sec": 0.33, "executor": "曾超群"}
+{"timestamp": "2026-10-21 15:47:26", "total": 4, "passed": 0, "failed": 4, "skipped": 0, "pass_rate": 0.0, "duration_sec": 0.19, "executor": "曾超群"}
+{"timestamp": "2026-10-21 16:24:35", "total": 22, "passed": 0, "failed": 22, "skipped": 0, "pass_rate": 0.0, "duration_sec": 0.94, "executor": "曾超群"}
+{"timestamp": "2026-10-21 16:28:47", "total": 22, "passed": 0, "failed": 22, "skipped": 0, "pass_rate": 0.0, "duration_sec": 0.77, "executor": "曾超群"}
+{"timestamp": "2026-10-21 16:44:14", "total": 22, "passed": 22, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 1.9, "executor": "曾超群"}
+{"timestamp": "2026-10-21 16:57:27", "total": 22, "passed": 22, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 1.68, "executor": "曾超群"}
+{"timestamp": "2026-10-21 17:09:14", "total": 22, "passed": 22, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 1.56, "executor": "曾超群"}

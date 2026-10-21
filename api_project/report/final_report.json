@@ -1,139 +1,804 @@
 {
   "filters": {
-    "failed": 3,
-    "untracked": 3,
-    "total": 3,
-    "passed": 0,
+    "untracked": 22,
+    "total": 22,
+    "passed": 22,
     "marker_counts": {
-      "parametrize": 3
+      "parametrize": 22
     }
   },
   "results": [
     {
       "test": "test_api_api_cashouts_test_case_1_",
       "nodeid": "api_project/testcases/test_api.py::test_api[api_cashouts/test_case_1]",
-      "status": "failed",
-      "duration": 1.358151699998416,
-      "trace": "json_file = 'api_cashouts.json', preset_name = 'generated_api_cashouts_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'api_cashouts\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...hrome/155.0.0.0 Safari/537.36', ...}, 'params': 'pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D39A90>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-      "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/cashouts?pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth",
+      "status": "passed",
+      "duration": 0.23363299999618903,
+      "trace": null,
+      "error": null,
       "markers": [
         "parametrize"
       ],
       "file": "api_project\\testcases\\test_api.py",
-      "line": 521,
+      "line": 535,
       "stdout": "",
       "stderr": "",
-      "timestamp": "2026-10-21T04:08:35.516255Z",
+      "timestamp": "2026-10-21T09:08:57.286667Z",
       "screenshot": "screenshots",
-      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/cashouts\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 401\uff0c\u8017\u65f6: 1.343s",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/cashouts\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.193s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
       "worker": "main",
       "links": [],
       "attempts": [
         {
-          "status": "failed",
-          "trace": "json_file = 'api_cashouts.json', preset_name = 'generated_api_cashouts_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'api_cashouts\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...hrome/155.0.0.0 Safari/537.36', ...}, 'params': 'pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D39A90>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-          "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/cashouts?pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth",
-          "duration": 1.358151699998416,
-          "timestamp": "2026-10-21T04:08:35.516255Z"
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.23363299999618903,
+          "timestamp": "2026-10-21T09:08:57.286667Z"
         }
       ],
       "attempt_count": 1,
       "flaky": false,
       "attempt_statuses": [
-        "failed"
+        "passed"
       ],
-      "first_failure_index": 0,
-      "first_failure": {
-        "status": "failed",
-        "trace": "json_file = 'api_cashouts.json', preset_name = 'generated_api_cashouts_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'api_cashouts\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...hrome/155.0.0.0 Safari/537.36', ...}, 'params': 'pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D39A90>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-        "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/cashouts?pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth",
-        "duration": 1.358151699998416,
-        "timestamp": "2026-10-21T04:08:35.516255Z"
-      }
+      "first_failure_index": null,
+      "first_failure": null
     },
     {
       "test": "test_api_api_codeItem_test_case_1_",
       "nodeid": "api_project/testcases/test_api.py::test_api[api_codeItem/test_case_1]",
-      "status": "failed",
-      "duration": 0.21532840002328157,
-      "trace": "json_file = 'api_codeItem.json', preset_name = 'generated_api_codeitem_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'api_codeItem\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...TML, like Gecko) Chrome/155.0.0.0 Safari/537.36', ...}, 'params': 'parentItemCode=jqb_sj&adjustmentAccount=undefined'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36DB2240>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-      "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/codeItem?parentItemCode=jqb_sj&adjustmentAccount=undefined",
+      "status": "passed",
+      "duration": 0.034322199993766844,
+      "trace": null,
+      "error": null,
       "markers": [
         "parametrize"
       ],
       "file": "api_project\\testcases\\test_api.py",
-      "line": 521,
+      "line": 535,
       "stdout": "",
       "stderr": "",
-      "timestamp": "2026-10-21T04:08:35.837786Z",
+      "timestamp": "2026-10-21T09:08:57.351619Z",
       "screenshot": "screenshots",
-      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/codeItem\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 401\uff0c\u8017\u65f6: 0.199s",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/codeItem\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.021s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
       "worker": "main",
       "links": [],
       "attempts": [
         {
-          "status": "failed",
-          "trace": "json_file = 'api_codeItem.json', preset_name = 'generated_api_codeitem_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'api_codeItem\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...TML, like Gecko) Chrome/155.0.0.0 Safari/537.36', ...}, 'params': 'parentItemCode=jqb_sj&adjustmentAccount=undefined'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36DB2240>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-          "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/codeItem?parentItemCode=jqb_sj&adjustmentAccount=undefined",
-          "duration": 0.21532840002328157,
-          "timestamp": "2026-10-21T04:08:35.837786Z"
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.034322199993766844,
+          "timestamp": "2026-10-21T09:08:57.351619Z"
         }
       ],
       "attempt_count": 1,
       "flaky": false,
       "attempt_statuses": [
-        "failed"
+        "passed"
       ],
-      "first_failure_index": 0,
-      "first_failure": {
-        "status": "failed",
-        "trace": "json_file = 'api_codeItem.json', preset_name = 'generated_api_codeitem_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'api_codeItem\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb.com/...TML, like Gecko) Chrome/155.0.0.0 Safari/537.36', ...}, 'params': 'parentItemCode=jqb_sj&adjustmentAccount=undefined'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36DB2240>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-        "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/codeItem?parentItemCode=jqb_sj&adjustmentAccount=undefined",
-        "duration": 0.21532840002328157,
-        "timestamp": "2026-10-21T04:08:35.837786Z"
-      }
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_codeItem_test_case_2_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_codeItem/test_case_2]",
+      "status": "passed",
+      "duration": 0.03214200004003942,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:57.413975Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/codeItem\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.021s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.03214200004003942,
+          "timestamp": "2026-10-21T09:08:57.413975Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_codeItem_test_case_3_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_codeItem/test_case_3]",
+      "status": "passed",
+      "duration": 0.03279969998402521,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:57.477168Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/codeItem\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.020s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.03279969998402521,
+          "timestamp": "2026-10-21T09:08:57.477168Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_deductOrder_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_deductOrder/test_case_1]",
+      "status": "passed",
+      "duration": 0.04064169997582212,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:57.544212Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/deductOrder\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.026s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.04064169997582212,
+          "timestamp": "2026-10-21T09:08:57.544212Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_isvInfo_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_isvInfo/test_case_1]",
+      "status": "passed",
+      "duration": 0.07095189997926354,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:57.646646Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/isvInfo\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.040s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.07095189997926354,
+          "timestamp": "2026-10-21T09:08:57.646646Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_mchQrCodes_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_mchQrCodes/test_case_1]",
+      "status": "passed",
+      "duration": 0.07408799999393523,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:57.755284Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/mchQrCodes\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.060s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.07408799999393523,
+          "timestamp": "2026-10-21T09:08:57.755284Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_payIfDefines_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_payIfDefines/test_case_1]",
+      "status": "passed",
+      "duration": 0.10306860000127926,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:57.890892Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/payIfDefines\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.027s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.10306860000127926,
+          "timestamp": "2026-10-21T09:08:57.890892Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_payOrder_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_payOrder/test_case_1]",
+      "status": "passed",
+      "duration": 0.06148390000453219,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:57.992439Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/payOrder\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.048s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.06148390000453219,
+          "timestamp": "2026-10-21T09:08:57.992439Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_payWays_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_payWays/test_case_1]",
+      "status": "passed",
+      "duration": 0.04739650001283735,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.072226Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/payWays\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.027s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.04739650001283735,
+          "timestamp": "2026-10-21T09:08:58.072226Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_refundOrder_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_refundOrder/test_case_1]",
+      "status": "passed",
+      "duration": 0.03935310000088066,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.144558Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/refundOrder\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.025s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.03935310000088066,
+          "timestamp": "2026-10-21T09:08:58.144558Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_api_transferOrders_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_transferOrders/test_case_1]",
+      "status": "passed",
+      "duration": 0.05794440000317991,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.243644Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/transferOrders\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.041s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.05794440000317991,
+          "timestamp": "2026-10-21T09:08:58.243644Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_deductOrder_statistics_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[deductOrder_statistics/test_case_1]",
+      "status": "passed",
+      "duration": 0.04532679996918887,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.324981Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/deductOrder/statistics\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.029s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.04532679996918887,
+          "timestamp": "2026-10-21T09:08:58.324981Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
     },
     {
       "test": "test_api_mchApply_mchList_test_case_1_",
       "nodeid": "api_project/testcases/test_api.py::test_api[mchApply_mchList/test_case_1]",
-      "status": "failed",
-      "duration": 0.06959860003553331,
-      "trace": "json_file = 'mchApply_mchList.json', preset_name = 'jqb_mchapply_mchlist_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'mchApply_mchList\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb....h': '0', 'sec-ch-ua-platform': '\"Windows\"', ...}, 'params': 'pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D399D0>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-      "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/mchApply/mchList?pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99",
+      "status": "passed",
+      "duration": 0.14461000001756474,
+      "trace": null,
+      "error": null,
       "markers": [
         "parametrize"
       ],
       "file": "api_project\\testcases\\test_api.py",
-      "line": 521,
+      "line": 535,
       "stdout": "",
       "stderr": "",
-      "timestamp": "2026-10-21T04:08:36.025814Z",
+      "timestamp": "2026-10-21T09:08:58.505621Z",
       "screenshot": "screenshots",
-      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: POST https://mg.6jqb.com/api/mchApply/mchList\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 401\uff0c\u8017\u65f6: 0.055s",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: POST https://mg.6jqb.com/api/mchApply/mchList\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.104s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
       "worker": "main",
       "links": [],
       "attempts": [
         {
-          "status": "failed",
-          "trace": "json_file = 'mchApply_mchList.json', preset_name = 'jqb_mchapply_mchlist_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'mchApply_mchList\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb....h': '0', 'sec-ch-ua-platform': '\"Windows\"', ...}, 'params': 'pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D399D0>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-          "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/mchApply/mchList?pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99",
-          "duration": 0.06959860003553331,
-          "timestamp": "2026-10-21T04:08:36.025814Z"
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.14461000001756474,
+          "timestamp": "2026-10-21T09:08:58.505621Z"
         }
       ],
       "attempt_count": 1,
       "flaky": false,
       "attempt_statuses": [
-        "failed"
+        "passed"
       ],
-      "first_failure_index": 0,
-      "first_failure": {
-        "status": "failed",
-        "trace": "json_file = 'mchApply_mchList.json', preset_name = 'jqb_mchapply_mchlist_api'\ncase_name = 'test_case_1'\ncase_data = {'description': 'mchApply_mchList\u63a5\u53e3\u6d4b\u8bd5', 'request_type': 'default', 'logic': 'query', 'data': {'url': 'https://mg.6jqb....h': '0', 'sec-ch-ua-platform': '\"Windows\"', ...}, 'params': 'pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99'}}\nlogic = 'query'\napi_request = <api_project.common.api_request.ApiRequest object at 0x0000022E36D38B30>\nassert_code = <class 'api_project.common.api_assertions.ApiAssert'>\nbase_url = 'https://mg.6jqb.com'\nallure_reporter = <api_project.testcases.conftest.allure_reporter.<locals>.AllureReporter object at 0x0000022E36D399D0>\nrequest_processor = <class 'api_project.common.param_processor.RequestProcessor'>\n\n    @pytest.mark.parametrize(\n        \"json_file, preset_name, case_name, case_data, logic\",\n        _build_all_case_params()\n    )\n    def test_api(\n        json_file, preset_name, case_name, case_data, logic,\n        api_request, assert_code, base_url, allure_reporter, request_processor\n    ):\n        \"\"\"\n        \u7edf\u4e00\u53c2\u6570\u5316\u6d4b\u8bd5\u5165\u53e3\n    \n        \u6839\u636e JSON test_case \u4e2d\u7684 logic \u5b57\u6bb5\uff0c\u81ea\u52a8\u5206\u53d1\u5230\u5bf9\u5e94 handler\u3002\n        \u9ed8\u8ba4 logic=\"query\"\uff0c\u6267\u884c\u6807\u51c6\u8bf7\u6c42 + \u65ad\u8a00 200\u3002\n        \"\"\"\n        # 1. \u52a8\u6001\u8bbe\u7f6e Allure \u6807\u7b7e\n        config = _get_allure_config(preset_name, json_file)\n        if config:\n            if config.get('suite'):\n                allure.dynamic.suite(config['suite'])\n            if config.get('epic'):\n                allure.dynamic.epic(config['epic'])\n            if config.get('sub_suite'):\n                allure.dynamic.sub_suite(config['sub_suite'])\n            if config.get('severity'):\n                allure.dynamic.severity(config['severity'])\n            for tag in config.get('tags', []):\n                allure.dynamic.tag(tag)\n    \n            base_title = config.get('title', '')\n            # \u63d0\u53d6\u7528\u4f8b\u7f16\u53f7: \"test_case_1\" \u2192 1\n            case_num = case_name.replace('test_case_', '') if case_name.startswith('test_case_') else case_name\n            # \u683c\u5f0f: #1\u5546\u6237\u7533\u8bf7\u521b\u5efa\u4eba\u67e5\u8be2\u63a5\u53e3\u6d4b\u8bd5'mchApply_applyCreatedBy.json\n            allure.dynamic.title(f\"#{case_num}{base_title}'{json_file}\")\n    \n        ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)\n>       execute_case(case_data, ctx, case_name)\n\napi_project\\testcases\\test_api.py:557: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\napi_project\\testcases\\test_api.py:481: in execute_case\n    ctx['assert_code'].status_code(response, expected_code)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nresponse = <Response [401]>, expected_code = 200\n\n    @staticmethod\n    def status_code(response: Response, expected_code: int) -> \"ApiAssert\":\n        \"\"\"\u65ad\u8a00\u54cd\u5e94\u72b6\u6001\u7801\"\"\"\n        actual_code = response.status_code\n>       assert actual_code == expected_code, (\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            f\"\u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\\n\"\n            f\"\u9884\u671f: {expected_code} | \u5b9e\u9645: {actual_code}\\n\"\n            f\"\u8bf7\u6c42URL: {response.request.url}\"\n        )",
-        "error": "E       AssertionError: \u274c \u72b6\u6001\u7801\u65ad\u8a00\u5931\u8d25\nE       \u9884\u671f: 200 | \u5b9e\u9645: 401\nE       \u8bf7\u6c42URL: https://mg.6jqb.com/api/mchApply/mchList?pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99",
-        "duration": 0.06959860003553331,
-        "timestamp": "2026-10-21T04:08:36.025814Z"
-      }
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_mchForm_payment_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[mchForm_payment/test_case_1]",
+      "status": "passed",
+      "duration": 0.12758030003169551,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.683591Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: POST https://mg.6jqb.com/api/mgr/mchForm/payment\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.107s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.12758030003169551,
+          "timestamp": "2026-10-21T09:08:58.683591Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_mchPolling_list_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[mchPolling_list/test_case_1]",
+      "status": "passed",
+      "duration": 0.09133460000157356,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.816537Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/mchPolling/list\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.073s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.09133460000157356,
+          "timestamp": "2026-10-21T09:08:58.816537Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_mchPolling_list_test_case_2_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[mchPolling_list/test_case_2]",
+      "status": "passed",
+      "duration": 0.062019099947065115,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.912757Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/mchPolling/list\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.045s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.062019099947065115,
+          "timestamp": "2026-10-21T09:08:58.913760Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_payIfDefines_get_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[payIfDefines_get/test_case_1]",
+      "status": "passed",
+      "duration": 0.04361679998692125,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:58.997459Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/payIfDefines/get\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.028s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.04361679998692125,
+          "timestamp": "2026-10-21T09:08:58.997459Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_payIfDefines_get_test_case_2_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[payIfDefines_get/test_case_2]",
+      "status": "passed",
+      "duration": 0.04162099998211488,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:59.073275Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/payIfDefines/get\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.023s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.04162099998211488,
+          "timestamp": "2026-10-21T09:08:59.073275Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_payOrder_count_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[payOrder_count/test_case_1]",
+      "status": "passed",
+      "duration": 0.05366949999006465,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:59.174561Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/payOrder/count\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.038s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.05366949999006465,
+          "timestamp": "2026-10-21T09:08:59.174561Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_polling_transfer_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[polling_transfer/test_case_1]",
+      "status": "passed",
+      "duration": 0.0616382000152953,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:59.278467Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/polling/transfer\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.044s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.0616382000152953,
+          "timestamp": "2026-10-21T09:08:59.278467Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_store_device_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[store_device/test_case_1]",
+      "status": "passed",
+      "duration": 0.058158200001344085,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 535,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T09:08:59.370215Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/store/device\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.041s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.058158200001344085,
+          "timestamp": "2026-10-21T09:08:59.370215Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
     }
   ]
 }
