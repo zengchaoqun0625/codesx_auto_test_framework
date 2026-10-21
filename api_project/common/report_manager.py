@@ -1576,5 +1576,13 @@ def run_post_test_tasks(max_keep_reports=1):
         # 性能报告为增强能力，不可影响既有报告、压缩或邮件流程。
         logger.warning(f"⚠️ 生成接口性能报告失败: {e}")
 
-    # 6. 发送邮件
+    # 6. Session results are collected during pytest, but notification must
+    # wait for the final HTML/Allure artifacts and optional upload.
+    try:
+        from api_project.testcases.conftest import send_post_report_notifications
+        send_post_report_notifications(html_report_path)
+    except Exception as exc:
+        logger.error(f"测试通知后置发送失败: {exc}")
+
+    # 7. 发送邮件
     send_email_report(html_report_path, allure_zip)

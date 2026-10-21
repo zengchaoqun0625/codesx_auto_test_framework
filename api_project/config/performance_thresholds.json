@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "default_threshold_sec": 10.0,
+  "default_threshold_sec": 5.0,
   "rules": [
     {
       "name": "登录接口更严格阈值",
@@ -15,34 +15,26 @@
       "enabled": true
     },
     {
-      "name": "GET /api/mainChart",
-      "endpoint_contains": "/api/mainChart",
+      "name": "GET /api/cashouts",
+      "endpoint_contains": "/api/cashouts",
       "method": "GET",
-      "threshold_sec": 10.0,
+      "threshold_sec": 5.0,
       "enabled": true,
       "generated_by": "curl-to-testcase"
     },
     {
-      "name": "GET /api/payOrder/list",
-      "endpoint_contains": "/api/payOrder/list",
+      "name": "GET /api/codeItem",
+      "endpoint_contains": "/api/codeItem",
       "method": "GET",
-      "threshold_sec": 10.0,
+      "threshold_sec": 5.0,
       "enabled": true,
       "generated_by": "curl-to-testcase"
     },
     {
-      "name": "GET /api/payOrder/payCount",
-      "endpoint_contains": "/api/payOrder/payCount",
-      "method": "GET",
-      "threshold_sec": 10.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
-    },
-    {
-      "name": "GET /api/statistic/total/getQueryDate",
-      "endpoint_contains": "/api/statistic/total/getQueryDate",
-      "method": "GET",
-      "threshold_sec": 10.0,
+      "name": "POST /api/mchApply/mchList",
+      "endpoint_contains": "/api/mchApply/mchList",
+      "method": "POST",
+      "threshold_sec": 5.0,
       "enabled": true,
       "generated_by": "curl-to-testcase"
     }

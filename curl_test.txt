@@ -1,0 +1,50 @@
+curl -X POST 'https://mg.6jqb.com/api/mchApply/mchList?pageNumber=1&pageSize=10&applyDefault=1&mchShortName=99' ^
+-H 'Host: mg.6jqb.com' ^
+-H 'Connection: keep-alive' ^
+-H 'Content-Length: 0' ^
+-H 'sec-ch-ua-platform: "Windows"' ^
+-H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36' ^
+-H 'Accept: application/json, text/plain, */*' ^
+-H 'iToken: eyJhbGciOiJIUzUxMiJ9.eyJjYWNoZUtleSI6IlRPS0VOXzEwMDkxNV8yYmY1ZTIwNi02OTA2LTQzNWYtYjVjMy0xYTlkN2E3ZmMwZjIiLCJhcHBMb2dpbiI6ZmFsc2UsImxvZ2luVHlwZSI6bnVsbCwiY3JlYXRlZCI6MTc5MjU0MzM2NTk2NCwic3lzVXNlcklkIjoxMDA5MTV9.pwcI5QpTH4MZhdTBMLVxN22zKtiHUk5oNiesO8thmFq5L8CCdvqDFgU-OfJ47UDGu55pPjULVzWSY3IC3rjsGA' ^
+-H 'sec-ch-ua: "Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"' ^
+-H 'sec-ch-ua-mobile: ?0' ^
+-H 'Origin: https://mg.6jqb.com' ^
+-H 'Sec-Fetch-Site: same-origin' ^
+-H 'Sec-Fetch-Mode: cors' ^
+-H 'Sec-Fetch-Dest: empty' ^
+-H 'Referer: https://mg.6jqb.com/getAllMerchant' ^
+-H 'Accept-Encoding: gzip, deflate, br, zstd' ^
+-H 'Accept-Language: zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7' ^
+-H 'Cookie: __51vcke__LBewJUPzRPz2qIBS=0f7100c7-066f-59b8-9d58-33d48ee44756; __51vuft__LBewJUPzRPz2qIBS=1785295297403; __vtins__LBewJUPzRPz2qIBS=%7B%22sid%22%3A%20%222ee7dde6-065d-554a-aa5e-876a170bec6b%22%2C%20%22vd%22%3A%201%2C%20%22stt%22%3A%200%2C%20%22dr%22%3A%200%2C%20%22expires%22%3A%201792545157887%2C%20%22ct%22%3A%201792543357887%7D; __51uvsct__LBewJUPzRPz2qIBS=832'
+curl -X GET 'https://mg.6jqb.com/api/codeItem?parentItemCode=jqb_sj&adjustmentAccount=undefined' ^
+-H 'Host: mg.6jqb.com' ^
+-H 'Connection: keep-alive' ^
+-H 'sec-ch-ua-platform: "Windows"' ^
+-H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36' ^
+-H 'Accept: application/json, text/plain, */*' ^
+-H 'iToken: eyJhbGciOiJIUzUxMiJ9.eyJjYWNoZUtleSI6IlRPS0VOXzEwMDkxNV8yYmY1ZTIwNi02OTA2LTQzNWYtYjVjMy0xYTlkN2E3ZmMwZjIiLCJhcHBMb2dpbiI6ZmFsc2UsImxvZ2luVHlwZSI6bnVsbCwiY3JlYXRlZCI6MTc5MjU0MzM2NTk2NCwic3lzVXNlcklkIjoxMDA5MTV9.pwcI5QpTH4MZhdTBMLVxN22zKtiHUk5oNiesO8thmFq5L8CCdvqDFgU-OfJ47UDGu55pPjULVzWSY3IC3rjsGA' ^
+-H 'sec-ch-ua: "Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"' ^
+-H 'sec-ch-ua-mobile: ?0' ^
+-H 'Sec-Fetch-Site: same-origin' ^
+-H 'Sec-Fetch-Mode: cors' ^
+-H 'Sec-Fetch-Dest: empty' ^
+-H 'Referer: https://mg.6jqb.com/cashouts' ^
+-H 'Accept-Encoding: gzip, deflate, br, zstd' ^
+-H 'Accept-Language: zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7' ^
+-H 'Cookie: __51vcke__LBewJUPzRPz2qIBS=0f7100c7-066f-59b8-9d58-33d48ee44756; __51vuft__LBewJUPzRPz2qIBS=1785295297403; __vtins__LBewJUPzRPz2qIBS=%7B%22sid%22%3A%20%222ee7dde6-065d-554a-aa5e-876a170bec6b%22%2C%20%22vd%22%3A%201%2C%20%22stt%22%3A%200%2C%20%22dr%22%3A%200%2C%20%22expires%22%3A%201792545157887%2C%20%22ct%22%3A%201792543357887%7D; __51uvsct__LBewJUPzRPz2qIBS=832'
+curl -X GET 'https://mg.6jqb.com/api/cashouts?pageNumber=1&pageSize=10&queryDateType=day&queryDateRange=prevMonth' ^
+-H 'Host: mg.6jqb.com' ^
+-H 'Connection: keep-alive' ^
+-H 'sec-ch-ua-platform: "Windows"' ^
+-H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36' ^
+-H 'Accept: application/json, text/plain, */*' ^
+-H 'iToken: eyJhbGciOiJIUzUxMiJ9.eyJjYWNoZUtleSI6IlRPS0VOXzEwMDkxNV8yYmY1ZTIwNi02OTA2LTQzNWYtYjVjMy0xYTlkN2E3ZmMwZjIiLCJhcHBMb2dpbiI6ZmFsc2UsImxvZ2luVHlwZSI6bnVsbCwiY3JlYXRlZCI6MTc5MjU0MzM2NTk2NCwic3lzVXNlcklkIjoxMDA5MTV9.pwcI5QpTH4MZhdTBMLVxN22zKtiHUk5oNiesO8thmFq5L8CCdvqDFgU-OfJ47UDGu55pPjULVzWSY3IC3rjsGA' ^
+-H 'sec-ch-ua: "Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"' ^
+-H 'sec-ch-ua-mobile: ?0' ^
+-H 'Sec-Fetch-Site: same-origin' ^
+-H 'Sec-Fetch-Mode: cors' ^
+-H 'Sec-Fetch-Dest: empty' ^
+-H 'Referer: https://mg.6jqb.com/cashouts' ^
+-H 'Accept-Encoding: gzip, deflate, br, zstd' ^
+-H 'Accept-Language: zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7' ^
+-H 'Cookie: __51vcke__LBewJUPzRPz2qIBS=0f7100c7-066f-59b8-9d58-33d48ee44756; __51vuft__LBewJUPzRPz2qIBS=1785295297403; __vtins__LBewJUPzRPz2qIBS=%7B%22sid%22%3A%20%222ee7dde6-065d-554a-aa5e-876a170bec6b%22%2C%20%22vd%22%3A%201%2C%20%22stt%22%3A%200%2C%20%22dr%22%3A%200%2C%20%22expires%22%3A%201792545157887%2C%20%22ct%22%3A%201792543357887%7D; __51uvsct__LBewJUPzRPz2qIBS=832'

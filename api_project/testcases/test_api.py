@@ -36,21 +36,23 @@ JSON test_case 支持的扩展字段：
 
 import json
 import os
-import re
 import copy
 import logging
+import re
 import allure
 import pytest
 from jsonpath import jsonpath
 from api_project import CASE_DATA_DIR_PATH
 from api_project.common.allure_decorator import ALLURE_CONFIGS
+from api_project.common.auth_profiles import get_auth_profile
 from api_project.common.api_request import sanitize_headers
+from api_project.common.runtime_config import (
+    get_assertion_rules,
+    resolve_variables,
+    set_runtime_variable,
+)
 
 logger = logging.getLogger(__name__)
-
-# 环境变量引用正则：${var_name}
-_VAR_PATTERN = re.compile(r"\$\{(\w+)\}")
-
 
 # ============================================================
 #  变量引用解析 / 提取器 / 断言执行（数据驱动核心）
@@ -62,26 +64,17 @@ def _resolve_vars(data):
     A 接口 extract 提取的变量存在 os.environ 中，B 接口请求参数里
     写 ${order_id} 即可自动替换为 A 接口响应中的值。
     """
-    if isinstance(data, str):
-        if "${" in data:
-            def _replace(match):
-                return os.environ.get(match.group(1), "")
-            return _VAR_PATTERN.sub(_replace, data)
-        return data
-    if isinstance(data, list):
-        return [_resolve_vars(item) for item in data]
-    if isinstance(data, dict):
-        return {key: _resolve_vars(value) for key, value in data.items()}
-    return data
+    return resolve_variables(data)
 
 
-def _do_extract(case_data, response) -> None:
+def _do_extract(case_data, response):
     """
     响应提取器：将响应中的值提取到 os.environ（跨用例共享）。
     支持 jsonpath / 正则两种表达式：
         {"name": "order_id", "jsonpath": "$.data.orderId"}
         {"name": "token", "regex": "<token>(\\w+)</token>", "index": 0, "default": ""}
     """
+    extracted = {}
     for item in case_data.get("extract", []):
         name = item.get("name")
         if not name:
@@ -106,7 +99,10 @@ def _do_extract(case_data, response) -> None:
         if value is None:
             value = default
         os.environ[name] = str(value)
+        set_runtime_variable(name, value)
+        extracted[name] = str(value)
         logger.info(f"✅ 已提取 {name} = {str(value)[:80]}（供后续用例 ${name} 引用）")
+    return extracted
 
 
 def _safe_json(response):
@@ -122,7 +118,12 @@ def _do_assertions(case_data, response, assert_code) -> None:
     数据驱动断言执行器：解析 test_case 中的 assertions 字段并逐条断言。
     失败时抛出 AssertionError，由 pytest 统一标记用例失败。
     """
-    assertions = case_data.get("assertions", [])
+    rule_names = case_data.get("assertion_rules", [])
+    if isinstance(rule_names, str):
+        rule_names = [rule_names]
+    if not isinstance(rule_names, list) or not all(isinstance(name, str) for name in rule_names):
+        raise ValueError("assertion_rules 必须是字符串或字符串数组")
+    assertions = get_assertion_rules(rule_names) + case_data.get("assertions", [])
     if not assertions:
         return
 
@@ -237,9 +238,29 @@ def _build_json_preset_map():
                     matched = preset
                     break
 
-        mapping[fname] = matched
+        mapping[fname] = matched or _build_generated_preset_name(fname)
 
     return mapping
+
+
+def _build_generated_preset_name(filename: str) -> str:
+    stem = os.path.splitext(os.path.basename(filename))[0]
+    normalized = re.sub(r"[^a-z0-9]+", "_", stem.lower()).strip("_") or "case"
+    return f"generated_{normalized}_api"
+
+
+def _get_allure_config(preset_name: str, json_file: str):
+    """Return curated configuration or a deterministic fallback for new JSON."""
+    config = ALLURE_CONFIGS.get(preset_name)
+    if config:
+        return config
+    return {
+        "suite": "cURL 转换接口",
+        "epic": "API 自动化测试",
+        "sub_suite": "待归类接口",
+        "title": os.path.splitext(os.path.basename(json_file))[0],
+        "tags": ["generated", "curl"],
+    }
 
 
 JSON_PRESET_MAP = _build_json_preset_map()
@@ -249,6 +270,48 @@ JSON_PRESET_MAP = _build_json_preset_map()
 #  Handler 分发表
 # ============================================================
 
+def _ensure_auth_profile(case_data, ctx):
+    """Ensure the named role has a token and a profile-scoped 401 refresh handler."""
+    profile_name = str(case_data.get("auth_profile", "")).strip()
+    if not profile_name:
+        return "default", {}
+
+    profile = get_auth_profile(profile_name)
+    api_request = ctx["api_request"]
+
+    def login_handler():
+        token_env = str(profile.get("token_env", "")).strip()
+        env_token = os.getenv(token_env, "").strip() if token_env else ""
+        if env_token:
+            api_request.set_login_token(env_token, profile_name)
+            return env_token
+
+        if "login" not in profile:
+            raise ValueError(f"认证角色 '{profile_name}' 的环境变量 {token_env} 未配置")
+
+        login_case = copy.deepcopy(profile["login"])
+        login_case.pop("auth_profile", None)
+        login_case.setdefault("use_token", False)
+        response = _handle_query(login_case, ctx)
+        expected_status = login_case.get("expected_status", 200)
+        if expected_status is not None:
+            ctx["assert_code"].status_code(response, expected_status)
+        _do_assertions(login_case, response, ctx["assert_code"])
+
+        token_variable = str(profile["token_variable"])
+        token = os.getenv(token_variable, "").strip()
+        if not token:
+            raise ValueError(
+                f"认证角色 '{profile_name}' 未提取到 token；请检查 token_variable 和 login.extract"
+            )
+        api_request.set_login_token(token, profile_name)
+        return token
+
+    api_request.set_login_handler(login_handler, profile_name)
+    if not api_request.login_tokens.get(profile_name):
+        login_handler()
+    return profile_name, profile
+
 def _handle_query(case_data, ctx) -> 'requests.Response':
     """
     默认查询 handler — 标准请求 + 变量解析 + 响应提取 + allure 记录
@@ -256,9 +319,14 @@ def _handle_query(case_data, ctx) -> 'requests.Response':
     Returns:
         requests.Response 对象，供外层断言
     """
+    auth_profile, auth_config = _ensure_auth_profile(case_data, ctx)
     # 深拷贝 + 解析 ${var} 环境变量引用（不污染原始 JSON 数据）
     request_data = _resolve_vars(copy.deepcopy(case_data.get("data", {})))
-    full_url = f"{ctx['base_url']}{request_data.get('url', '')}"
+    request_url = str(request_data.get('url', ''))
+    # Converted cURL data may retain an absolute URL.  In that case it is
+    # already self-contained and must not be prefixed with the environment
+    # base URL.  Manually-authored JSON normally keeps a relative path.
+    full_url = request_url if request_url.startswith(("http://", "https://")) else f"{ctx['base_url']}{request_url}"
     method = request_data.get("method", "GET")
     request_type = case_data.get("request_type", "default")
     request_params = request_data.get("params", {})
@@ -291,8 +359,16 @@ def _handle_query(case_data, ctx) -> 'requests.Response':
 
     # 发送请求
     response = ctx['api_request'].send_request(
-        url=full_url, method=method,
-        params=request_params, headers=headers, **request_body
+        url=full_url,
+        method=method,
+        params=request_params,
+        headers=headers,
+        use_token=case_data.get("use_token"),
+        token_header_name=case_data.get("token_header_name") or auth_config.get("token_header_name"),
+        token_prefix=case_data.get("token_prefix") if "token_prefix" in case_data else auth_config.get("token_prefix"),
+        auth_profile=auth_profile,
+        retry=case_data.get("retry"),
+        **request_body
     )
 
     # 打印响应
@@ -318,14 +394,42 @@ def _handle_query(case_data, ctx) -> 'requests.Response':
     return response
 
 
-# ---- 扩展 handler 示例（按需取消注释 / 新增） ----
+def _run_pre_steps(case_data, ctx):
+    """执行前置请求；带 set_login_token 的步骤会更新当前会话 token。"""
+    login_token = None
+    for index, step in enumerate(case_data.get("pre_steps", []), start=1):
+        if not isinstance(step, dict):
+            raise ValueError(f"pre_steps 第 {index} 项必须是对象")
 
-# def _handle_precondition(case_data, ctx):
-#     """带前置操作：先执行 case_data["pre_steps"]，再执行正式请求"""
-#     for step in case_data.get("pre_steps", []):
-#         _handle_query({"data": step}, ctx)
-#     return _handle_query({"data": case_data["data"]}, ctx)
-#
+        step_case = copy.deepcopy(step)
+        # 登录接口默认不携带旧 token；若确有需要可显式设置 use_token=true。
+        step_case.setdefault("use_token", False)
+        response = _handle_query(step_case, ctx)
+        expected_status = step_case.get("expected_status", 200)
+        if expected_status is not None:
+            ctx["assert_code"].status_code(response, expected_status)
+        _do_assertions(step_case, response, ctx["assert_code"])
+
+        token_variable = step_case.get("set_login_token")
+        if token_variable:
+            login_token = os.getenv(str(token_variable), "").strip()
+            if not login_token:
+                raise ValueError(
+                    f"前置步骤第 {index} 未提取到登录 token；请检查 extract 和 set_login_token 配置"
+                )
+            ctx["api_request"].set_login_token(login_token)
+    return login_token
+
+
+def _handle_precondition(case_data, ctx):
+    """先运行 pre_steps，再发送正式请求；401 时自动重跑前置登录并重试一次。"""
+    def login_handler():
+        return _run_pre_steps(case_data, ctx)
+
+    _run_pre_steps(case_data, ctx)
+    ctx["api_request"].set_login_handler(login_handler)
+    return _handle_query(case_data, ctx)
+
 #
 # def _handle_expect_error(case_data, ctx):
 #     """预期失败的请求 — 不验证状态码，只验证错误信息"""
@@ -362,10 +466,45 @@ def _handle_query(case_data, ctx) -> 'requests.Response':
 # ---- 注册表: logic 字段值 → (handler_func, 默认期望状态码) ----
 HANDLERS = {
     "query": (_handle_query, 200),
-    # 未来扩展:
-    # "precondition": (_handle_precondition, 200),
+    "precondition": (_handle_precondition, 200),
     # "expect_error": (_handle_expect_error, None),  # None 表示不固定
 }
+
+
+def build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor):
+    """Build the shared execution context for both parameterized and generated tests."""
+    return {
+        'api_request': api_request,
+        'assert_code': assert_code,
+        'base_url': base_url,
+        'allure_reporter': allure_reporter,
+        'request_processor': request_processor,
+    }
+
+
+def execute_case(case_data, ctx, case_name: str = ""):
+    """Execute one JSON case through the framework's single supported request pipeline."""
+    logic = case_data.get('logic', 'query')
+    handler, default_expected_code = HANDLERS.get(logic, (_handle_query, 200))
+    label = case_name or case_data.get('description', '未命名用例')
+
+    try:
+        response = handler(case_data, ctx)
+    except Exception as exc:
+        error_msg = f"❌ {label} - {case_data.get('description', '')} 执行失败: {str(exc)}"
+        print(error_msg)
+        ctx['allure_reporter'].add_custom_attachment("测试结果", error_msg)
+        raise
+
+    expected_code = case_data.get('expected_status', default_expected_code)
+    if expected_code is not None:
+        ctx['assert_code'].status_code(response, expected_code)
+    _do_assertions(case_data, response, ctx['assert_code'])
+
+    desc = case_data.get('description', label)
+    print(f"✅ {label} - {desc} 执行成功")
+    ctx['allure_reporter'].add_custom_attachment("测试结果", f"✅ 执行成功: {desc}")
+    return response
 
 
 # ============================================================
@@ -381,8 +520,6 @@ def _build_all_case_params():
     params = []
     for fname in sorted(JSON_PRESET_MAP.keys()):
         preset = JSON_PRESET_MAP[fname]
-        if not preset:
-            continue
 
         fpath = os.path.join(CASE_DATA_DIR_PATH, fname)
         with open(fpath, 'r', encoding='utf-8') as f:
@@ -417,7 +554,7 @@ def test_api(
     默认 logic="query"，执行标准请求 + 断言 200。
     """
     # 1. 动态设置 Allure 标签
-    config = ALLURE_CONFIGS.get(preset_name, {})
+    config = _get_allure_config(preset_name, json_file)
     if config:
         if config.get('suite'):
             allure.dynamic.suite(config['suite'])
@@ -436,35 +573,5 @@ def test_api(
         # 格式: #1商户申请创建人查询接口测试'mchApply_applyCreatedBy.json
         allure.dynamic.title(f"#{case_num}{base_title}'{json_file}")
 
-    # 2. 获取 handler
-    handler, default_expected_code = HANDLERS.get(logic, (_handle_query, 200))
-
-    # 3. 构建上下文
-    ctx = {
-        'api_request': api_request,
-        'assert_code': assert_code,
-        'base_url': base_url,
-        'allure_reporter': allure_reporter,
-        'request_processor': request_processor,
-    }
-
-    # 4. 执行
-    try:
-        response = handler(case_data, ctx)
-    except Exception as e:
-        error_msg = f"❌ {case_name} - {case_data.get('description', '')} 执行失败: {str(e)}"
-        print(error_msg)
-        allure_reporter.add_custom_attachment("测试结果", error_msg)
-        raise
-
-    # 5. 断言状态码
-    expected_code = case_data.get('expected_status', default_expected_code)
-    if expected_code is not None:
-        assert_code.status_code(response, expected_code)
-
-    # 6. 数据驱动断言（assertions 字段：jsonpath/key/response_time 等）
-    _do_assertions(case_data, response, assert_code)
-
-    desc = case_data.get('description', case_name)
-    print(f"✅ {case_name} - {desc} 执行成功")
-    allure_reporter.add_custom_attachment("测试结果", f"✅ 执行成功: {desc}")
+    ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)
+    execute_case(case_data, ctx, case_name)

@@ -11,6 +11,7 @@ import importlib
 import json
 import logging
 import os
+import time
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -18,7 +19,7 @@ from urllib.parse import urlparse
 
 import requests
 from requests import Response
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException, Timeout
 from api_project.common.settings import get_bool_env, get_positive_float_env
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,35 @@ DEFAULT_VERIFY_TLS = get_bool_env("API_VERIFY_TLS", default=True)
 # Credentials can appear under many vendor-specific header names.  Keep this
 # policy close to the HTTP client so terminal logs and every report use it.
 _SENSITIVE_HEADER_PARTS = ("authorization", "cookie", "token", "secret", "password", "api-key", "apikey")
+_RETRY_CONFIG_PATH = Path(__file__).resolve().parent.parent / "config" / "request_retry.json"
+
+
+def _load_retry_policy() -> Dict[str, Any]:
+    """Load retry policy once per request so edits are effective on the next run."""
+    default = {
+        "enabled": True,
+        "max_attempts": 3,
+        "backoff_seconds": 0.5,
+        "retry_status_codes": [429, 502, 503],
+        "retry_timeout": True,
+        "safe_methods": ["GET", "HEAD", "OPTIONS"],
+        "retry_write_requests": False,
+    }
+    if not _RETRY_CONFIG_PATH.exists():
+        return default
+    try:
+        with _RETRY_CONFIG_PATH.open("r", encoding="utf-8") as file:
+            loaded = json.load(file)
+        if isinstance(loaded, dict):
+            default.update(loaded)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("⚠️ 请求重试配置读取失败，使用默认策略: %s", exc)
+
+    default["max_attempts"] = max(1, int(default["max_attempts"]))
+    default["backoff_seconds"] = max(0.0, float(default["backoff_seconds"]))
+    default["retry_status_codes"] = {int(code) for code in default["retry_status_codes"]}
+    default["safe_methods"] = {str(method).upper() for method in default["safe_methods"]}
+    return default
 
 
 def sanitize_headers(headers: Optional[Mapping[str, Any]]) -> Dict[str, Any]:
@@ -55,24 +85,31 @@ class ApiRequest:
         self.session.trust_env = os.getenv("PROXY_ENABLED", "").strip().lower() in ("1", "true", "yes")
         self._init_default_headers()
         self.login_token: Optional[str] = None
+        self.login_tokens: Dict[str, str] = {}
         self.global_use_token: bool = True
+        self.default_token_header_name = os.getenv("API_TOKEN_HEADER", "iToken").strip() or "iToken"
+        self.token_prefix = os.getenv("API_TOKEN_PREFIX", "").strip()
         # 静态 token：从 config/user_variable.py 加载（未配置则为 None，保持原有行为）
         self.user_token: Optional[str] = self._load_user_token()
         # 401 自动重登回调（由外部注册：login_handler() -> 返回新 token 字符串）
         self.login_handler = None
+        self.login_handlers = {}
         self._retrying_401 = False
         # 新增：记录最近一次请求和响应
         self.last_request_info = None
         self.last_response_info = None
 
-    def set_login_handler(self, handler) -> "ApiRequest":
+    def set_login_handler(self, handler, auth_profile: str = "default") -> "ApiRequest":
         """
         注册 401 自动重登回调。
         :param handler: 无参可调用对象，返回新 token 字符串（失败返回 None/空则放弃重试）
         """
         if callable(handler):
-            self.login_handler = handler
-            logger.info("✅ 已注册 401 自动重登处理器")
+            profile_name = str(auth_profile or "default")
+            self.login_handlers[profile_name] = handler
+            if profile_name == "default":
+                self.login_handler = handler
+            logger.info("✅ 已注册 %s 的 401 自动重登处理器", profile_name)
         else:
             logger.warning("❌ login_handler 必须是可调用对象")
         return self  # 支持链式调用
@@ -87,9 +124,9 @@ class ApiRequest:
 
     def _load_user_token(self) -> Optional[str]:
         """Load the default token from the environment, then legacy config."""
-        env_token = os.getenv("API_ITOKEN", "").strip()
+        env_token = os.getenv("API_TOKEN", "").strip() or os.getenv("API_ITOKEN", "").strip()
         if env_token:
-            logger.info("✅ 已从环境变量 API_ITOKEN 加载默认鉴权 token")
+            logger.info("✅ 已从环境变量 API_TOKEN/API_ITOKEN 加载默认鉴权 token")
             return env_token
 
         current_file = Path(__file__).resolve()
@@ -118,11 +155,14 @@ class ApiRequest:
             logger.error(f"❌ 加载user_variable.py的token失败: {str(e)}", exc_info=True)
             return None
 
-    def set_login_token(self, token: str) -> "ApiRequest":
+    def set_login_token(self, token: str, auth_profile: str = "default") -> "ApiRequest":
         """设置动态登录Token（如登录接口返回的Token）"""
         if isinstance(token, str) and token.strip():
-            self.login_token = token.strip()
-            logger.info("✅ 已设置动态登录Token")
+            profile_name = str(auth_profile or "default")
+            self.login_tokens[profile_name] = token.strip()
+            if profile_name == "default":
+                self.login_token = token.strip()
+            logger.info("✅ 已设置 %s 的动态登录 Token", profile_name)
         else:
             logger.warning("❌ 无效的Token值（必须是非空字符串）")
         return self  # 支持链式调用
@@ -142,15 +182,22 @@ class ApiRequest:
             logger.warning("❌ 无效的请求头（必须是非空字典）")
         return self  # 支持链式调用
 
-    def _prepare_headers(self, use_token: Optional[bool] = None, token_header_name: str = "iToken") -> Dict[str, str]:
+    def _prepare_headers(
+        self,
+        use_token: Optional[bool] = None,
+        token_header_name: Optional[str] = None,
+        token_prefix: Optional[str] = None,
+        auth_profile: str = "default",
+    ) -> Dict[str, str]:
         """
         准备请求头
         :param use_token: 是否使用Token
-        :param token_header_name: Token的header名称，默认为 "iToken"
+        :param token_header_name: Token 的 header 名称；未传时使用 API_TOKEN_HEADER/iToken。
         """
         # 清除旧的 token headers
-        self.session.headers.pop("iToken", None)
-        self.session.headers.pop("Authorization", None)
+        final_header_name = (token_header_name or self.default_token_header_name).strip()
+        for header_name in {"iToken", "Authorization", "AccessToken", "Token", final_header_name}:
+            self.session.headers.pop(header_name, None)
 
         # 确定最终是否使用Token
         final_use_token = self.global_use_token if use_token is None else use_token
@@ -159,12 +206,16 @@ class ApiRequest:
             return self.session.headers
 
         # 选择使用的Token
-        token = self.login_token if self.login_token else self.user_token
+        profile_name = str(auth_profile or "default")
+        token = self.login_tokens.get(profile_name)
+        if token is None and profile_name == "default":
+            token = self.login_token or self.user_token
 
         if token:
-            # 使用配置的 header 名称
-            self.session.headers[token_header_name] = token
-            logger.info(f"ℹ️ 请求头已添加 {token_header_name}")
+            final_token_prefix = self.token_prefix if token_prefix is None else str(token_prefix).strip()
+            token_value = f"{final_token_prefix} {token}".strip() if final_token_prefix else token
+            self.session.headers[final_header_name] = token_value
+            logger.info(f"ℹ️ 请求头已添加 {final_header_name}")
         else:
             logger.warning("⚠️ 无可用Token")
 
@@ -178,6 +229,45 @@ class ApiRequest:
             "text": response.text[:2000],  # 限制长度避免报告过大
             "elapsed": round(response.elapsed.total_seconds(), 4),  # 响应耗时（秒）
         }
+
+    def _send_with_retry(self, method: str, url: str, retry: Optional[bool], **kwargs: Any) -> Response:
+        """Retry only configured transient failures; unsafe methods require explicit opt-in."""
+        policy = _load_retry_policy()
+        method_upper = method.upper()
+        retry_allowed = bool(policy["enabled"]) and retry is not False and (
+            retry is True
+            or method_upper in policy["safe_methods"]
+            or bool(policy["retry_write_requests"])
+        )
+        attempts = policy["max_attempts"] if retry_allowed else 1
+
+        for attempt in range(1, attempts + 1):
+            try:
+                response = self.session.request(method, url, **kwargs)
+            except RequestException as exc:
+                can_retry_timeout = (
+                    isinstance(exc, Timeout)
+                    and bool(policy["retry_timeout"])
+                    and attempt < attempts
+                )
+                if not can_retry_timeout:
+                    raise
+                delay = policy["backoff_seconds"] * attempt
+                logger.warning("⚠️ 请求超时，第 %s/%s 次重试将在 %.2fs 后执行: %s", attempt, attempts, delay, url)
+                time.sleep(delay)
+                continue
+
+            if response.status_code in policy["retry_status_codes"] and attempt < attempts:
+                delay = policy["backoff_seconds"] * attempt
+                logger.warning(
+                    "⚠️ 收到可重试状态码 %s，第 %s/%s 次重试将在 %.2fs 后执行: %s",
+                    response.status_code, attempt, attempts, delay, url,
+                )
+                time.sleep(delay)
+                continue
+            return response
+
+        raise RuntimeError("请求重试流程异常结束")
 
     def _check_url(self, url: str) -> str:
         """
@@ -208,7 +298,10 @@ class ApiRequest:
             method: str,
             url: str,
             use_token: Optional[bool] = None,
-            token_header_name: str = "iToken",
+            token_header_name: Optional[str] = None,
+            token_prefix: Optional[str] = None,
+            auth_profile: str = "default",
+            retry: Optional[bool] = None,
             **kwargs: Any
     ) -> Response:
         """发送API请求，并记录请求/响应信息（含默认超时、响应时间、401自动重登）"""
@@ -217,13 +310,17 @@ class ApiRequest:
         # 默认校验证书；仅在开发环境明确设置 API_VERIFY_TLS=false 时关闭。
         kwargs.setdefault("verify", DEFAULT_VERIFY_TLS)
 
-        # 静态 token 优先：user_variable.py 已配置 token 时，
-        # 剥离用例数据中写死的 token 请求头，统一由 _prepare_headers 注入新 token
-        if self.user_token:
+        # 统一由 _prepare_headers 注入 token，避免 JSON 中的旧 token 覆盖当前 token。
+        final_use_token = self.global_use_token if use_token is None else use_token
+        profile_name = str(auth_profile or "default")
+        active_login_token = self.login_tokens.get(profile_name)
+        if final_use_token and (self.user_token or active_login_token or (profile_name == "default" and self.login_token)):
             req_headers = kwargs.get("headers") or {}
+            final_header_name = (token_header_name or self.default_token_header_name).lower()
+            managed_headers = {"itoken", "authorization", "accesstoken", "token", final_header_name}
             stripped_headers = {
                 k: v for k, v in req_headers.items()
-                if k.lower() not in ("itoken", "authorization", "accesstoken", "token")
+                if k.lower() not in managed_headers
             }
             if len(stripped_headers) != len(req_headers):
                 kwargs["headers"] = stripped_headers
@@ -241,7 +338,7 @@ class ApiRequest:
         try:
             domain = self._check_url(url)
             method = method.strip().lower()
-            self._prepare_headers(use_token, token_header_name)
+            self._prepare_headers(use_token, token_header_name, token_prefix, profile_name)
 
             logger.info(f"📤 发送请求: {method.upper()} {url}")
             if "params" in kwargs:
@@ -251,23 +348,26 @@ class ApiRequest:
                 logger.debug(f"📤 请求体: {json.dumps(kwargs[body_key], ensure_ascii=False)}")
             logger.debug(f"📤 请求头: {json.dumps(dict(self.session.headers), ensure_ascii=False)}")
 
-            response = self.session.request(method, url, **kwargs)
+            response = self._send_with_retry(method, url, retry, **kwargs)
             logger.info(f"📥 响应状态码: {response.status_code}，耗时: {response.elapsed.total_seconds():.3f}s")
 
             # 记录响应信息（含耗时）
             self._record_response(response)
 
             # ---- 401 自动重登重试（仅一次） ----
-            if response.status_code == 401 and not self._retrying_401 and self.login_handler:
+            login_handler = self.login_handlers.get(profile_name)
+            if login_handler is None and profile_name == "default":
+                login_handler = self.login_handler
+            if response.status_code == 401 and not self._retrying_401 and login_handler:
                 self._retrying_401 = True
                 try:
                     logger.warning("⚠️ 响应 401 未授权，尝试重新登录获取新 token ...")
-                    new_token = self.login_handler()
+                    new_token = login_handler()
                     if new_token:
-                        self.set_login_token(new_token)
-                        self._prepare_headers(use_token, token_header_name)
+                        self.set_login_token(new_token, profile_name)
+                        self._prepare_headers(use_token, token_header_name, token_prefix, profile_name)
                         logger.info(f"✅ 已获取新 token，重发请求: {method.upper()} {url}")
-                        response = self.session.request(method, url, **kwargs)
+                        response = self._send_with_retry(method, url, retry, **kwargs)
                         self._record_response(response)
                         logger.info(
                             f"📥 重发后响应状态码: {response.status_code}，"

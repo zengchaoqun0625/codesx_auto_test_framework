@@ -24,7 +24,7 @@ description: 将本项目中保存为 *curl*.txt 的 cURL 抓包转换为 JSON �
 
    未传文件时，脚本会递归选择最新修改的 `*curl*.txt`；存在多个候选时，优先要求用户指定，避免误转换。
 5. 审核新增 JSON：使用 `${API_ITOKEN}`、`${API_COOKIE}` 等占位符取代真实凭据；补充 `description`、`expected_status`、`assertions` 与需要的 `extract`。
-6. 读取并执行 `../allure-api-analyzer/SKILL.md`，为每个 JSON 增加或更新 `ALLURE_CONFIGS` 映射。必须确认用例可以被收集：
+6. 优先读取并执行 `../allure-api-analyzer/SKILL.md`，为需要业务分组的 JSON 增加或更新 `ALLURE_CONFIGS` 映射。未预置映射的 JSON 会使用统一入口的 `generated_*_api` 兜底分组，仍必须确认用例可以被收集：
 
    ```powershell
    $env:RUN_MODULE='list'
@@ -44,6 +44,6 @@ description: 将本项目中保存为 *curl*.txt 的 cURL 抓包转换为 JSON �
 
 - JSON 可被解析，`test_cases` 非空，`logic` 为已注册的 `query`。
 - 所有请求凭据均为环境变量引用，没有明文 secret。
-- JSON 文件名可映射到 `ALLURE_CONFIGS`；collect-only 能显示预期用例。
+- JSON 文件名可映射到 `ALLURE_CONFIGS`，或使用 `generated_*_api` 兜底分组；collect-only 能显示预期用例。
 - 新增端点拥有性能阈值；默认 5 秒仅为起点，不等同 SLA。
 - 生成接口文档时，`api_document/apis.json` 与 `api_document/api-doc.html` 均来自经审核的数据。

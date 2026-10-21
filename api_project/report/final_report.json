@@ -1,30 +1,30 @@
 {
   "filters": {
-    "untracked": 2,
-    "total": 2,
-    "passed": 2,
+    "untracked": 3,
+    "total": 3,
+    "passed": 3,
     "marker_counts": {
-      "parametrize": 2
+      "parametrize": 3
     }
   },
   "results": [
     {
-      "test": "test_api_api_mchQrCodes_test_case_1_",
-      "nodeid": "api_project/testcases/test_api.py::test_api[api_mchQrCodes/test_case_1]",
+      "test": "test_api_api_cashouts_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_cashouts/test_case_1]",
       "status": "passed",
-      "duration": 0.1327105000091251,
+      "duration": 0.22125350002897903,
       "trace": null,
       "error": null,
       "markers": [
         "parametrize"
       ],
       "file": "api_project\\testcases\\test_api.py",
-      "line": 404,
+      "line": 541,
       "stdout": "",
       "stderr": "",
-      "timestamp": "2026-10-20T02:08:37.107952Z",
+      "timestamp": "2026-10-21T02:44:08.533490Z",
       "screenshot": "screenshots",
-      "logs": "\u26a0\ufe0f \u65e0\u53ef\u7528Token\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/mchQrCodes\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.122s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/cashouts\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.202s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
       "worker": "main",
       "links": [],
       "attempts": [
@@ -32,8 +32,8 @@
           "status": "passed",
           "trace": null,
           "error": null,
-          "duration": 0.1327105000091251,
-          "timestamp": "2026-10-20T02:08:37.107952Z"
+          "duration": 0.22125350002897903,
+          "timestamp": "2026-10-21T02:44:08.534719Z"
         }
       ],
       "attempt_count": 1,
@@ -45,22 +45,22 @@
       "first_failure": null
     },
     {
-      "test": "test_api_api_terminal_test_case_1_",
-      "nodeid": "api_project/testcases/test_api.py::test_api[api_terminal/test_case_1]",
+      "test": "test_api_api_codeItem_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[api_codeItem/test_case_1]",
       "status": "passed",
-      "duration": 0.11387939998530783,
+      "duration": 0.046720300044398755,
       "trace": null,
       "error": null,
       "markers": [
         "parametrize"
       ],
       "file": "api_project\\testcases\\test_api.py",
-      "line": 404,
+      "line": 541,
       "stdout": "",
       "stderr": "",
-      "timestamp": "2026-10-20T02:08:37.240860Z",
+      "timestamp": "2026-10-21T02:44:08.621248Z",
       "screenshot": "screenshots",
-      "logs": "\u26a0\ufe0f \u65e0\u53ef\u7528Token\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/terminal\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.104s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: GET https://mg.6jqb.com/api/codeItem\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.025s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
       "worker": "main",
       "links": [],
       "attempts": [
@@ -68,8 +68,44 @@
           "status": "passed",
           "trace": null,
           "error": null,
-          "duration": 0.11387939998530783,
-          "timestamp": "2026-10-20T02:08:37.240860Z"
+          "duration": 0.046720300044398755,
+          "timestamp": "2026-10-21T02:44:08.621248Z"
+        }
+      ],
+      "attempt_count": 1,
+      "flaky": false,
+      "attempt_statuses": [
+        "passed"
+      ],
+      "first_failure_index": null,
+      "first_failure": null
+    },
+    {
+      "test": "test_api_mchApply_mchList_test_case_1_",
+      "nodeid": "api_project/testcases/test_api.py::test_api[mchApply_mchList/test_case_1]",
+      "status": "passed",
+      "duration": 0.1702066999860108,
+      "trace": null,
+      "error": null,
+      "markers": [
+        "parametrize"
+      ],
+      "file": "api_project\\testcases\\test_api.py",
+      "line": 541,
+      "stdout": "",
+      "stderr": "",
+      "timestamp": "2026-10-21T02:44:08.828145Z",
+      "screenshot": "screenshots",
+      "logs": "\u2139\ufe0f \u5df2\u5265\u79bb\u7528\u4f8b\u6570\u636e\u4e2d\u7684 token \u8bf7\u6c42\u5934\uff0c\u6539\u7528\u73af\u5883\u53d8\u91cf/\u7528\u6237\u914d\u7f6e\u4e2d\u7684\u9ed8\u8ba4 token\n\u2139\ufe0f \u8bf7\u6c42\u5934\u5df2\u6dfb\u52a0 iToken\n\ud83d\udce4 \u53d1\u9001\u8bf7\u6c42: POST https://mg.6jqb.com/api/mchApply/mchList\n\ud83d\udce5 \u54cd\u5e94\u72b6\u6001\u7801: 200\uff0c\u8017\u65f6: 0.111s\n\u2705 \u72b6\u6001\u7801\u65ad\u8a00\u901a\u8fc7: \u9884\u671f200\uff0c\u5b9e\u9645200",
+      "worker": "main",
+      "links": [],
+      "attempts": [
+        {
+          "status": "passed",
+          "trace": null,
+          "error": null,
+          "duration": 0.1702066999860108,
+          "timestamp": "2026-10-21T02:44:08.828145Z"
         }
       ],
       "attempt_count": 1,

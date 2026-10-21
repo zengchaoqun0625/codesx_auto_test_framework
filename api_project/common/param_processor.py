@@ -7,22 +7,13 @@
 
 import json
 import logging
-import os
-import re
 from typing import Any, Dict
+from api_project.common.runtime_config import resolve_variables
 
 logger = logging.getLogger(__name__)
-_ENV_REFERENCE_PATTERN = re.compile(r"\$\{(\w+)\}")
-
-
 def _resolve_env_references(value: Any) -> Any:
     """Resolve ``${NAME}`` placeholders so secrets stay out of case JSON."""
-    if not isinstance(value, str) or "${" not in value:
-        return value
-    return _ENV_REFERENCE_PATTERN.sub(
-        lambda match: os.getenv(match.group(1), ""),
-        value,
-    )
+    return resolve_variables(value)
 
 
 class RequestProcessor:

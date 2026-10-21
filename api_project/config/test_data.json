@@ -1,0 +1,7 @@
+{
+  "common": {},
+  "environments": {
+    "test": {},
+    "pro": {}
+  }
+}

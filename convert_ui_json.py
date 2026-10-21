@@ -75,7 +75,7 @@ class TestCaseGenerator:
     """测试用例生成器，封装测试代码生成逻辑"""
 
     @staticmethod
-    def generate_test_function(file_name_part, constant_name, request_type):
+    def _generate_legacy_test_function(file_name_part, constant_name, request_type):
         """生成统一的测试函数模板，遍历所有 test_case（支持单文件多 case）"""
         return f"""
 import allure
@@ -174,6 +174,22 @@ def test_{file_name_part.lower()}(get_case_data, api_request, assert_code, base_
                 safe_headers = {{k: v if k.lower() not in ['authorization', 'token', 'itoken'] else '***' for k, v in headers.items()}}
                 allure.attach(json.dumps(safe_headers, indent=2, ensure_ascii=False), "失败-请求头", allure.attachment_type.JSON)
             raise
+"""
+
+    @staticmethod
+    def generate_test_function(file_name_part, constant_name, request_type):
+        """Generate a thin entry point backed by the shared JSON case executor."""
+        return f"""
+import pytest
+from api_project.common.allure_decorator import allure_preset
+from api_project.testcases.test_api import build_case_context, execute_case
+
+@allure_preset("jqb_login_api")
+@pytest.mark.parametrize("get_case_data", ["{file_name_part}.json"], indirect=True)
+def test_{file_name_part.lower()}(get_case_data, api_request, assert_code, base_url, allure_reporter, request_processor):
+    ctx = build_case_context(api_request, assert_code, base_url, allure_reporter, request_processor)
+    for case_name, case in get_case_data["test_cases"].items():
+        execute_case(case, ctx, case_name)
 """
 
 

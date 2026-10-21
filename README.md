@@ -134,6 +134,162 @@ python run_testcases.py
 
 ---
 
+## 🌍 环境、域名与登录 token 配置
+
+环境选择无需修改代码。在 `api_project/.env` 配置测试和正式域名，再改一行 `API_ENV`：
+
+```ini
+API_ENV=test
+TEST_API_HOST=https://test-api.example.com
+PRO_API_HOST=https://api.example.com
+
+# 二选一：API_TOKEN 优先；API_ITOKEN 兼容历史配置
+API_TOKEN=your_test_token
+# API_TOKEN_HEADER=iToken
+# API_TOKEN_PREFIX=
+```
+
+- `API_ENV` 支持 `test` / `testing` / `pro` / `prod` / `production`。
+- 临时指定域名可使用 `API_HOST=https://temporary-api.example.com`。
+- 单次运行最高优先级为 `python run_testcases.py --api-host https://temporary-api.example.com`。
+- 默认 token 请求头为 `iToken`。后端使用 Bearer Token 时设置 `API_TOKEN_HEADER=Authorization`、`API_TOKEN_PREFIX=Bearer`。
+
+域名优先级：`--api-host` > `API_HOST` > `API_ENV` 对应的环境域名 > `host_config.py` > `pytest.ini`。
+
+### 前置登录获取并自动刷新 token
+
+在 JSON 用例中使用 `logic: "precondition"`。前置登录步骤默认不带旧 token；登录响应通过 `extract` 提取，`set_login_token` 指向变量名。后续正式请求自动使用该 token，若返回一次 401，会自动重新执行登录并重试该请求一次。
+
+```json
+{
+  "test_cases": {
+    "test_case_1": {
+      "description": "登录后查询订单",
+      "logic": "precondition",
+      "pre_steps": [
+        {
+          "description": "获取登录 token",
+          "use_token": false,
+          "request_type": "json",
+          "extract": [
+            {"name": "LOGIN_TOKEN", "jsonpath": "$.data.token"}
+          ],
+          "set_login_token": "LOGIN_TOKEN",
+          "data": {
+            "url": "/api/login",
+            "method": "POST",
+            "json": {"username": "${LOGIN_USERNAME}", "password": "${LOGIN_PASSWORD}"}
+          }
+        }
+      ],
+      "expected_status": 200,
+      "data": {
+        "url": "/api/orders",
+        "method": "GET"
+      }
+    }
+  }
+}
+```
+
+账号密码同样放在 `.env`，例如 `LOGIN_USERNAME=test_user`、`LOGIN_PASSWORD=***`；不要写进 JSON 或提交 Git。登录接口返回字段不是 `$.data.token` 时，只需改 JSONPath。
+
+### 统一登录配置与多角色
+
+当多个用例共用登录逻辑时，把登录步骤统一配置在 [api_project/config/auth_profiles.json](api_project/config/auth_profiles.json)，业务用例只写 `auth_profile`。账号、密码、静态 token 只放 `.env`，不写入配置文件或用例 JSON。
+
+```json
+{
+  "profiles": {
+    "admin": {
+      "token_variable": "ADMIN_LOGIN_TOKEN",
+      "token_header_name": "Authorization",
+      "token_prefix": "Bearer",
+      "login": {
+        "request_type": "json",
+        "expected_status": 200,
+        "extract": [
+          {"name": "ADMIN_LOGIN_TOKEN", "jsonpath": "$.data.accessToken"}
+        ],
+        "data": {
+          "url": "/api/login",
+          "method": "POST",
+          "json": {
+            "username": "${ADMIN_USERNAME}",
+            "password": "${ADMIN_PASSWORD}"
+          }
+        }
+      }
+    },
+    "merchant": {
+      "token_env": "MERCHANT_TOKEN",
+      "token_header_name": "iToken"
+    }
+  }
+}
+```
+
+在业务用例中只指定角色：
+
+```json
+{
+  "description": "管理员查询订单",
+  "auth_profile": "admin",
+  "data": {"url": "/api/orders", "method": "GET"}
+}
+```
+
+- 每个角色的 token、认证头、Bearer 前缀和 401 重登回调相互隔离；同一轮执行中每个角色仅首次登录一次。
+- 配置了 `token_env`（如 `MERCHANT_TOKEN`）且 `.env` 有值时优先使用静态 token；未配置时仅在同时提供 `login` 的情况下才会走登录流程。
+- 角色名拼写错误、缺少 `token_variable`、token 未提取到时会立即报清晰错误。
+
+### 测试数据和断言规则分层
+
+业务 JSON 只保留接口行为与变量占位符；环境数据和通用断言分别维护在配置文件中：
+
+| 内容 | 文件 | 是否放敏感值 |
+| --- | --- | --- |
+| 环境名、域名变量、数据分区 | `api_project/config/environment_profiles.json` | 否 |
+| 账号密码、静态 token | `api_project/.env` | 是，不提交 Git |
+| 业务测试数据 | `api_project/config/test_data.json` | 否 |
+| 通用断言 | `api_project/config/assertion_rules.json` | 否 |
+
+`test_data.json` 的 `common` 对所有环境生效，`environments.test` / `environments.pro` 覆盖同名字段：
+
+```json
+{
+  "common": {"PAGE_SIZE": 20},
+  "environments": {
+    "test": {"ORDER_ID": "test-order-001"},
+    "pro": {"ORDER_ID": "smoke-order-001"}
+  }
+}
+```
+
+业务 JSON 继续使用 `${ORDER_ID}`、`${PAGE_SIZE}`；运行时优先级为：前序接口 `extract` 的值 > `.env`/CI 环境变量 > `test_data.json`。新增环境数据或账号只改配置，不改业务 JSON。
+
+`assertion_rules.json` 可复用断言：
+
+```json
+{
+  "rules": {
+    "business_success": [
+      {"jsonpath": "$.code", "eq": 0}
+    ]
+  }
+}
+```
+
+用例写入一次 `"assertion_rules": ["business_success"]` 后，后续调整规则只改配置文件；原有内联 `assertions` 会继续执行。
+
+### 请求重试策略
+
+[request_retry.json](api_project/config/request_retry.json) 统一控制重试次数、间隔和状态码。默认只重试 `GET`、`HEAD`、`OPTIONS` 的 429、502、503 和网络超时，最多 3 次；登录与 `POST`/`PUT`/`DELETE` 等写请求不会自动重试。
+
+确实需要对幂等写请求重试时，在该用例或登录配置中显式添加 `"retry": true`；需要禁止某个读请求重试时设置 `"retry": false`。这样可避免重复下单、重复创建等副作用。
+
+---
+
 ## 🧪 手动新增用例（不使用 AI 也完全支持）
 
 ### 方式一：无头转换 cURL
@@ -143,6 +299,8 @@ python api_project/all_skills/curl-to-testcase/scripts/run_convert.py .\curl_log
 ```
 
 如果无法从 cURL 自动识别域名，可追加 `--url-prefix https://api.example.com`。
+
+转换后生成的 `api_project/testcases/test_*.py` 可以单独执行，也会委托统一执行器，因此与 JSON 统一入口具有相同行为：环境数据替换、`auth_profile` 角色认证、`precondition` 登录、`assertion_rules` 和请求重试全部生效。不要在生成脚本中复制或修改请求发送逻辑；需要认证或断言时直接编辑对应 JSON 配置。
 
 ### 方式二：直接编写 JSON
 

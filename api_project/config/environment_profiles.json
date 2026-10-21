@@ -1,0 +1,17 @@
+{
+  "environments": {
+    "test": {
+      "host_env": "TEST_API_HOST",
+      "test_data_section": "test"
+    },
+    "pro": {
+      "host_env": "PRO_API_HOST",
+      "test_data_section": "pro"
+    }
+  },
+  "aliases": {
+    "testing": "test",
+    "prod": "pro",
+    "production": "pro"
+  }
+}

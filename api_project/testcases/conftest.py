@@ -764,6 +764,11 @@ def pytest_sessionfinish(session, exitstatus):
     _session_reporter.finish(session.config)
 
 
+def send_post_report_notifications(html_report_path=None):
+    """Send pytest notifications after final report generation completes."""
+    _session_reporter.notify_after_reports(html_report_path)
+
+
 # ------------------------------
 # 13. 用例执行前设置 Allure 标签
 # ------------------------------

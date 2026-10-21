@@ -1,1 +1,0 @@
-GET https://mg.6jqb.com/api/mchQrCodes

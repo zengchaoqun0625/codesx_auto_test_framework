@@ -57,6 +57,8 @@ if __name__ == '__main__':
         # --html/--self-contained-html/--css options.
         f'--html-output={REPORT_DIR_PATH}',
     ]
+    # 透传 pytest 参数，例如：python run_testcases.py --api-host https://test.example.com
+    pytest_args.extend(sys.argv[1:])
 
     test_started_at = time.perf_counter()
     pytest_exit_code = pytest.main(pytest_args)

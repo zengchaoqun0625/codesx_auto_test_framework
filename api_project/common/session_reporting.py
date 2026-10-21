@@ -39,11 +39,13 @@ class SessionReporter:
         self.results = []
         self.started_at = None
         self.finished = False
+        self._pending_notification = None
 
     def start(self):
         self.results = []
         self.started_at = time.time()
         self.finished = False
+        self._pending_notification = None
 
     def merge_worker_results(self, node):
         self.results.extend(collect_worker_results(node))
@@ -128,18 +130,34 @@ class SessionReporter:
         skipped = sum(result["outcome"] == "skipped" for result in self.results)
         performance_records, slow_alerts = evaluate_cases(self.results)
         append_performance_records(performance_records)
-        report_url = self._upload_report()
-        summary, report_data = self._build_summary(
-            duration, total, passed, failed, skipped, slow_alerts, report_url
-        )
-        self._notify(summary, report_data, failed, slow_alerts)
+        # The final Allure archive and HTML report are produced by the
+        # application after pytest exits.  Defer upload/notification until
+        # then so every published link belongs to this run.
+        self._pending_notification = {
+            "duration": duration,
+            "total": total,
+            "passed": passed,
+            "failed": failed,
+            "skipped": skipped,
+            "slow_alerts": slow_alerts,
+        }
 
-    def _upload_report(self):
+    def notify_after_reports(self, html_report_path=None):
+        """Publish a collected pytest result after final artifacts exist."""
+        if not self._pending_notification:
+            return
+        pending = self._pending_notification
+        self._pending_notification = None
+        report_url = self._upload_report(html_report_path)
+        summary, report_data = self._build_summary(report_url=report_url, **pending)
+        self._notify(summary, report_data, pending["failed"], pending["slow_alerts"])
+
+    def _upload_report(self, html_report_path=None):
         if not is_report_upload_enabled():
             self.logger.info("ℹ️ 报告上传已关闭；设置 UPLOAD_TEST_REPORT=true 后启用")
             return None
         try:
-            return upload_test_report("./reports/report.html")
+            return upload_test_report(html_report_path or "./reports/report.html")
         except Exception as exc:
             self.logger.warning("⚠️ 上传报告异常: %s", exc)
             return None

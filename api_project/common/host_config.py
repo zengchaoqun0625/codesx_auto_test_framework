@@ -9,10 +9,12 @@ Description : 主机配置加载器，多优先级获取API测试主机地址
 '''
 import importlib
 import logging
+import os
 from pathlib import Path
 from typing import Optional
 
 import pytest
+from api_project.common.runtime_config import get_environment_name, get_environment_profile
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +22,8 @@ logger = logging.getLogger(__name__)
 class HostConfig:
     """
     主机配置加载器：多优先级获取API测试主机地址
-    优先级顺序：缓存 → 命令行--api-host → host_config.py → pytest.ini → 报错
+    优先级顺序：缓存 → 命令行 --api-host → API_HOST → API_ENV 对应域名
+    → host_config.py → pytest.ini → 报错
     """
     _cached_host: Optional[str] = None  # 缓存主机地址，减少重复加载
     _HOST_CONFIG_REQUIRED_ATTRS = ["CURRENT_HOST", "TEST_HOST", "PRO_HOST"]  # 必要配置属性
@@ -38,24 +41,32 @@ class HostConfig:
             HostConfig._cached_host = cli_host
             return cli_host
 
-        # 3. 读取host_config.py配置
+        # 3. 读取环境变量：API_HOST 可用于 CI 或一次性覆盖。
+        env_host = HostConfig._get_env_host()
+        if env_host:
+            HostConfig._cached_host = env_host
+            return env_host
+
+        # 4. 读取 host_config.py 配置（兼容历史配置）。
         config_host = HostConfig._get_config_host()
         if config_host:
             HostConfig._cached_host = config_host
             return config_host
 
-        # 4. 读取pytest.ini配置
+        # 5. 读取 pytest.ini 配置。
         ini_host = HostConfig._get_ini_host(pytest_config)
         if ini_host:
             HostConfig._cached_host = ini_host
             return ini_host
 
-        # 5. 所有方式失败，抛出明确错误
+        # 6. 所有方式失败，输出明确错误。
         error_msg = (
             "未配置有效的API主机地址！请通过以下方式之一设置：\n"
             "1. 命令行参数：pytest --api-host https://your-api-domain.com\n"
-            "2. 配置文件：在api_project/config/host_config.py中定义HOST类\n"
-            "3. 配置文件：在pytest.ini中添加base_url = https://your-api-domain.com"
+            "2. 环境变量：API_HOST=https://your-api-domain.com\n"
+            "3. 环境变量：API_ENV=test/pro 与 TEST_API_HOST/PRO_API_HOST\n"
+            "4. 配置文件：在 api_project/config/host_config.py 中定义 HOST 类\n"
+            "5. 配置文件：在 pytest.ini 中添加 base_url = https://your-api-domain.com"
         )
         logger.error(error_msg)
         return ""
@@ -72,6 +83,38 @@ class HostConfig:
             logger.info(f"✅ 使用命令行指定的主机地址: {validated_host}")
             return validated_host
         logger.warning(f"❌ 命令行参数--api-host提供的URL无效: {cli_host}")
+        return None
+
+    @staticmethod
+    def _get_env_host() -> Optional[str]:
+        """从 .env/系统环境变量按显式域名或环境名称读取主机地址。"""
+        explicit_host = os.getenv("API_HOST", "").strip()
+        if explicit_host:
+            validated_host = HostConfig._validate_url(explicit_host)
+            if validated_host:
+                logger.info(f"✅ 使用环境变量 API_HOST 指定的主机地址: {validated_host}")
+                return validated_host
+            logger.warning(f"❌ 环境变量 API_HOST 提供的 URL 无效: {explicit_host}")
+
+        if not os.getenv("API_ENV", "").strip():
+            return None
+        environment = get_environment_name()
+        profile = get_environment_profile()
+        host_var_name = str(profile.get("host_env", "")).strip()
+        if not host_var_name:
+            logger.warning("⚠️ 环境 %s 未配置 host_env", environment)
+            return None
+
+        selected_host = os.getenv(host_var_name, "").strip()
+        if not selected_host:
+            logger.warning("⚠️ API_ENV=%s，但未配置 %s", environment, host_var_name)
+            return None
+
+        validated_host = HostConfig._validate_url(selected_host)
+        if validated_host:
+            logger.info("✅ 使用 API_ENV=%s 对应的 %s: %s", environment, host_var_name, validated_host)
+            return validated_host
+        logger.warning("❌ 环境变量 %s 提供的 URL 无效: %s", host_var_name, selected_host)
         return None
 
     @staticmethod

@@ -73,7 +73,7 @@ class TestCaseGenerator:
     """测试用例生成器，封装测试代码生成逻辑"""
 
     @staticmethod
-    def generate_test_function(file_name_part, constant_name, request_type):
+    def _generate_legacy_test_function(file_name_part, constant_name, request_type):
         """生成统一的测试函数模板，遍历所有 test_case（支持单文件多 case）"""
         return f"""
 import allure
@@ -173,6 +173,11 @@ def test_{file_name_part.lower()}(get_case_data, api_request, assert_code, base_
                 allure.attach(json.dumps(safe_headers, indent=2, ensure_ascii=False), "失败-请求头", allure.attachment_type.JSON)
             raise
 """
+
+    @staticmethod
+    def generate_test_function(file_name_part, constant_name, request_type):
+        """Deprecated: JSON cases run only through testcases/test_api.py."""
+        return ""
 
 
 class WinGUI(Tk):
@@ -546,12 +551,9 @@ class Controller:
             # 统计每个链接的前缀次数
             url_counts = {}
             for url in all_urls:
-                sp = urlparse(url).path
-                if sp:
-                    prefix = url.split(sp)[0]
-                else:
-                    prefix = url
-                if prefix not in ['http', 'https', 'http:', 'https:', 'http://', 'https://']:
+                parsed = urlparse(url)
+                prefix = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else ''
+                if prefix:
                     url_counts[prefix] = url_counts.get(prefix, 0) + 1
 
             if url_counts:  # 检查是否有有效前缀
@@ -663,6 +665,24 @@ class Controller:
                             form_data[key] = value
                     normalized['formdata'] = form_data
 
+        # cURL 抓包通常携带真实鉴权凭据。测试资产只能保留环境变量
+        # 引用，避免 token、Cookie 或 API key 被写入 JSON / 报告 / Git。
+        headers = normalized.get('headers')
+        if isinstance(headers, dict):
+            sensitive_header_envs = {
+                'authorization': '${API_TOKEN}',
+                'token': '${API_ITOKEN}',
+                'itoken': '${API_ITOKEN}',
+                'cookie': '${API_COOKIE}',
+                'x-api-key': '${API_KEY}',
+                'api-key': '${API_KEY}',
+                'x-auth-token': '${API_TOKEN}',
+            }
+            normalized['headers'] = {
+                key: sensitive_header_envs.get(str(key).strip().lower(), value)
+                for key, value in headers.items()
+            }
+
         return normalized
 
     def run_convert(self, evt):
@@ -675,37 +695,43 @@ class Controller:
                 self.logger.error('还未选择需要转换的文件')
                 return
 
-            # 验证URL前缀
-            url_prefix = self.ui.url_prefix.get()
+            # Curl2Object needs HOST while parsing but the converter must not
+            # persist it into host_config.py.  Keep the captured origin in the
+            # generated JSON so the case remains executable without changing
+            # the active environment configuration.
+            url_prefix = self.ui.url_prefix.get().rstrip('/')
             if url_prefix in ['', '请输入接口地址的前缀...']:
-                self.ui.tk_text_log.insert('end', '接口地址的前缀是必填项，不能为空！\n')
-                self.logger.error('接口地址的前缀是必填项，不能为空！')
-                return
+                raise ValueError('接口地址前缀不能为空；请通过 --url-prefix 指定')
 
-            # 重写 host_config.py
-            self._write_host_config(url_prefix)
-
-            # 处理Allure配置
-            allure_path = self.ui.allure_path.get()
-            if allure_path not in ['', '双击或者右击选择 Allure 路径（必填项）']:
-                self._write_allure_config(allure_path)
+            # Conversion is data-only.  Host selection, Allure paths and
+            # user variables belong to the configuration layer and must not
+            # be overwritten from a captured request.
 
             self.ui.tk_text_log.insert('end', '已经加载环境变量\n')
             self.logger.info('已经加载环境变量')
 
             # 加载并转换cURL文件
             curl = Curl()
-            curl.load(curl_file_path=file_path)
+            previous_host = os.environ.get('HOST')
+            os.environ['HOST'] = url_prefix
+            try:
+                curl.load(curl_file_path=file_path)
+            finally:
+                if previous_host is None:
+                    os.environ.pop('HOST', None)
+                else:
+                    os.environ['HOST'] = previous_host
             self.ui.tk_text_log.insert('end', f'已加载文件[{os.path.split(file_path)[1]}]，正在进行转换\n')
             self.logger.info(f'已加载文件[{os.path.split(file_path)[1]}]，正在进行转换')
 
-            # 准备重写 case_config.py
-            case_config_lines = self._prepare_case_config_header()
-            all_variables = {}
+            generated_case_files = []
 
             for request in curl.group:
                 # 标准化请求数据，确保格式正确
                 normalized_request = self.normalize_request_data(request)
+                request_path = str(normalized_request.get('url', ''))
+                if not request_path.startswith(('http://', 'https://')):
+                    normalized_request['url'] = f"{url_prefix}/{request_path.lstrip('/')}"
 
                 # 生成文件名
                 file_name_part = self._generate_file_name(normalized_request)
@@ -715,35 +741,22 @@ class Controller:
                     if key in normalized_request:
                         del normalized_request[key]
 
-                # 生成常量名并添加到配置
-                constant_name = f"{file_name_part.upper()}_CASE_DATA_PATH"
-                case_config_lines.append(
-                    f"{constant_name} = os.path.join(CASE_DATA_DIR_PATH, '{file_name_part}.json')"
-                )
-
-                # 提取变量
-                variables = self.extract_variables(normalized_request)
-                all_variables.update(variables)
-
-                # 生成测试用例脚本
-                self._generate_test_script(
-                    file_name_part, constant_name, normalized_request
-                )
-
                 # 生成测试数据JSON
-                self._generate_test_data_json(
+                case_file = self._generate_test_data_json(
                     file_name_part, normalized_request
                 )
+                if not case_file:
+                    raise RuntimeError(f"未能生成用例数据: {file_name_part}.json")
+                generated_case_files.append(case_file)
 
-            # 写入 case_config.py
-            self._write_case_config(case_config_lines)
-
-            # 写入 user_variable.py
-            self._write_user_variables(all_variables)
+            if not generated_case_files:
+                raise RuntimeError("cURL 文件中没有可转换的请求")
+            return {"case_files": generated_case_files}
 
         except Exception as e:
             self.ui.tk_text_log.insert('end', f"转换过程出错: {str(e)}\n")
             self.logger.error(f"转换过程出错: {traceback.format_exc()}")
+            raise
 
     def _write_host_config(self, url_prefix):
         """写入host配置文件"""
@@ -902,10 +915,12 @@ class Controller:
 
             self.ui.tk_text_log.insert('end', f"{file_name_part}.json 写入成功！\n")
             self.logger.info(f"{file_name_part}.json 写入成功！")
+            return CASE_DATA
 
         except Exception as e:
             self.ui.tk_text_log.insert('end', f"{file_name_part}.json 写入失败：{str(e)}\n")
             self.logger.error(f"{file_name_part}.json 写入失败：{traceback.format_exc()}")
+            return None
 
     def _write_case_config(self, case_config_lines):
         """写入case配置文件"""

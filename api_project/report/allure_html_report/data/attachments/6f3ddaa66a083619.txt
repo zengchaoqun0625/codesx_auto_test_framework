@@ -1,6 +1,0 @@
-WARNING  api_project.common.api_request:api_request.py:110 ⚠️ user_variable.py中未定义有效的token/iToken变量
-INFO     api_project.common.host_config:host_config.py:110 ✅ 从host_config.py加载主机地址（CURRENT_HOST）: https://mg.6jqb.com
-WARNING  api_project.common.api_request:api_request.py:164 ⚠️ 无可用Token
-INFO     api_project.common.api_request:api_request.py:241 📤 发送请求: GET https://mg.6jqb.com/api/mchQrCodes
-INFO     api_project.common.api_request:api_request.py:250 📥 响应状态码: 200，耗时: 0.122s
-INFO     api_project.common.api_assertions:api_assertions.py:28 ✅ 状态码断言通过: 预期200，实际200

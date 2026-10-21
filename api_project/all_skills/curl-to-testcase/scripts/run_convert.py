@@ -22,6 +22,8 @@ import types
 import logging
 import argparse
 import glob as glob_module
+import json
+import subprocess
 
 
 # ============================================================
@@ -192,27 +194,50 @@ def run_conversion(curl_file_path, url_prefix_override=None):
     # ---- 8. 执行转换 ----
     print('[INFO] 开始转换...')
     try:
-        controller.run_convert(None)
+        result = controller.run_convert(None)
     except Exception as e:
         print('[ERROR] 转换过程发生未捕获异常: {}'.format(e))
         import traceback
         traceback.print_exc()
         return False
 
-    # ---- 9. 检查输出 ----
-    # run_convert 内部会吞掉异常，这里通过检查是否有新文件生成来判断
-    case_data_dir = os.path.join(project_root, 'api_project', 'case_data_files')
-    testcases_dir = os.path.join(project_root, 'api_project', 'testcases')
+    # ---- 9. Validate converter-reported output, not an existing directory ----
+    case_files = result.get('case_files', []) if isinstance(result, dict) else []
+    if not case_files:
+        print('[ERROR] 转换未产生任何 JSON 用例。')
+        return False
+    try:
+        expected_ids = []
+        for case_file in case_files:
+            with open(case_file, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            if not isinstance(data.get('test_cases'), dict) or not data['test_cases']:
+                raise ValueError('{} 的 test_cases 不能为空'.format(case_file))
+            expected_ids.extend(
+                '{}/{}'.format(os.path.splitext(os.path.basename(case_file))[0], case_name)
+                for case_name in data['test_cases']
+            )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print('[ERROR] 生成 JSON 校验失败: {}'.format(exc))
+        return False
 
-    json_count = len(glob_module.glob(os.path.join(case_data_dir, '*.json')))
-    py_count = len(glob_module.glob(os.path.join(testcases_dir, 'test_*.py')))
+    collect = subprocess.run(
+        [sys.executable, '-m', 'pytest', 'api_project/testcases', '--collect-only', '-q'],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+        encoding='utf-8',
+        errors='replace',
+    )
+    if collect.returncode != 0:
+        print('[ERROR] pytest 收集校验失败:\n{}'.format(collect.stdout + collect.stderr))
+        return False
+    missing = [case_id for case_id in expected_ids if case_id not in collect.stdout]
+    if missing:
+        print('[ERROR] 生成用例未被统一入口收集: {}'.format(', '.join(missing)))
+        return False
 
-    print('')
-    print('[INFO] 转换流程结束。')
-    print('       case_data_files/*.json : {} 个'.format(json_count))
-    print('       testcases/test_*.py    : {} 个'.format(py_count))
-    print('')
-    print('[OK] 转换完成。')
+    print('\n[OK] 转换完成并通过 JSON/pytest 收集校验。')
     return True
 
 
