@@ -516,7 +516,16 @@ def _build_all_case_params():
     每个 param 包含: json_file, preset_name, case_name, case_data, logic
     """
     params = []
+    controls_path = os.path.join(os.path.dirname(CASE_DATA_DIR_PATH), "config", "case_controls.json")
+    try:
+        with open(controls_path, "r", encoding="utf-8") as file:
+            disabled_files = set(json.load(file).get("disabled", []))
+    except (OSError, json.JSONDecodeError, AttributeError):
+        disabled_files = set()
     for fname in sorted(JSON_PRESET_MAP.keys()):
+        if fname in disabled_files:
+            logger.info("⏭️ 已跳过控制台禁用的用例文件: %s", fname)
+            continue
         preset = JSON_PRESET_MAP[fname]
 
         fpath = os.path.join(CASE_DATA_DIR_PATH, fname)

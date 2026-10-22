@@ -1,9 +1,17 @@
 {
+  "backoff_seconds": 0.5,
   "enabled": true,
   "max_attempts": 3,
-  "backoff_seconds": 0.5,
-  "retry_status_codes": [429, 502, 503],
+  "retry_status_codes": [
+    429,
+    502,
+    503
+  ],
   "retry_timeout": true,
-  "safe_methods": ["GET", "HEAD", "OPTIONS"],
-  "retry_write_requests": false
+  "retry_write_requests": false,
+  "safe_methods": [
+    "GET",
+    "HEAD",
+    "OPTIONS"
+  ]
 }

@@ -34,10 +34,17 @@ SCHEDULER_RUNNER = ROOT / "run_scheduler.py"
 MAX_LOG_CHARS = 120_000
 ALLURE_PRESETS_FILE = CONFIG_DIR / "allure_presets.json"
 SCHEDULER_JOBS_FILE = CONFIG_DIR / "scheduler_jobs.json"
+ENVIRONMENT_PROFILES_FILE = CONFIG_DIR / "environment_profiles.json"
+AUTH_PROFILES_FILE = CONFIG_DIR / "auth_profiles.json"
+ASSERTION_RULES_FILE = CONFIG_DIR / "assertion_rules.json"
+PERFORMANCE_THRESHOLDS_FILE = CONFIG_DIR / "performance_thresholds.json"
+RETRY_CONFIG_FILE = CONFIG_DIR / "request_retry.json"
+CASE_CONTROLS_FILE = CONFIG_DIR / "case_controls.json"
 MANUAL_FILE = ROOT / "api_project" / "接口自动化测试使用手册.pdf"
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 _runs: dict[str, dict] = {}
 _runs_lock = threading.Lock()
@@ -45,6 +52,14 @@ _curl_drafts: dict[str, dict] = {}
 _curl_drafts_lock = threading.Lock()
 _scheduler_process: subprocess.Popen | None = None
 _scheduler_process_lock = threading.RLock()
+
+
+@app.after_request
+def disable_console_asset_cache(response):
+    """Always serve the local console's HTML/JS/CSS fresh after a restart."""
+    if request.path == "/" or request.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+    return response
 
 
 def _read_json(path: Path, fallback):
@@ -58,6 +73,95 @@ def _read_json(path: Path, fallback):
 def _write_json(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _case_controls() -> dict:
+    data = _read_json(CASE_CONTROLS_FILE, {"disabled": []})
+    disabled = data.get("disabled", []) if isinstance(data, dict) else []
+    return {"disabled": sorted({Path(str(name)).name for name in disabled if str(name).endswith(".json")})}
+
+
+def _validate_case_name(filename: str) -> str:
+    name = Path(str(filename)).name
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,119}\.json", name):
+        raise ValueError("用例文件名只能包含字母、数字、下划线、短横线和点，且必须以 .json 结尾")
+    return name
+
+
+def _validate_case_document(data: object) -> dict:
+    if not isinstance(data, dict) or not isinstance(data.get("test_cases"), dict):
+        raise ValueError("用例文件必须是包含 test_cases 对象的 JSON")
+    if not data["test_cases"]:
+        raise ValueError("test_cases 不能为空")
+    valid_logic = {"query", "precondition", "expect_error"}
+    for name, case in data["test_cases"].items():
+        if not isinstance(name, str) or not isinstance(case, dict):
+            raise ValueError("每个 test_cases 项必须为命名对象")
+        if str(case.get("logic", "query")) not in valid_logic:
+            raise ValueError(f"{name} 的 logic 必须是 {', '.join(sorted(valid_logic))} 之一")
+        request_data = case.get("data")
+        if not isinstance(request_data, dict) or not str(request_data.get("url", "")).strip():
+            raise ValueError(f"{name} 缺少 data.url")
+        method = str(request_data.get("method", "GET")).upper()
+        if method not in {"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}:
+            raise ValueError(f"{name} 的 data.method 不支持: {method}")
+        if "assertions" in case and (not isinstance(case["assertions"], list) or not all(isinstance(item, dict) for item in case["assertions"])):
+            raise ValueError(f"{name} 的 assertions 必须是对象数组")
+        if "extract" in case and (not isinstance(case["extract"], list) or not all(isinstance(item, dict) for item in case["extract"])):
+            raise ValueError(f"{name} 的 extract 必须是对象数组")
+        if "pre_steps" in case and (not isinstance(case["pre_steps"], list) or not all(isinstance(item, dict) for item in case["pre_steps"])):
+            raise ValueError(f"{name} 的 pre_steps 必须是对象数组")
+    return data
+
+
+def _validate_json_config(kind: str, data: object) -> dict:
+    if not isinstance(data, dict):
+        raise ValueError("配置根节点必须是 JSON 对象")
+    if kind == "environments":
+        profiles = data.get("environments")
+        if not isinstance(profiles, dict) or not profiles:
+            raise ValueError("environments 必须是非空对象")
+        if not isinstance(data.get("aliases", {}), dict):
+            raise ValueError("aliases 必须是对象")
+        for name, profile in profiles.items():
+            if not re.fullmatch(r"[a-z][a-z0-9_-]{0,31}", str(name)) or not isinstance(profile, dict):
+                raise ValueError("环境名称或配置格式无效")
+            if not str(profile.get("host_env", "")).strip():
+                raise ValueError(f"环境 {name} 缺少 host_env")
+    elif kind == "auth":
+        profiles = data.get("profiles")
+        if not isinstance(profiles, dict):
+            raise ValueError("profiles 必须是对象")
+        for name, profile in profiles.items():
+            if not re.fullmatch(r"[a-z][a-z0-9_-]{0,31}", str(name)) or not isinstance(profile, dict):
+                raise ValueError("角色名称或配置格式无效")
+            if profile.get("token_env") and not re.fullmatch(r"[A-Z][A-Z0-9_]*", str(profile["token_env"])):
+                raise ValueError(f"角色 {name} 的 token_env 必须是环境变量名")
+    elif kind == "assertions":
+        if not isinstance(data.get("rules"), dict):
+            raise ValueError("rules 必须是对象")
+        if not all(isinstance(name, str) and isinstance(items, list) and all(isinstance(item, dict) for item in items) for name, items in data["rules"].items()):
+            raise ValueError("每个断言规则必须是对象数组")
+    elif kind == "performance":
+        if not isinstance(data.get("enabled", False), bool) or not isinstance(data.get("rules", []), list):
+            raise ValueError("性能配置的 enabled/rules 格式无效")
+        try:
+            if float(data.get("default_threshold_sec", 0)) <= 0:
+                raise ValueError
+        except (TypeError, ValueError):
+            raise ValueError("默认性能阈值必须大于 0") from None
+        for rule in data["rules"]:
+            if not isinstance(rule, dict) or float(rule.get("threshold_sec", 0)) <= 0:
+                raise ValueError("每条性能规则必须有大于 0 的 threshold_sec")
+    elif kind == "retry":
+        try:
+            if int(data.get("max_attempts", 0)) < 1 or float(data.get("backoff_seconds", -1)) < 0:
+                raise ValueError
+        except (TypeError, ValueError):
+            raise ValueError("重试次数或退避时间无效") from None
+        if not isinstance(data.get("retry_status_codes", []), list) or not isinstance(data.get("safe_methods", []), list):
+            raise ValueError("重试状态码和安全方法必须是数组")
+    return data
 
 
 def _allure_store() -> dict:
@@ -155,6 +259,7 @@ def _validated_schedule_job(payload: dict, existing_id: str | None = None) -> di
 
 def _case_summary() -> list[dict]:
     cases = []
+    disabled = set(_case_controls()["disabled"])
     for path in sorted(CASE_DIR.glob("*.json")):
         data = _read_json(path, {})
         test_cases = data.get("test_cases", {}) if isinstance(data, dict) else {}
@@ -163,6 +268,7 @@ def _case_summary() -> list[dict]:
             "count": len(test_cases) if isinstance(test_cases, dict) else 0,
             "updated_at": datetime.fromtimestamp(path.stat().st_mtime).strftime("%Y-%m-%d %H:%M"),
             "preset": _case_preset(path.name),
+            "enabled": path.name not in disabled,
         })
     return cases
 
@@ -304,7 +410,8 @@ def _settings_status() -> dict:
     defaults = {
         "API_HOST": default_host, "API_TIMEOUT": "10", "TEST_EXECUTOR": "", "ALLURE_URL": "",
         "SMTP_HOST": "smtp.qq.com", "SMTP_PORT": "465", "SMTP_SUBJECT": "自动化测试报告",
-        "SMTP_USERNAME": "", "SMTP_RECEIVERS": "",
+        "SMTP_USERNAME": "", "SMTP_RECEIVERS": "", "API_ENV": "test", "TEST_API_HOST": "",
+        "PRO_API_HOST": "", "ALLURE_REPORT_KEEP": "3", "NOTIFICATION_TIMEOUT": "10",
     }
     safe_keys = tuple(defaults)
     resolved_values = {key: values.get(key, defaults[key]) for key in safe_keys}
@@ -319,10 +426,12 @@ def _settings_status() -> dict:
         "smtp_configured": configured("SMTP_HOST") and configured("SMTP_USERNAME") and configured("SMTP_PASSWORD"),
         "api_host_configured": configured("API_HOST"),
         "allure_url_configured": configured("ALLURE_URL"),
+        "proxy_enabled": values.get("PROXY_ENABLED", "false").lower() in {"true", "1", "yes", "on"},
+        "upload_test_report": values.get("UPLOAD_TEST_REPORT", "false").lower() in {"true", "1", "yes", "on"},
         "values": resolved_values,
         "value_sources": {key: "configured" if configured(key) else "default" for key in safe_keys},
         "secrets": {
-            "api_token": configured("API_TOKEN"), "api_itoken": configured("API_ITOKEN"), "api_cookie": configured("API_COOKIE"),
+        "api_token": configured("API_TOKEN"), "api_itoken": configured("API_ITOKEN"), "api_cookie": configured("API_COOKIE"),
             "smtp_password": configured("SMTP_PASSWORD"), "feishu_token": configured("FEISHU_TOKEN"),
             "dingding_token": configured("DINGDING_TOKEN"), "dingding_secret": configured("DINGDING_SECRET"),
             "weixin_token": configured("WEIXIN_TOKEN"), "phone_call_webhook": configured("PHONE_CALL_WEBHOOK"),
@@ -499,9 +608,17 @@ def index():
     return render_template("index.html")
 
 
+@app.get("/api/console-info")
+def console_info():
+    """Health/version marker used by the restart launcher to reject stale servers."""
+    return jsonify({"version": "web-console-20261022.7", "config_api": True})
+
+
 @app.get("/favicon.ico")
 def favicon():
-    return send_from_directory(ROOT / "api_project" / "resources", "favicon.ico", mimetype="image/vnd.microsoft.icon")
+    response = send_from_directory(ROOT / "api_project" / "resources", "favicon.ico", mimetype="image/vnd.microsoft.icon")
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    return response
 
 
 @app.get("/manual")
@@ -535,6 +652,103 @@ def cases():
     except ValueError:
         return jsonify({"error": "page 和 page_size 必须是整数"}), 400
     return jsonify(_case_page(request.args.get("q", ""), page, page_size))
+
+
+@app.get("/api/cases/<filename>")
+def get_case(filename: str):
+    try:
+        name = _validate_case_name(filename)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    path = CASE_DIR / name
+    if not path.is_file():
+        abort(404)
+    data = _read_json(path, None)
+    if not isinstance(data, dict):
+        return jsonify({"error": "用例文件不是有效 JSON"}), 422
+    return jsonify({"file": name, "data": data, "enabled": name not in set(_case_controls()["disabled"])})
+
+
+@app.put("/api/cases/<filename>")
+def update_case(filename: str):
+    try:
+        name = _validate_case_name(filename)
+        payload = request.get_json(silent=True) or {}
+        document = _validate_case_document(payload.get("data"))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    path = CASE_DIR / name
+    if not path.is_file():
+        abort(404)
+    original = path.read_text(encoding="utf-8")
+    path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    collected, output = _validate_new_cases()
+    if not collected:
+        path.write_text(original, encoding="utf-8")
+        return jsonify({"error": "收集校验失败，已恢复原用例", "collect_log": output}), 422
+    return jsonify({"file": name, "saved": True, "collect_ok": True})
+
+
+@app.post("/api/cases/<filename>/copy")
+def copy_case(filename: str):
+    try:
+        source_name = _validate_case_name(filename)
+        new_name = _validate_case_name((request.get_json(silent=True) or {}).get("filename", ""))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    source, target = CASE_DIR / source_name, CASE_DIR / new_name
+    if not source.is_file():
+        abort(404)
+    if target.exists():
+        return jsonify({"error": "目标文件已存在"}), 409
+    data = _read_json(source, None)
+    try:
+        _validate_case_document(data)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 422
+    target.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    collected, output = _validate_new_cases()
+    if not collected:
+        target.unlink(missing_ok=True)
+        return jsonify({"error": "收集校验失败，未创建副本", "collect_log": output}), 422
+    return jsonify({"file": new_name, "copied_from": source_name}), 201
+
+
+@app.post("/api/cases/<filename>/toggle")
+def toggle_case(filename: str):
+    try:
+        name = _validate_case_name(filename)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    if not (CASE_DIR / name).is_file():
+        abort(404)
+    controls = _case_controls()
+    disabled = set(controls["disabled"])
+    enabled = name in disabled
+    if enabled:
+        disabled.remove(name)
+    else:
+        disabled.add(name)
+    _write_json(CASE_CONTROLS_FILE, {"disabled": sorted(disabled)})
+    return jsonify({"file": name, "enabled": enabled})
+
+
+@app.delete("/api/cases/<filename>")
+def delete_case(filename: str):
+    try:
+        name = _validate_case_name(filename)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    path = CASE_DIR / name
+    if not path.is_file():
+        abort(404)
+    # A recoverable rename keeps accidental UI deletions out of the test scan.
+    trash = CASE_DIR / ".trash"
+    trash.mkdir(exist_ok=True)
+    path.replace(trash / f"{datetime.now():%Y%m%d%H%M%S}_{name}")
+    controls = _case_controls()
+    _write_json(CASE_CONTROLS_FILE, {"disabled": [item for item in controls["disabled"] if item != name]})
+    return jsonify({"deleted": name, "recoverable": True})
 
 
 @app.post("/api/runs")
@@ -629,6 +843,54 @@ def save_curl():
 @app.get("/api/allure-presets")
 def allure_presets():
     return jsonify({"items": _allure_preset_options(), "assignments": _allure_assignments()})
+
+
+_CONFIG_RESOURCES = {
+    "environments": ENVIRONMENT_PROFILES_FILE,
+    "auth": AUTH_PROFILES_FILE,
+    "assertions": ASSERTION_RULES_FILE,
+    "performance": PERFORMANCE_THRESHOLDS_FILE,
+    "retry": RETRY_CONFIG_FILE,
+}
+
+
+@app.get("/api/config/<kind>")
+def get_config_resource(kind: str):
+    path = _CONFIG_RESOURCES.get(kind)
+    if path is None:
+        abort(404)
+    fallback = {"environments": {"environments": {}, "aliases": {}}, "auth": {"profiles": {}}, "assertions": {"rules": {}}, "performance": {"enabled": False, "default_threshold_sec": 5, "rules": []}, "retry": {}}[kind]
+    return jsonify({"kind": kind, "data": _read_json(path, fallback)})
+
+
+@app.put("/api/config/<kind>")
+def update_config_resource(kind: str):
+    path = _CONFIG_RESOURCES.get(kind)
+    if path is None:
+        abort(404)
+    try:
+        payload = request.get_json(silent=True) or {}
+        data = _validate_json_config(kind, payload.get("data"))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    _write_json(path, data)
+    return jsonify({"kind": kind, "saved": True, "data": data})
+
+
+@app.get("/api/performance/alerts")
+def performance_alerts():
+    source = HISTORY_DIR / "performance_history.jsonl"
+    alerts = []
+    if source.is_file():
+        for line in source.read_text(encoding="utf-8", errors="replace").splitlines():
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(item, dict) and item.get("slow"):
+                alerts.append(item)
+    alerts.sort(key=lambda item: str(item.get("timestamp", "")), reverse=True)
+    return jsonify({"items": alerts[:50]})
 
 
 @app.post("/api/allure-presets")
@@ -802,6 +1064,8 @@ def save_settings():
         "smtp_username": "SMTP_USERNAME", "smtp_password": "SMTP_PASSWORD", "smtp_subject": "SMTP_SUBJECT", "smtp_receivers": "SMTP_RECEIVERS",
         "feishu_token": "FEISHU_TOKEN", "dingding_token": "DINGDING_TOKEN", "dingding_secret": "DINGDING_SECRET",
         "weixin_token": "WEIXIN_TOKEN", "phone_call_webhook": "PHONE_CALL_WEBHOOK",
+        "api_env": "API_ENV", "test_api_host": "TEST_API_HOST", "pro_api_host": "PRO_API_HOST",
+        "allure_report_keep": "ALLURE_REPORT_KEEP", "notification_timeout": "NOTIFICATION_TIMEOUT",
     }
     updates = {}
     for input_name, env_name in aliases.items():
@@ -823,6 +1087,9 @@ def save_settings():
         updates["SCHEDULER_ENABLED"] = "true" if bool(payload["scheduler_enabled"]) else "false"
     if "api_verify_tls" in payload:
         updates["API_VERIFY_TLS"] = "true" if bool(payload["api_verify_tls"]) else "false"
+    for key, env_name in (("proxy_enabled", "PROXY_ENABLED"), ("upload_test_report", "UPLOAD_TEST_REPORT")):
+        if key in payload:
+            updates[env_name] = "true" if bool(payload[key]) else "false"
     for key, env_name in (("feishu_enabled", "FEISHU_ENABLED"), ("dingding_enabled", "DINGDING_ENABLED"), ("weixin_enabled", "WEIXIN_ENABLED"), ("phone_call_enabled", "PHONE_CALL_ENABLED")):
         if key in payload:
             updates[env_name] = "true" if bool(payload[key]) else "false"

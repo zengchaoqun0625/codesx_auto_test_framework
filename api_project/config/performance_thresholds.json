@@ -1,162 +1,162 @@
 {
+  "default_threshold_sec": 5,
   "enabled": true,
-  "default_threshold_sec": 5.0,
   "rules": [
     {
-      "name": "登录接口更严格阈值",
+      "enabled": true,
       "endpoint_contains": "/login",
-      "threshold_sec": 10.0,
-      "enabled": true
+      "name": "登录接口更严格阈值",
+      "threshold_sec": 6
     },
     {
-      "name": "支付接口阈值",
+      "enabled": true,
       "endpoint_contains": "/payment",
-      "threshold_sec": 10.0,
-      "enabled": true
+      "name": "支付接口阈值",
+      "threshold_sec": 10
     },
     {
-      "name": "GET /api/cashouts",
+      "enabled": true,
       "endpoint_contains": "/api/cashouts",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/cashouts",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/codeItem",
+      "enabled": true,
       "endpoint_contains": "/api/codeItem",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/codeItem",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/deductOrder",
+      "enabled": true,
       "endpoint_contains": "/api/deductOrder",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/deductOrder",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/deductOrder/statistics",
+      "enabled": true,
       "endpoint_contains": "/api/deductOrder/statistics",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/deductOrder/statistics",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/isvInfo",
+      "enabled": true,
       "endpoint_contains": "/api/isvInfo",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/isvInfo",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/mchPolling/list",
+      "enabled": true,
       "endpoint_contains": "/api/mchPolling/list",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/mchPolling/list",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/mchQrCodes",
+      "enabled": true,
       "endpoint_contains": "/api/mchQrCodes",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/mchQrCodes",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/payIfDefines",
+      "enabled": true,
       "endpoint_contains": "/api/payIfDefines",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/payIfDefines",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/payIfDefines/get",
+      "enabled": true,
       "endpoint_contains": "/api/payIfDefines/get",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/payIfDefines/get",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/payOrder",
+      "enabled": true,
       "endpoint_contains": "/api/payOrder",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/payOrder",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/payOrder/count",
+      "enabled": true,
       "endpoint_contains": "/api/payOrder/count",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/payOrder/count",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/payWays",
+      "enabled": true,
       "endpoint_contains": "/api/payWays",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/payWays",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/polling/transfer",
+      "enabled": true,
       "endpoint_contains": "/api/polling/transfer",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/polling/transfer",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/refundOrder",
+      "enabled": true,
       "endpoint_contains": "/api/refundOrder",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/refundOrder",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/store/device",
+      "enabled": true,
       "endpoint_contains": "/api/store/device",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/store/device",
+      "threshold_sec": 5
     },
     {
-      "name": "GET /api/transferOrders",
+      "enabled": true,
       "endpoint_contains": "/api/transferOrders",
+      "generated_by": "curl-to-testcase",
       "method": "GET",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "GET /api/transferOrders",
+      "threshold_sec": 5
     },
     {
-      "name": "POST /api/mchApply/mchList",
+      "enabled": true,
       "endpoint_contains": "/api/mchApply/mchList",
+      "generated_by": "curl-to-testcase",
       "method": "POST",
-      "threshold_sec": 5.0,
-      "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "name": "POST /api/mchApply/mchList",
+      "threshold_sec": 5
     },
     {
-      "name": "POST /api/mgr/mchForm/payment",
-      "endpoint_contains": "/api/mgr/mchForm/payment",
-      "method": "POST",
-      "threshold_sec": 5.0,
       "enabled": true,
-      "generated_by": "curl-to-testcase"
+      "endpoint_contains": "/api/mgr/mchForm/payment",
+      "generated_by": "curl-to-testcase",
+      "method": "POST",
+      "name": "POST /api/mgr/mchForm/payment",
+      "threshold_sec": 5
     }
   ]
 }

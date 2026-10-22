@@ -15,10 +15,17 @@ def test_dashboard_is_available():
     assert all({"value", "label"} <= item.keys() for item in data["modules"])
 
 
+def test_console_info_identifies_current_backend_version():
+    response = app.test_client().get("/api/console-info")
+    assert response.status_code == 200
+    assert response.get_json() == {"version": "web-console-20261022.7", "config_api": True}
+
+
 def test_favicon_is_served_from_project_resources():
     response = app.test_client().get("/favicon.ico")
     assert response.status_code == 200
     assert response.mimetype == "image/vnd.microsoft.icon"
+    assert response.headers["Cache-Control"] == "no-store, max-age=0"
 
 
 def test_dashboard_uses_the_svg_browser_icon():
@@ -27,6 +34,17 @@ def test_dashboard_uses_the_svg_browser_icon():
     icon = app.test_client().get("/static/favicon.svg")
     assert icon.status_code == 200
     assert icon.mimetype == "image/svg+xml"
+
+
+def test_console_has_no_global_run_all_button():
+    page = app.test_client().get("/").get_data(as_text=True)
+    assert 'id="runAll"' not in page
+
+
+def test_console_html_and_assets_are_not_cached_after_restart():
+    client = app.test_client()
+    assert client.get("/").headers["Cache-Control"] == "no-store, max-age=0"
+    assert client.get("/static/app.js").headers["Cache-Control"] == "no-store, max-age=0"
 
 
 def test_operation_manual_opens_inline_from_the_local_console():
@@ -347,3 +365,69 @@ def test_settings_exposes_resolved_defaults_and_sources(tmp_path, monkeypatch):
     assert data["values"]["SMTP_HOST"] == "smtp.qq.com"
     assert data["values"]["SMTP_PORT"] == "465"
     assert data["values"]["SMTP_SUBJECT"] == "自动化测试报告"
+
+
+def test_config_resources_validate_and_persist(tmp_path, monkeypatch):
+    import web_app
+
+    monkeypatch.setattr(web_app, "ENVIRONMENT_PROFILES_FILE", tmp_path / "environment_profiles.json")
+    monkeypatch.setitem(web_app._CONFIG_RESOURCES, "environments", web_app.ENVIRONMENT_PROFILES_FILE)
+    payload = {"data": {"environments": {"test": {"host_env": "TEST_API_HOST"}}, "aliases": {"testing": "test"}}}
+    response = app.test_client().put("/api/config/environments", json=payload)
+    assert response.status_code == 200
+    assert response.get_json()["data"] == payload["data"]
+    assert app.test_client().put("/api/config/environments", json={"data": {"environments": {}}}).status_code == 400
+
+
+def test_case_editor_save_rolls_back_when_collection_fails(tmp_path, monkeypatch):
+    import web_app
+
+    monkeypatch.setattr(web_app, "CASE_DIR", tmp_path)
+    case_file = tmp_path / "example.json"
+    original = '{"test_cases": {"test_case_1": {"data": {"url": "/old", "method": "GET"}}}}\n'
+    case_file.write_text(original, encoding="utf-8")
+    monkeypatch.setattr(web_app, "_validate_new_cases", lambda: (False, "collection failure"))
+    response = app.test_client().put("/api/cases/example.json", json={"data": {"test_cases": {"test_case_1": {"data": {"url": "/new", "method": "GET"}}}}})
+    assert response.status_code == 422
+    assert case_file.read_text(encoding="utf-8") == original
+
+
+def test_case_toggle_persists_disabled_control(tmp_path, monkeypatch):
+    import web_app
+
+    monkeypatch.setattr(web_app, "CASE_DIR", tmp_path)
+    monkeypatch.setattr(web_app, "CASE_CONTROLS_FILE", tmp_path / "case_controls.json")
+    (tmp_path / "example.json").write_text('{"test_cases": {"test_case_1": {"data": {"url": "/x", "method": "GET"}}}}', encoding="utf-8")
+    first = app.test_client().post("/api/cases/example.json/toggle")
+    assert first.status_code == 200 and first.get_json()["enabled"] is False
+    assert web_app._read_json(web_app.CASE_CONTROLS_FILE, {})["disabled"] == ["example.json"]
+    second = app.test_client().post("/api/cases/example.json/toggle")
+    assert second.status_code == 200 and second.get_json()["enabled"] is True
+
+
+def test_every_quality_resource_has_a_json_api_response(tmp_path, monkeypatch):
+    import web_app
+
+    paths = {
+        "assertions": tmp_path / "assertions.json",
+        "performance": tmp_path / "performance.json",
+        "retry": tmp_path / "retry.json",
+    }
+    monkeypatch.setattr(web_app, "_CONFIG_RESOURCES", paths)
+    for kind, payload in {
+        "assertions": {"rules": {}},
+        "performance": {"enabled": True, "default_threshold_sec": 5, "rules": []},
+        "retry": {"enabled": True, "max_attempts": 3, "backoff_seconds": 0.5, "retry_status_codes": [429, 502, 503]},
+    }.items():
+        saved = app.test_client().put(f"/api/config/{kind}", json={"data": payload})
+        assert saved.status_code == 200 and saved.is_json
+        loaded = app.test_client().get(f"/api/config/{kind}")
+        assert loaded.status_code == 200 and loaded.is_json and loaded.get_json()["data"] == payload
+
+
+def test_console_script_reports_non_json_server_responses_clearly():
+    script = os.path.join(os.path.dirname(__file__), "..", "static", "app.js")
+    with open(script, encoding="utf-8") as file:
+        source = file.read()
+    assert "readJsonResponse" in source
+    assert "当前网页服务可能未重启" in source

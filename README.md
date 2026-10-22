@@ -43,7 +43,7 @@ AI 并不改变框架的执行方式：最终仍由统一的 JSON 测试入口�
 启动管理台（默认会自动打开浏览器）：
 
 ```powershell
-.\.venv\Scripts\python.exe web_app.py
+.\start_web_app.bat
 ```
 
 地址：<http://127.0.0.1:5000/>
