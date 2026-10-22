@@ -45,7 +45,7 @@ from jsonpath import jsonpath
 from api_project import CASE_DATA_DIR_PATH
 from api_project.common.allure_decorator import ALLURE_CONFIGS
 from api_project.common.auth_profiles import get_auth_profile
-from api_project.common.api_request import sanitize_headers
+from api_project.common.api_request import sanitize_for_display, sanitize_headers, sanitize_url
 from api_project.common.runtime_config import (
     get_assertion_rules,
     resolve_variables,
@@ -101,7 +101,7 @@ def _do_extract(case_data, response):
         os.environ[name] = str(value)
         set_runtime_variable(name, value)
         extracted[name] = str(value)
-        logger.info(f"✅ 已提取 {name} = {str(value)[:80]}（供后续用例 ${name} 引用）")
+        logger.info(f"✅ 已提取 {name} = {str(sanitize_for_display(value, name))[:80]}（供后续用例 ${name} 引用）")
     return extracted
 
 
@@ -176,13 +176,13 @@ def _assert_value(tag, expr, actual, item, response) -> None:
             f"❌ {tag} 失败\n预期: {item['eq']} | 实际: {actual}\n"
             f"表达式: {expr}\n响应体: {_safe_text(response)}"
         )
-        logger.info(f"✅ {tag} 通过: {actual}")
+        logger.info(f"✅ {tag} 通过: {sanitize_for_display(actual)}")
     elif "contains" in item:
         assert str(item["contains"]) in str(actual), (
             f"❌ {tag} 失败\n预期包含: {item['contains']} | 实际: {actual}\n"
             f"表达式: {expr}\n响应体: {_safe_text(response)}"
         )
-        logger.info(f"✅ {tag} 通过: {actual}")
+        logger.info(f"✅ {tag} 通过: {sanitize_for_display(actual)}")
     elif "length" in item:
         assert actual is not None and len(actual) == int(item["length"]), (
             f"❌ {tag} 失败\n预期长度: {item['length']} | 实际长度: "
@@ -208,9 +208,9 @@ def _assert_value(tag, expr, actual, item, response) -> None:
 def _safe_text(response, limit=300):
     """安全截断响应文本用于错误提示"""
     try:
-        text = json.dumps(response.json(), ensure_ascii=False)
+        text = json.dumps(sanitize_for_display(response.json()), ensure_ascii=False)
     except Exception:
-        text = response.text
+        text = str(sanitize_for_display(response.text))
     return text[:limit] + ("..." if len(text) > limit else "")
 
 
@@ -355,19 +355,21 @@ def _handle_query(case_data, ctx) -> 'requests.Response':
 
     # 打印请求
     safe_headers = sanitize_headers(headers)
-    print(f"\n【请求】{method} {full_url}")
+    safe_params = sanitize_for_display(request_params)
+    safe_body = sanitize_for_display(request_body)
+    print(f"\n【请求】{method} {sanitize_url(full_url)}")
     if request_params:
-        print(f"参数: {json.dumps(request_params, ensure_ascii=False)}")
+        print(f"参数: {json.dumps(safe_params, ensure_ascii=False)}")
     if request_body:
-        print(f"请求体: {json.dumps(request_body, ensure_ascii=False)}")
+        print(f"请求体: {json.dumps(safe_body, ensure_ascii=False)}")
     if headers:
         print(f"请求头: {json.dumps(safe_headers, ensure_ascii=False)}")
 
     # allure 记录请求
-    allure.attach(f"{method} {full_url}", "请求信息", allure.attachment_type.TEXT)
+    allure.attach(f"{method} {sanitize_url(full_url)}", "请求信息", allure.attachment_type.TEXT)
     if request_body:
         allure.attach(
-            json.dumps(request_body, indent=2, ensure_ascii=False),
+            json.dumps(safe_body, indent=2, ensure_ascii=False),
             "请求体", allure.attachment_type.JSON
         )
     if headers:
@@ -393,19 +395,21 @@ def _handle_query(case_data, ctx) -> 'requests.Response':
     # 打印响应
     print(f"【响应】状态码: {response.status_code}")
     try:
-        print(f"响应体: {json.dumps(response.json(), ensure_ascii=False)[:500]}")
+        safe_response = sanitize_for_display(response.json())
+        print(f"响应体: {json.dumps(safe_response, ensure_ascii=False)[:500]}")
     except Exception:
-        print(f"响应体: {response.text[:500]}")
+        safe_response = sanitize_for_display(response.text)
+        print(f"响应体: {safe_response[:500]}")
 
     # allure 记录响应
     allure.attach(str(response.status_code), "响应状态码", allure.attachment_type.TEXT)
     try:
         allure.attach(
-            json.dumps(response.json(), indent=2, ensure_ascii=False),
+            json.dumps(sanitize_for_display(response.json()), indent=2, ensure_ascii=False),
             "响应体", allure.attachment_type.JSON
         )
     except Exception:
-        allure.attach(response.text, "响应体", allure.attachment_type.TEXT)
+        allure.attach(str(sanitize_for_display(response.text)), "响应体", allure.attachment_type.TEXT)
 
     # 响应提取（供后续用例 ${var} 引用）
     _do_extract(case_data, response)

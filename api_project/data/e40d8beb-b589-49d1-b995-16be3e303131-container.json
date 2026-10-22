@@ -1,1 +1,0 @@
-{"uuid": "25fe0087-4757-4026-aa56-8304623b7c11", "befores": [{"name": "logic", "status": "passed", "start": 1792573739031, "stop": 1792573739031}], "afters": [{"name": "logic::<lambda>", "start": 1792573739088}], "start": 1792573739031, "stop": 1792573739088}

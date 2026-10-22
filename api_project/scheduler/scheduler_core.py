@@ -17,6 +17,7 @@ import subprocess
 import sys
 import threading
 import time
+from contextlib import contextmanager
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
@@ -30,6 +31,7 @@ API_PROJECT_DIR = PROJECT_ROOT / "api_project"
 RUN_ENTRY = PROJECT_ROOT / "run_testcases.py"
 DEFAULT_JOBS_FILE = API_PROJECT_DIR / "config" / "scheduler_jobs.json"
 LOG_FILE = API_PROJECT_DIR / "log" / "scheduler.log"
+TEST_RUN_LOCK_FILE = API_PROJECT_DIR / ".scheduler-test-run.lock"
 DEFAULT_TZ = "Asia/Shanghai"
 
 
@@ -107,6 +109,101 @@ def _resolve_script(cmd):
     return cmd
 
 
+def _is_framework_test_command(command: str) -> bool:
+    """Return whether a job launches the shared framework test workspace."""
+    command = (command or "run_testcases.py").strip()
+    if not command.lower().endswith(".py"):
+        return False
+    try:
+        return Path(_resolve_script(command)).resolve() == RUN_ENTRY.resolve()
+    except OSError:
+        return False
+
+
+def _pid_is_running(pid: object) -> bool:
+    """Check whether a lock owner is still alive without depending on psutil."""
+    try:
+        pid = int(pid)
+        if pid <= 0:
+            return False
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except (TypeError, ValueError, OSError):
+        return False
+    return True
+
+
+def _read_lock_owner(lock_path: Path) -> dict:
+    try:
+        data = json.loads(lock_path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+@contextmanager
+def _exclusive_framework_test_run(job):
+    """Allow one scheduled ``run_testcases.py`` process at a time.
+
+    All framework test runs clean and write the same report directories.  The
+    lock is file-based so it also protects against a second scheduler process
+    started from another console.  A stale lock whose recorded PID is gone is
+    recovered automatically.
+    """
+    command = job["command"] or "run_testcases.py"
+    if not _is_framework_test_command(command):
+        yield True
+        return
+
+    lock_path = TEST_RUN_LOCK_FILE
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    created = False
+    for _ in range(2):
+        try:
+            fd = os.open(str(lock_path), os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+        except FileExistsError:
+            owner = _read_lock_owner(lock_path)
+            if owner and _pid_is_running(owner.get("pid")):
+                _logger().warning(
+                    "跳过任务 [%s]：框架测试正在运行（pid=%s，任务=%s）",
+                    job["name"], owner.get("pid"), owner.get("job", "未知"),
+                )
+                yield False
+                return
+            try:
+                lock_path.unlink()
+            except FileNotFoundError:
+                pass
+            except OSError:
+                _logger().warning("跳过任务 [%s]：无法检查测试运行锁 %s", job["name"], lock_path)
+                yield False
+                return
+            continue
+        else:
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                json.dump({"pid": os.getpid(), "job": job["name"], "started_at": time.time()}, handle)
+            created = True
+            break
+
+    if not created:
+        _logger().warning("跳过任务 [%s]：无法获取框架测试运行锁", job["name"])
+        yield False
+        return
+
+    try:
+        yield True
+    finally:
+        try:
+            lock_path.unlink()
+        except FileNotFoundError:
+            pass
+        except OSError as exc:
+            _logger().warning("未能删除测试运行锁 %s: %s", lock_path, exc)
+
+
 def _run_command(job):
     """执行任务命令：
     - .py 脚本 → 用当前解释器直连执行（不依赖 PATH，Windows 下不弹黑窗口）
@@ -154,7 +251,10 @@ def run_job(job):
     logger.info(f"▶ 任务开始 [{name}] cron={job['cron']} cmd={cmd}"
                 + (f" env={job['env']}" if job["env"] else ""))
     try:
-        return _run_command(job)
+        with _exclusive_framework_test_run(job) as acquired:
+            if not acquired:
+                return 0
+            return _run_command(job)
     except Exception as e:
         logger.exception(f"!! 任务回调异常 [{name}]: {e}")
         return -1

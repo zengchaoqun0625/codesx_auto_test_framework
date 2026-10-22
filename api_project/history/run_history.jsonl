@@ -10,3 +10,4 @@
 {"timestamp": "2026-10-21 16:44:14", "total": 22, "passed": 22, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 1.9, "executor": "曾超群"}
 {"timestamp": "2026-10-21 16:57:27", "total": 22, "passed": 22, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 1.68, "executor": "曾超群"}
 {"timestamp": "2026-10-21 17:09:14", "total": 22, "passed": 22, "failed": 0, "skipped": 0, "pass_rate": 100.0, "duration_sec": 1.56, "executor": "曾超群"}
+{"timestamp": "2026-10-22 09:25:29", "total": 20, "passed": 0, "failed": 20, "skipped": 0, "pass_rate": 0.0, "duration_sec": 4.39, "executor": "曾超群"}

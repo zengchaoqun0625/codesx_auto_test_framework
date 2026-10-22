@@ -1,0 +1,14 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "timestamp": "2026-10-22 09:25:13",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "",
+    "path": "/api/store/device"
+  },
+  "apiResId": "2113079193279127554",
+  "ok": true
+}

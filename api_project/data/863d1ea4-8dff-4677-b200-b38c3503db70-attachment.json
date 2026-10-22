@@ -1,0 +1,14 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "timestamp": "2026-10-22 09:25:11",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "",
+    "path": "/api/mgr/mchForm/payment"
+  },
+  "apiResId": "2113079183586091010",
+  "ok": true
+}

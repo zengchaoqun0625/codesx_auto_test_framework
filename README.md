@@ -505,7 +505,7 @@ python -m pytest api_project/testcases --collect-only -q
 
 ## ⏰ 定时回归
 
-编辑 `api_project/config/scheduler_jobs.json`：任务需要同时满足 `enabled: true` 和 `.env` 中 `SCHEDULER_ENABLED=true` 才会执行。当前仓库中的 3 个任务均为启用状态；首次启动前请按实际环境确认执行频率和清理策略。
+编辑 `api_project/config/scheduler_jobs.json`：任务需要同时满足 `enabled: true` 和 `.env` 中 `SCHEDULER_ENABLED=true` 才会执行。当前仓库中的 3 个任务均为启用状态；全量回归在每小时第 0、30 分钟执行，冒烟回归在第 15、45 分钟执行。调度器还会对 `run_testcases.py` 使用跨进程互斥锁：若上一轮尚未完成，后续测试任务会记录原因并跳过，避免清理和覆盖共享报告目录。首次启动前请按实际环境确认执行频率和清理策略。
 
 先预览任务：
 

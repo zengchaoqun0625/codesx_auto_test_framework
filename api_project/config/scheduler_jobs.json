@@ -16,14 +16,14 @@
     {
       "name": "每30分钟冒烟回归",
       "enabled": true,
-      "cron": "*/30 * * * *",
+      "cron": "15,45 * * * *",
       "command": "run_testcases.py",
       "timeout_sec": 1800,
       "env": {
         "TEST_EXECUTOR": "定时任务-冒烟",
         "RUN_MODULE": "登录认证模块,商户申请模块,支付订单模块"
       },
-      "description": "只跑登录、商户申请和支付订单等核心链路；可按需调整 RUN_MODULE 名单或将 enabled 改为 false",
+      "description": "在每小时第 15、45 分钟运行，避开全量回归；只跑登录、商户申请和支付订单等核心链路，可按需调整 RUN_MODULE 名单或将 enabled 改为 false",
       "id": "legacy-1"
     },
     {

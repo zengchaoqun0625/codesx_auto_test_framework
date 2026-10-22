@@ -1,0 +1,6 @@
+INFO     api_project.common.api_request:api_request.py:200 ✅ 已从环境变量 API_TOKEN/API_ITOKEN 加载默认鉴权 token
+INFO     api_project.common.api_request:api_request.py:398 ℹ️ 已剥离用例数据中的 token 请求头，改用环境变量/用户配置中的默认 token
+INFO     api_project.common.api_request:api_request.py:289 ℹ️ 请求头已添加 iToken
+INFO     api_project.common.api_request:api_request.py:414 📤 发送请求: GET https://mg.6jqb.com/api/isvInfo
+INFO     api_project.common.api_request:api_request.py:423 📥 响应状态码: 401，耗时: 0.187s
+INFO     api_project.testcases.conftest:conftest.py:389 ℹ️ 测试函数结束，关闭API请求Session

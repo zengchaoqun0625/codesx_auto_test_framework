@@ -8,6 +8,7 @@
 import json
 import logging
 from typing import Any, Dict
+from api_project.common.api_request import sanitize_for_display
 from api_project.common.runtime_config import resolve_variables
 
 logger = logging.getLogger(__name__)
@@ -81,7 +82,7 @@ class RequestProcessor:
             # 补全默认Content-Type
             if "Content-Type" not in headers:
                 headers["Content-Type"] = "application/json"
-            logger.debug(f"ℹ️ 处理json请求体: {json.dumps(request_body['json'], ensure_ascii=False)}")
+            logger.debug(f"ℹ️ 处理json请求体: {json.dumps(sanitize_for_display(request_body['json']), ensure_ascii=False)}")
 
         elif request_type == "data":
             # 处理data请求体（兼容JSON字符串/表单字符串）
@@ -91,21 +92,21 @@ class RequestProcessor:
                     # 尝试解析为JSON（如：'{"key":"value"}'）
                     request_body["json"] = json.loads(data_content)
                     headers["Content-Type"] = headers.get("Content-Type", "application/json")
-                    logger.debug(f"ℹ️ data字符串解析为json: {request_body['json']}")
+                    logger.debug(f"ℹ️ data字符串解析为json: {sanitize_for_display(request_body['json'])}")
                 except json.JSONDecodeError:
                     # 解析失败则视为表单数据（如：'key1=value1&key2=value2'）
                     request_body["data"] = data_content
                     headers["Content-Type"] = headers.get(
                         "Content-Type", "application/x-www-form-urlencoded"
                     )
-                    logger.debug(f"ℹ️ data字符串视为表单数据: {data_content}")
+                    logger.debug(f"ℹ️ data字符串视为表单数据: {sanitize_for_display(data_content)}")
             else:
                 # 非字符串类型直接作为data（如字典）
                 request_body["data"] = data_content
                 headers["Content-Type"] = headers.get(
                     "Content-Type", "application/x-www-form-urlencoded"
                 )
-                logger.debug(f"ℹ️ 处理data请求体: {request_body['data']}")
+                logger.debug(f"ℹ️ 处理data请求体: {sanitize_for_display(request_body['data'])}")
 
         # 打印最终处理结果（便于调试）
         logger.debug(f"ℹ️ 最终请求头: {list(headers.keys())}")

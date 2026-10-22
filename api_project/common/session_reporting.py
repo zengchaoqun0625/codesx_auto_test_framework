@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 import pytest
 
-from api_project.common.api_request import sanitize_headers
+from api_project.common.api_request import sanitize_for_display, sanitize_headers
 from api_project.common.notifications.builders import (
     ALLURE_URL,
     ALLURE_URLS,
@@ -70,7 +70,7 @@ class SessionReporter:
         result = {
             "name": item.name, "nodeid": item.nodeid, "outcome": report.outcome,
             "duration": report.duration,
-            "longrepr": str(report.longrepr) if report.longrepr else None,
+            "longrepr": sanitize_for_display(str(report.longrepr)) if report.longrepr else None,
             "status_code": res_info.get("status_code") if res_info else None,
             "response_text": (res_info.get("text", "") or "")[:500] if res_info else None,
             "request_url": req_info.get("url", "") if req_info else None,

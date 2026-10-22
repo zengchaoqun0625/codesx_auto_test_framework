@@ -15,6 +15,8 @@ from requests import Response
 import allure
 import pytest
 
+from api_project.common.api_request import sanitize_for_display, sanitize_headers, sanitize_url
+
 logger = logging.getLogger(__name__)
 
 # ==============================
@@ -496,13 +498,13 @@ class AllureAttachments:
     @staticmethod
     def attach_text(content: str, name: str = "文本信息", attachment_type: Any = allure.attachment_type.TEXT):
         """添加文本附件"""
-        allure.attach(content, name, attachment_type)
+        allure.attach(str(sanitize_for_display(content)), name, attachment_type)
 
     @staticmethod
     def attach_json(data: Dict, name: str = "JSON数据"):
         """添加 JSON 附件"""
         allure.attach(
-            json.dumps(data, indent=2, ensure_ascii=False),
+            json.dumps(sanitize_for_display(data), indent=2, ensure_ascii=False),
             name,
             allure.attachment_type.JSON
         )
@@ -514,30 +516,30 @@ class AllureAttachments:
             allure.attach(str(response.status_code), f"{name} - 状态码", allure.attachment_type.TEXT)
             try:
                 allure.attach(
-                    json.dumps(response.json(), indent=2, ensure_ascii=False),
+                    json.dumps(sanitize_for_display(response.json()), indent=2, ensure_ascii=False),
                     f"{name} - 响应体",
                     allure.attachment_type.JSON
                 )
             except:
-                allure.attach(response.text, f"{name} - 响应体", allure.attachment_type.TEXT)
+                allure.attach(str(sanitize_for_display(response.text)), f"{name} - 响应体", allure.attachment_type.TEXT)
         except Exception as e:
             logger.warning(f"添加响应附件失败: {e}")
 
     @staticmethod
     def attach_request(method: str, url: str, headers: Dict = None, body: Dict = None, params: Dict = None):
         """添加请求附件"""
-        request_info = f"{method} {url}"
+        request_info = f"{method} {sanitize_url(url)}"
         allure.attach(request_info, "请求信息", allure.attachment_type.TEXT)
 
         if params:
-            allure.attach(json.dumps(params, indent=2, ensure_ascii=False), "请求参数", allure.attachment_type.JSON)
+            allure.attach(json.dumps(sanitize_for_display(params), indent=2, ensure_ascii=False), "请求参数", allure.attachment_type.JSON)
 
         if headers:
-            safe_headers = {k: v if k.lower() not in ['authorization', 'token'] else '***' for k, v in headers.items()}
+            safe_headers = sanitize_headers(headers)
             allure.attach(json.dumps(safe_headers, indent=2, ensure_ascii=False), "请求头", allure.attachment_type.JSON)
 
         if body:
-            allure.attach(json.dumps(body, indent=2, ensure_ascii=False), "请求体", allure.attachment_type.JSON)
+            allure.attach(json.dumps(sanitize_for_display(body), indent=2, ensure_ascii=False), "请求体", allure.attachment_type.JSON)
 
     @staticmethod
     def attach_screenshot(screenshot_bytes: bytes, name: str = "截图"):

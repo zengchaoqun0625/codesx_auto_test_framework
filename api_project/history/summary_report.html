@@ -187,9 +187,9 @@
       <h1>自动化测试汇总报告</h1>
       <p class="subtitle">多维度聚合分析 · 生成时间 <span id="genTime">—</span></p>
       <div class="meta-row">
-        <span class="meta-chip">最近执行 <b>2026-10-21 17:09:14</b></span>
+        <span class="meta-chip">最近执行 <b>2026-10-22 09:25:29</b></span>
         <span class="meta-chip">执行人 <b>曾超群</b></span>
-        <span class="meta-chip">历史记录 <b>12</b> 条</span>
+        <span class="meta-chip">历史记录 <b>13</b> 条</span>
         <span class="meta-chip">历史最佳 <b>100.0</b>%</span>
       </div>
     </div>
@@ -208,7 +208,7 @@
           <circle class="ring-bar" id="ringBar" cx="100" cy="100" r="86"/>
         </svg>
         <div class="ring-center">
-          <div class="ring-rate" id="ringRate">100.0<small>%</small></div>
+          <div class="ring-rate" id="ringRate">0.0<small>%</small></div>
           <div class="ring-label">最新通过率</div>
         </div>
       </div>
@@ -254,8 +254,8 @@
 </div>
 
 <script>
-const DATA = {"daily": {"labels": ["2026-10-21"], "passRates": [54.14], "failedList": [61], "totals": [133], "passedList": [72], "skippedList": [0], "durations": [10.75], "runs": [12], "rows": [{"period": "2026-10-21", "timestamp": "2026-10-21 17:09:14", "runs": 12, "total": 133, "passed": 72, "failed": 61, "skipped": 0, "duration_sec": 10.75, "executor": "曾超群", "pass_rate": 54.14}]}, "weekly": {"labels": ["2026-W43"], "passRates": [54.14], "failedList": [61], "totals": [133], "passedList": [72], "skippedList": [0], "durations": [10.75], "runs": [12], "rows": [{"period": "2026-W43", "timestamp": "2026-10-21 17:09:14", "runs": 12, "total": 133, "passed": 72, "failed": 61, "skipped": 0, "duration_sec": 10.75, "executor": "曾超群", "pass_rate": 54.14}]}, "monthly": {"labels": ["2026-10"], "passRates": [54.14], "failedList": [61], "totals": [133], "passedList": [72], "skippedList": [0], "durations": [10.75], "runs": [12], "rows": [{"period": "2026-10", "timestamp": "2026-10-21 17:09:14", "runs": 12, "total": 133, "passed": 72, "failed": 61, "skipped": 0, "duration_sec": 10.75, "executor": "曾超群", "pass_rate": 54.14}]}, "yearly": {"labels": ["2026"], "passRates": [54.14], "failedList": [61], "totals": [133], "passedList": [72], "skippedList": [0], "durations": [10.75], "runs": [12], "rows": [{"period": "2026", "timestamp": "2026-10-21 17:09:14", "runs": 12, "total": 133, "passed": 72, "failed": 61, "skipped": 0, "duration_sec": 10.75, "executor": "曾超群", "pass_rate": 54.14}]}};
-const META = {"total_runs": 12, "latest_rate": 100.0, "overall_rate": 41.67, "overall_failed": 61, "overall_duration": 10.75, "best_rate": 100.0};
+const DATA = {"daily": {"labels": ["2026-10-21", "2026-10-22"], "passRates": [54.14, 0.0], "failedList": [61, 20], "totals": [133, 20], "passedList": [72, 0], "skippedList": [0, 0], "durations": [10.75, 4.39], "runs": [12, 1], "rows": [{"period": "2026-10-21", "timestamp": "2026-10-21 17:09:14", "runs": 12, "total": 133, "passed": 72, "failed": 61, "skipped": 0, "duration_sec": 10.75, "executor": "曾超群", "pass_rate": 54.14}, {"period": "2026-10-22", "timestamp": "2026-10-22 09:25:29", "runs": 1, "total": 20, "passed": 0, "failed": 20, "skipped": 0, "duration_sec": 4.39, "executor": "曾超群", "pass_rate": 0.0}]}, "weekly": {"labels": ["2026-W43"], "passRates": [47.06], "failedList": [81], "totals": [153], "passedList": [72], "skippedList": [0], "durations": [15.14], "runs": [13], "rows": [{"period": "2026-W43", "timestamp": "2026-10-22 09:25:29", "runs": 13, "total": 153, "passed": 72, "failed": 81, "skipped": 0, "duration_sec": 15.14, "executor": "曾超群", "pass_rate": 47.06}]}, "monthly": {"labels": ["2026-10"], "passRates": [47.06], "failedList": [81], "totals": [153], "passedList": [72], "skippedList": [0], "durations": [15.14], "runs": [13], "rows": [{"period": "2026-10", "timestamp": "2026-10-22 09:25:29", "runs": 13, "total": 153, "passed": 72, "failed": 81, "skipped": 0, "duration_sec": 15.14, "executor": "曾超群", "pass_rate": 47.06}]}, "yearly": {"labels": ["2026"], "passRates": [47.06], "failedList": [81], "totals": [153], "passedList": [72], "skippedList": [0], "durations": [15.14], "runs": [13], "rows": [{"period": "2026", "timestamp": "2026-10-22 09:25:29", "runs": 13, "total": 153, "passed": 72, "failed": 81, "skipped": 0, "duration_sec": 15.14, "executor": "曾超群", "pass_rate": 47.06}]}};
+const META = {"total_runs": 13, "latest_rate": 0.0, "overall_rate": 38.46, "overall_failed": 81, "overall_duration": 15.14, "best_rate": 100.0};
 const DIM_NAMES = {daily:"日报", weekly:"周报", monthly:"月报", yearly:"年报"};
 
 /* ============ 主题切换（浅色/深色） ============ */

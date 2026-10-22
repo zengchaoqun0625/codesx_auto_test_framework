@@ -1,0 +1,14 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "timestamp": "2026-10-22 09:25:12",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "",
+    "path": "/api/payOrder/count"
+  },
+  "apiResId": "2113079190267617281",
+  "ok": true
+}

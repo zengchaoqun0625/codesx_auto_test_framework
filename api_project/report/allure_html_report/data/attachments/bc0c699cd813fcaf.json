@@ -1,0 +1,14 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "timestamp": "2026-10-22 09:25:10",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "",
+    "path": "/api/mchApply/mchList"
+  },
+  "apiResId": "2113079181350526977",
+  "ok": true
+}

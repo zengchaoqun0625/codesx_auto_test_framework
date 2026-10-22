@@ -87,7 +87,7 @@ from api_project.common.notifications.senders import (
     _send_robot_notification, _send_phone_call,
 )
 from api_project.common.upload_service import upload_test_report
-from api_project.common.api_request import sanitize_headers
+from api_project.common.api_request import sanitize_for_display, sanitize_headers
 from api_project.common.reporting import (
     collect_worker_results,
     is_report_upload_enabled,
@@ -375,7 +375,7 @@ def base_url(pytestconfig: pytest.Config) -> str:
     return HostConfig.get_host(pytestconfig)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def api_request() -> ApiRequest:
     """
     API请求工具Fixture（作用域：每个测试函数）
@@ -544,22 +544,14 @@ def allure_reporter() -> "AllureReporter":
             """
             try:
                 # 隐藏敏感信息
-                safe_headers = {}
-                if headers:
-                    for k, v in headers.items():
-                        if k.lower() in ['authorization', 'token', 'accesstoken']:
-                            safe_headers[k] = '***'
-                        else:
-                            safe_headers[k] = v
-                else:
-                    safe_headers = headers
+                safe_headers = sanitize_headers(headers)
 
                 # 整理请求信息（兼容非JSON序列化数据）
                 self.request_info = {
                     "url": url,
                     "method": method.upper(),
-                    "params": self._safe_serialize(params),
-                    "data": self._safe_serialize(data),
+                    "params": self._safe_serialize(sanitize_for_display(params)),
+                    "data": self._safe_serialize(sanitize_for_display(data)),
                     "headers": self._safe_serialize(safe_headers),
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
@@ -593,7 +585,7 @@ def allure_reporter() -> "AllureReporter":
                 self.response_info = {
                     "status_code": response.status_code,
                     "response_time": f"{response_time}s",
-                    "headers": self._safe_serialize(dict(response.headers)),
+                    "headers": self._safe_serialize(sanitize_headers(response.headers)),
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
 
@@ -607,7 +599,7 @@ def allure_reporter() -> "AllureReporter":
                     )
 
                     # 2. 响应头
-                    headers_str = "\n".join([f"{k}: {v}" for k, v in response.headers.items()])
+                    headers_str = "\n".join([f"{k}: {v}" for k, v in sanitize_headers(response.headers).items()])
                     allure.attach(
                         headers_str,
                         name="响应头",
@@ -618,13 +610,13 @@ def allure_reporter() -> "AllureReporter":
                     try:
                         response_json = response.json()
                         allure.attach(
-                            json.dumps(response_json, ensure_ascii=False, indent=2),
+                            json.dumps(sanitize_for_display(response_json), ensure_ascii=False, indent=2),
                             name="响应体(JSON)",
                             attachment_type=allure.attachment_type.JSON
                         )
                     except json.JSONDecodeError:
                         # 截断过长的文本（避免报告体积过大）
-                        response_text = response.text[:1000] + ("..." if len(response.text) > 1000 else "")
+                        response_text = str(sanitize_for_display(response.text))[:1000] + ("..." if len(response.text) > 1000 else "")
                         allure.attach(
                             response_text,
                             name="响应体(文本)",
@@ -724,9 +716,9 @@ def allure_reporter() -> "AllureReporter":
             if data is None:
                 return "null"
             try:
-                return json.dumps(data, ensure_ascii=False, default=str)
+                return json.dumps(sanitize_for_display(data), ensure_ascii=False, default=str)
             except Exception:
-                return str(data)  # 序列化失败时转为字符串
+                return str(sanitize_for_display(data))  # 序列化失败时转为字符串
 
         def _add_error_attachment(self, title: str, error_msg: str) -> None:
             """添加错误信息到Allure报告（内部工具方法）"""

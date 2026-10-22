@@ -1,0 +1,14 @@
+{
+  "msg": "SUCCESS",
+  "fail": false,
+  "code": 0,
+  "data": {
+    "timestamp": "2026-10-22 09:25:08",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "",
+    "path": "/api/mchQrCodes"
+  },
+  "apiResId": "2113079172102086657",
+  "ok": true
+}

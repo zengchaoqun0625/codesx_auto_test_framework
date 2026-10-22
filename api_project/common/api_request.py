@@ -11,11 +11,12 @@ import importlib
 import json
 import logging
 import os
+import re
 import time
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Dict, Optional
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlencode, urlparse, urlsplit, urlunsplit
 
 import requests
 from requests import Response
@@ -30,7 +31,15 @@ DEFAULT_VERIFY_TLS = get_bool_env("API_VERIFY_TLS", default=True)
 
 # Credentials can appear under many vendor-specific header names.  Keep this
 # policy close to the HTTP client so terminal logs and every report use it.
-_SENSITIVE_HEADER_PARTS = ("authorization", "cookie", "token", "secret", "password", "api-key", "apikey")
+_SENSITIVE_FIELD_PARTS = (
+    "authorization", "cookie", "token", "secret", "password", "passwd", "pwd",
+    "api-key", "apikey", "api_key", "accesskey", "access_key", "privatekey",
+    "private_key", "credential", "client_secret", "sign", "signature",
+)
+_PHONE_FIELD_PARTS = ("phone", "mobile", "telephone", "tel", "contact_number")
+_ID_FIELD_PARTS = ("idcard", "id_card", "identity", "certificate_no", "cert_no")
+_BANK_FIELD_PARTS = ("bankcard", "bank_card", "card_no", "cardnumber", "account_no")
+_MASK = "*******"
 _RETRY_CONFIG_PATH = Path(__file__).resolve().parent.parent / "config" / "request_retry.json"
 
 
@@ -62,18 +71,80 @@ def _load_retry_policy() -> Dict[str, Any]:
     return default
 
 
+def _mask_value(value: Any) -> str:
+    """Mask a value for display without revealing its length."""
+    text = str(value)
+    if len(text) <= 6:
+        return _MASK
+    return f"{text[:3]}{_MASK}{text[-3:]}"
+
+
+def _field_matches(key: object, candidates: tuple[str, ...]) -> bool:
+    normalized = str(key).lower().replace("-", "_")
+    return any(candidate.replace("-", "_") in normalized for candidate in candidates)
+
+
+def _sanitize_text(text: str) -> str:
+    """Mask common PII in unstructured response and form text."""
+    # Chinese mobile numbers and 18-digit identity numbers retain only three
+    # characters on either side, matching the display convention used by the UI.
+    text = re.sub(r"(?<!\d)(1[3-9]\d)\d{5}(\d{3})(?!\d)", rf"\1{_MASK}\2", text)
+    text = re.sub(r"(?<!\d)(\d{3})\d{12}(\d{3})(?!\d)", rf"\1{_MASK}\2", text)
+    text = re.sub(
+        r"(?i)((?:authorization|cookie|token|secret|password|passwd|pwd|api[_-]?key|signature)\s*[:=]\s*[\"']?)([^\s\"'&,;}]+)",
+        lambda match: f"{match.group(1)}{_mask_value(match.group(2))}",
+        text,
+    )
+    return text
+
+
+def sanitize_for_display(value: Any, key: object = "") -> Any:
+    """Return a recursively masked copy suitable for logs and reports.
+
+    This function is intentionally display-only: callers must keep using their
+    original request data when making HTTP calls or extracting variables.
+    """
+    if _field_matches(key, _SENSITIVE_FIELD_PARTS):
+        return _mask_value(value)
+    if _field_matches(key, _PHONE_FIELD_PARTS) or _field_matches(key, _ID_FIELD_PARTS) or _field_matches(key, _BANK_FIELD_PARTS):
+        return _mask_value(value)
+    if isinstance(value, Mapping):
+        return {item_key: sanitize_for_display(item_value, item_key) for item_key, item_value in value.items()}
+    if isinstance(value, list):
+        return [sanitize_for_display(item, key) for item in value]
+    if isinstance(value, tuple):
+        return tuple(sanitize_for_display(item, key) for item in value)
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped.startswith(("{", "[")):
+            try:
+                return json.dumps(sanitize_for_display(json.loads(value)), ensure_ascii=False)
+            except json.JSONDecodeError:
+                pass
+        return _sanitize_text(value)
+    return value
+
+
+def sanitize_url(url: str) -> str:
+    """Mask sensitive query parameter values in a URL shown to users."""
+    try:
+        parsed = urlsplit(url)
+        query = parse_qsl(parsed.query, keep_blank_values=True)
+        safe_query = urlencode([(key, sanitize_for_display(value, key)) for key, value in query], doseq=True, safe="*")
+        return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, safe_query, parsed.fragment))
+    except (TypeError, ValueError):
+        return _sanitize_text(str(url))
+
+
 def sanitize_headers(headers: Optional[Mapping[str, Any]]) -> Dict[str, Any]:
-    """Return a copy of headers with credentials replaced by ``***``.
+    """Return a display-safe copy of request or response headers.
 
     The original mapping is never changed because it may still be needed to
     make the HTTP request.
     """
     if not isinstance(headers, Mapping):
         return {}
-    return {
-        key: "***" if any(part in str(key).lower() for part in _SENSITIVE_HEADER_PARTS) else value
-        for key, value in headers.items()
-    }
+    return sanitize_for_display(headers)
 
 
 class ApiRequest:
@@ -225,8 +296,8 @@ class ApiRequest:
         """记录响应信息（含耗时），供报告/通知使用"""
         self.last_response_info = {
             "status_code": response.status_code,
-            "headers": dict(response.headers),
-            "text": response.text[:2000],  # 限制长度避免报告过大
+            "headers": sanitize_headers(response.headers),
+            "text": sanitize_for_display(response.text)[:2000],  # 限制长度避免报告过大
             "elapsed": round(response.elapsed.total_seconds(), 4),  # 响应耗时（秒）
         }
 
@@ -329,10 +400,10 @@ class ApiRequest:
         # 记录请求信息
         self.last_request_info = {
             "method": method.upper(),
-            "url": url,
+            "url": sanitize_url(url),
             "headers": sanitize_headers(kwargs.get("headers", {})),
-            "params": kwargs.get("params", {}),
-            "body": kwargs.get("json") or kwargs.get("data") or ""
+            "params": sanitize_for_display(kwargs.get("params", {})),
+            "body": sanitize_for_display(kwargs.get("json") or kwargs.get("data") or "")
         }
 
         try:
@@ -340,13 +411,13 @@ class ApiRequest:
             method = method.strip().lower()
             self._prepare_headers(use_token, token_header_name, token_prefix, profile_name)
 
-            logger.info(f"📤 发送请求: {method.upper()} {url}")
+            logger.info(f"📤 发送请求: {method.upper()} {sanitize_url(url)}")
             if "params" in kwargs:
-                logger.debug(f"📤 请求参数: {json.dumps(kwargs['params'], ensure_ascii=False)}")
+                logger.debug(f"📤 请求参数: {json.dumps(sanitize_for_display(kwargs['params']), ensure_ascii=False)}")
             if "data" in kwargs or "json" in kwargs:
                 body_key = "data" if "data" in kwargs else "json"
-                logger.debug(f"📤 请求体: {json.dumps(kwargs[body_key], ensure_ascii=False)}")
-            logger.debug(f"📤 请求头: {json.dumps(dict(self.session.headers), ensure_ascii=False)}")
+                logger.debug(f"📤 请求体: {json.dumps(sanitize_for_display(kwargs[body_key]), ensure_ascii=False)}")
+            logger.debug(f"📤 请求头: {json.dumps(sanitize_headers(self.session.headers), ensure_ascii=False)}")
 
             response = self._send_with_retry(method, url, retry, **kwargs)
             logger.info(f"📥 响应状态码: {response.status_code}，耗时: {response.elapsed.total_seconds():.3f}s")
